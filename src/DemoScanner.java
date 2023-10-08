@@ -12,7 +12,7 @@ public class DemoScanner {
             Reader in = new BufferedReader(new InputStreamReader(System.in));
             scanner s = new scanner(in, sf);
             Symbol t = s.next_token();
-            while (t.sym != sym.EOF) { 
+            while (t.sym != sym.EOF) {
                 // print each token that we scan
                 System.out.print(s.symbolToString(t) + " ");
                 t = s.next_token();
@@ -20,12 +20,10 @@ public class DemoScanner {
         } catch (Exception e) {
             // yuck: some kind of error in the compiler implementation
             // that we're not expecting (a bug!)
-            System.err.println("Unexpected internal compiler error: " + 
-                        e.toString());
+            System.err.println("Unexpected internal compiler error: " +
+                    e.toString());
             // print out a stack dump
             e.printStackTrace();
         }
-   }
+    }
 }
-
-
