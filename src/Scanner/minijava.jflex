@@ -113,16 +113,52 @@ white = {eol}|[ \t]
 /* Token definitions */
 
 /* reserved words (first so that they take precedence over identifiers) */
-"display" { return symbol(sym.DISPLAY); }
+"class" { return symbol(sym.CLASS); }
+"public" { return symbol(sym.SOPLN); }
+"void" { return symbol(sym.SOPLN); }
+"main" { return symbol(sym.CLASS); }
+"extends" { return symbol(sym.SOPLN); }
+"this" { return symbol(sym.SOPLN); }
+"new" { return symbol(sym.CLASS); }
+"String" { return symbol(sym.STRING); }
+"System.out.println" { return symbol(sym.SOPLN); }
+
+/* control flow constructs */
+"if" { return symbol(sym.IF); }
+"else" { return symbol(sym.ELSE); }
+"while" { return symbol(sym.WHILE); }
+"return" { return symbol(sym.RETURN); }
+
+/* reserved type names */
+"int" { return symbol(sym.INT); }
+"boolean" { return symbol(sym.BOOLEAN); }
+
+/* constants */
+"true" { return symbol(sym.TRUE); }
+"false" { return symbol(sym.TRUE); }
+(0|[1-9]({digit})*) {
+  return symbol(sym.INTEGER, yytext());
+}
 
 /* operators */
 "+" { return symbol(sym.PLUS); }
 "=" { return symbol(sym.BECOMES); }
+"&&" { return symbol(sym.AND); }
+"<" { return symbol(sym.LESS); }
+"-" { return symbol(sym.MINUS); }
+"*" { return symbol(sym.TIMES); }
+"." { return symbol(sym.DEREF); }
+"!" { return symbol(sym.BANG); }
 
 /* delimiters */
 "(" { return symbol(sym.LPAREN); }
 ")" { return symbol(sym.RPAREN); }
+"[" { return symbol(sym.LBRACKET); }
+"]" { return symbol(sym.RBRACKET); }
+"{" { return symbol(sym.LBRACE); }
+"}" { return symbol(sym.RBRACE); }
 ";" { return symbol(sym.SEMICOLON); }
+"," { return symbol(sym.COMMA); }
 
 /* identifiers */
 {letter} ({letter}|{digit}|_)* {

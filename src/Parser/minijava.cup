@@ -14,13 +14,27 @@ import java_cup.runtime.*;
 /* Terminals (lexical tokens returned by the scanner): */
 
 /* reserved words */
-terminal DISPLAY;
+terminal CLASS, PUBLIC, STATIC, VOID,
+         MAIN, EXTENDS, THIS, NEW, STRING, SOPLN;
+
+/* control flow constructs */
+terminal IF, ELSE, WHILE, RETURN;
+
+/* types */
+terminal INT, BOOLEAN;
+
+/* constants */
+terminal TRUE, FALSE;
+terminal String INTEGER;
 
 /* operators */
-terminal PLUS, BECOMES;
+terminal PLUS, BECOMES, AND, LESS,
+         MINUS, TIMES, DEREF, BANG;
 
 /* delimiters */
-terminal LPAREN, RPAREN, SEMICOLON;
+terminal LPAREN, RPAREN, LBRACKET, RBRACKET,
+         LBRACE, RBRACE, SEMICOLON, COMMA;
+// ( ) [ ] { } ; ,
 
 /* identifiers */
 terminal String IDENTIFIER;
