@@ -104,11 +104,6 @@
            debug="true"
            includeAntRuntime="false">
     </javac>
-    <javac srcdir="SamplePrograms/SampleMiniJavaPrograms" destdir="build/classes"
-           classpath="lib/hamcrest-core-1.3.jar;lib/junit-4.12.jar;lib/java-cup-11b.jar"
-           debug="true"
-           includeAntRuntime="false">
-    </javac>
   </target>
 
   <!-- run all JUnit tests in the test/junit subdirectory -->

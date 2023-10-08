@@ -72,12 +72,12 @@ public class TestDemoLanguageScanner {
     public void testSamplePrograms() {
         runScannerTestCase("BinarySearch");
         runScannerTestCase("SimpleExample");
-        // runScannerTestCase("BinaryTree");
-        // runScannerTestCase("BubbleSort");
-        // runScannerTestCase("QuickSort");
-        // runScannerTestCase("Factorial");
-        // runScannerTestCase("LinearSearch");
-        // runScannerTestCase("LinkedList");
-        // runScannerTestCase("TreeVisitor");
+        runScannerTestCase("BinaryTree");
+        runScannerTestCase("BubbleSort");
+        runScannerTestCase("QuickSort");
+        runScannerTestCase("Factorial");
+        runScannerTestCase("LinearSearch");
+        runScannerTestCase("LinkedList");
+        runScannerTestCase("TreeVisitor");
     }
 }

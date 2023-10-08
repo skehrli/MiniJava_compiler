@@ -116,12 +116,12 @@ white = {eol}|[ \t]
 
 /* reserved words (first so that they take precedence over identifiers) */
 "class" { return symbol(sym.CLASS); }
-"public" { return symbol(sym.SOPLN); }
-"void" { return symbol(sym.SOPLN); }
-"main" { return symbol(sym.CLASS); }
-"extends" { return symbol(sym.SOPLN); }
-"this" { return symbol(sym.SOPLN); }
-"new" { return symbol(sym.CLASS); }
+"public" { return symbol(sym.PUBLIC); }
+"void" { return symbol(sym.VOID); }
+"main" { return symbol(sym.MAIN); }
+"extends" { return symbol(sym.EXTENDS); }
+"this" { return symbol(sym.THIS); }
+"new" { return symbol(sym.NEW); }
 "String" { return symbol(sym.STRING); }
 "System.out.println" { return symbol(sym.SOPLN); }
 
