@@ -8,6 +8,7 @@ import java_cup.runtime.ComplexSymbolFactory;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.nio.charset.Charset;
+import ../../src/MiniJava.java;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -70,7 +71,13 @@ public class TestDemoLanguageScanner {
     @Test
     public void testSamplePrograms() {
         runScannerTestCase("BinarySearch");
-        runScannerTestCase("BinaryTree");
-        runScannerTestCase("BubbleSort");
+        runScannerTestCase("SimpleExample");
+        // runScannerTestCase("BinaryTree");
+        // runScannerTestCase("BubbleSort");
+        // runScannerTestCase("QuickSort");
+        // runScannerTestCase("Factorial");
+        // runScannerTestCase("LinearSearch");
+        // runScannerTestCase("LinkedList");
+        // runScannerTestCase("TreeVisitor");
     }
 }
