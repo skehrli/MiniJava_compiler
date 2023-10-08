@@ -8,8 +8,6 @@ import java_cup.runtime.ComplexSymbolFactory;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.nio.charset.Charset;
-import ../../src/MiniJava.java;
-
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -24,7 +22,7 @@ import org.junit.Test;
     cases for Minijava.java itself rather than the underlying modules as is
     shown here.
 */
-public class TestDemoLanguageScanner {
+public class TestScanner {
 
     public static final String TEST_FILES_LOCATION = "SamplePrograms/SampleMiniJavaPrograms/";
     public static final String TEST_FILES_INPUT_EXTENSION = ".java";
@@ -38,8 +36,6 @@ public class TestDemoLanguageScanner {
         try {
             FileInputStream input = new FileInputStream(
                     TEST_FILES_LOCATION + testCaseName + TEST_FILES_INPUT_EXTENSION);
-            // FileOutputStream output = new FileOutputStream(
-            // TEST_FILES_LOCATION + testCaseName + TEST_FILES_OUTPUT_EXTENSION);
             PrintWriter writer = new PrintWriter(
                     new FileWriter(TEST_FILES_LOCATION + testCaseName + TEST_FILES_OUTPUT_EXTENSION));
             // String[] expected = new String(

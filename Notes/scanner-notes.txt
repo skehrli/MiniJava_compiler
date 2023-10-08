@@ -1,0 +1,10 @@
+Lab 1:
+
+Organization:
+- Mark and Sascha met to complete the lab together
+- after some initial reading and setting up the environment, the work was divided up:
+- Mark worked on changing the jflex and cup files to support all tokens of MiniJava
+- Sascha worked on the MiniJava.java file to coordinate the scanning, and also the testing environment (test target for ant and the corresponding testing class)
+- this was followed by a length debugging session that was carried out together
+- the lab took us a few hours, which is more than expected, but it also got us both more familiar with ant and the project structure so that this time will not have to be wasted in future labs
+- all in all, it was quite successful

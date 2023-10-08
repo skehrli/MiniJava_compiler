@@ -117,11 +117,13 @@ white = {eol}|[ \t]
 /* reserved words (first so that they take precedence over identifiers) */
 "class" { return symbol(sym.CLASS); }
 "public" { return symbol(sym.PUBLIC); }
+"static" { return symbol(sym.STATIC); }
 "void" { return symbol(sym.VOID); }
 "main" { return symbol(sym.MAIN); }
 "extends" { return symbol(sym.EXTENDS); }
 "this" { return symbol(sym.THIS); }
 "new" { return symbol(sym.NEW); }
+"length" { return symbol(sym.LENGTH); }
 "String" { return symbol(sym.STRING); }
 "System.out.println" { return symbol(sym.SOPLN); }
 
