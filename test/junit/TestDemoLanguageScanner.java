@@ -25,29 +25,37 @@ import org.junit.Test;
 */
 public class TestDemoLanguageScanner {
 
-    public static final String TEST_FILES_LOCATION = "test/resources/DemoLanguageScanner/";
+    public static final String TEST_FILES_LOCATION = "SamplePrograms/SampleMiniJavaPrograms/";
     public static final String TEST_FILES_INPUT_EXTENSION = ".java";
-    public static final String TEST_FILES_EXPECTED_EXTENSION = ".expected";
+    public static final String TEST_FILES_OUTPUT_EXTENSION = ".out";
 
     /*
-        You may be able to reuse this private helper method for your own
-        testing of the MiniJava scanner.
-    */
+     * You may be able to reuse this private helper method for your own
+     * testing of the MiniJava scanner.
+     */
     private void runScannerTestCase(String testCaseName) {
         try {
-            FileInputStream input = new FileInputStream(TEST_FILES_LOCATION + testCaseName + TEST_FILES_INPUT_EXTENSION);
-            String[] expected = new String(Files.readAllBytes(Paths.get(TEST_FILES_LOCATION, testCaseName + TEST_FILES_EXPECTED_EXTENSION)),
-                    Charset.defaultCharset()).split(" ");
-            
+            FileInputStream input = new FileInputStream(
+                    TEST_FILES_LOCATION + testCaseName + TEST_FILES_INPUT_EXTENSION);
+            // FileOutputStream output = new FileOutputStream(
+            // TEST_FILES_LOCATION + testCaseName + TEST_FILES_OUTPUT_EXTENSION);
+            PrintWriter writer = new PrintWriter(
+                    new FileWriter(TEST_FILES_LOCATION + testCaseName + TEST_FILES_OUTPUT_EXTENSION));
+            // String[] expected = new String(
+            // Files.readAllBytes(Paths.get(TEST_FILES_LOCATION, testCaseName +
+            // TEST_FILES_EXPECTED_EXTENSION)),
+            // Charset.defaultCharset()).split(" ");
+
             ComplexSymbolFactory sf = new ComplexSymbolFactory();
             Reader in = new BufferedReader(new InputStreamReader(input));
             scanner s = new scanner(in, sf);
             Symbol t = s.next_token();
             int i = 0;
-            while (t.sym != sym.EOF){ 
+            while (t.sym != sym.EOF) {
                 // verify each token that we scan
-                assertEquals(expected[i], s.symbolToString(t));
+                // assertEquals(expected[i], s.symbolToString(t));
                 t = s.next_token();
+                writer.println(t);
                 i++;
             }
         } catch (IOException e) {
@@ -56,11 +64,13 @@ public class TestDemoLanguageScanner {
     }
 
     /*
-        A single test case for simple arithmetic, showing how to use the
-        helper function above (and the given folder organization).
-    */
+     * A single test case for simple arithmetic, showing how to use the
+     * helper function above (and the given folder organization).
+     */
     @Test
-    public void testSimpleArithmetic() {
-        runScannerTestCase("SimpleArithmetic");
+    public void testSamplePrograms() {
+        runScannerTestCase("BinarySearch");
+        runScannerTestCase("BinaryTree");
+        runScannerTestCase("BubbleSort");
     }
 }

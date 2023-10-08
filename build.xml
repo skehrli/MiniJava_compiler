@@ -20,6 +20,9 @@
     <delete file="src/Parser/sym.java"/>
     <delete file="src/Scanner/scanner.java"/>
     <delete file="src/Scanner/scanner.java~"/>
+    <delete>
+      <fileset dir="SamplePrograms/SampleMiniJavaPrograms" includes="**/*.out" />
+    </delete>
   </target>
 
   <target name="check.parse.files">
