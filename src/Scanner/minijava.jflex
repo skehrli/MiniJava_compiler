@@ -173,7 +173,7 @@ white = {eol}|[ \t]
 {white}+ { /* ignore whitespace */ }
 /* Comments */
 ("//"[^{eol}]*) { }
-("/*"([^"*"]|"*"+[^/"*"])"*"+"/") { }
+("/*"([^"*"]|"*"+[^/"*"])*"*"+"/") { }
 
 /* lexical errors (last so other matches take precedence) */
 . {
