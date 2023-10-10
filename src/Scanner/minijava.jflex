@@ -169,9 +169,11 @@ white = {eol}|[ \t]
   return symbol(sym.IDENTIFIER, yytext());
 }
 
-
 /* whitespace */
 {white}+ { /* ignore whitespace */ }
+/* Comments */
+("//"[^{eol}]*) { }
+("/*"([^"*"]|"*"+[^/"*"])"*"+"/") { }
 
 /* lexical errors (last so other matches take precedence) */
 . {
