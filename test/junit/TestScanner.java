@@ -1,6 +1,8 @@
 import Scanner.*;
 import java.io.*;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Stream;
 
 import Parser.sym;
 import java_cup.runtime.Symbol;
@@ -8,6 +10,8 @@ import java_cup.runtime.ComplexSymbolFactory;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.nio.charset.Charset;
+import java.util.function.Consumer;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -24,56 +28,88 @@ import org.junit.Test;
 */
 public class TestScanner {
 
-    public static final String TEST_FILES_LOCATION = "SamplePrograms/SampleMiniJavaPrograms/";
-    public static final String TEST_FILES_INPUT_EXTENSION = ".java";
-    public static final String TEST_FILES_OUTPUT_EXTENSION = ".out";
+    public static final String SAMPLE_FILES_LOCATION = "SamplePrograms/";
+    public static final String JUNIT_FILES_LOCATION = "test/resources/";
+    public static final String PROGRAMS_SUBDIR = "Programs/";
+    public static final String OUTPUT_SUBDIR = "Outputs/";
+    public static final String EXPECTED_SUBDIR = "Expected/";
+    public static final String INPUT_EXTENSION = ".java";
+    public static final String OUTPUT_EXTENSION = ".out";
+    public static final String EXPECTED_EXTENSION = ".expected";
 
     /*
-     * You may be able to reuse this private helper method for your own
-     * testing of the MiniJava scanner.
+     * Produces an output file for a test case given by (dir)/Programs/(caseName).java
+     * to (dir)/Outputs/(caseName).out
      */
-    private void runScannerTestCase(String testCaseName) {
-        try {
-            FileInputStream input = new FileInputStream(
-                    TEST_FILES_LOCATION + testCaseName + TEST_FILES_INPUT_EXTENSION);
-            PrintWriter writer = new PrintWriter(
-                    new FileWriter(TEST_FILES_LOCATION + testCaseName + TEST_FILES_OUTPUT_EXTENSION));
-            // String[] expected = new String(
-            // Files.readAllBytes(Paths.get(TEST_FILES_LOCATION, testCaseName +
-            // TEST_FILES_EXPECTED_EXTENSION)),
-            // Charset.defaultCharset()).split(" ");
-
-            ComplexSymbolFactory sf = new ComplexSymbolFactory();
-            Reader in = new BufferedReader(new InputStreamReader(input));
-            scanner s = new scanner(in, sf);
-            Symbol t = s.next_token();
-            int i = 0;
-            while (t.sym != sym.EOF) {
-                // verify each token that we scan
-                // assertEquals(expected[i], s.symbolToString(t));
-                t = s.next_token();
-                writer.println(t);
-                i++;
-            }
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
+    private void produceOut(String dir, String caseName) {
+        try { PrintWriter writer = new PrintWriter(new FileWriter(
+                dir + OUTPUT_SUBDIR + caseName + OUTPUT_EXTENSION
+        ));
+        drive(dir, caseName, writer::println);}
+        catch (IOException e) { fail(e.getMessage()); }
     }
 
     /*
-     * A single test case for simple arithmetic, showing how to use the
-     * helper function above (and the given folder organization).
+     * Compares the expected output for a case found in (dir)/Expected/(caseName).expected
+     * to the tokenization of the case.
+     */
+    private void compareExpected(String dir, String caseName) {
+        try { Iterator<String> fin = Arrays.stream(Files.readString(
+                Paths.get(dir, EXPECTED_SUBDIR, caseName + EXPECTED_EXTENSION),
+                Charset.defaultCharset()
+        ).split("[ \n\t]")).iterator();
+        drive(dir, caseName, (String str) -> assertEquals(fin.next(), str));}
+        catch (IOException e) { fail(e.getMessage()); }
+    }
+
+    /**
+     * The test driver.
+     * @param dir The directory to test in, with at least a subdirectory Programs.
+     * @param caseName The test case to run.
+     * @param action The action to perform with each token of the test case.
+     * @throws IOException Potentially fails to open the FileInputStream input.
+     */
+    private void drive(String dir, String caseName, Consumer<String> action) throws IOException {
+        FileInputStream input = new FileInputStream(
+                dir + PROGRAMS_SUBDIR + caseName + INPUT_EXTENSION
+        );
+        ComplexSymbolFactory sf = new ComplexSymbolFactory();
+        Reader in = new BufferedReader(new InputStreamReader(input));
+        scanner s = new scanner(in, sf);
+        Symbol t = s.next_token();
+        while (t.sym != sym.EOF) {
+            action.accept(s.symbolToString(t));
+            t = s.next_token();
+        }
+    }
+
+    private Stream<String> fileNames(String dir) {
+        try {
+            return Files.walk(Paths.get(dir))
+                    .map(Path::toFile)
+                    .filter(File::isFile)
+                    .map(File::getName)
+                    .map(x -> x.substring(0, x.length() - 5));
+        } catch (IOException e) { fail(e.getMessage()); return null; }
+    }
+
+    /*
+     * Produces outputs for all the programs in the MiniJava sample programs
+     * directory to be examined.
      */
     @Test
-    public void testSamplePrograms() {
-        runScannerTestCase("BinarySearch");
-        runScannerTestCase("SimpleExample");
-        runScannerTestCase("BinaryTree");
-        runScannerTestCase("BubbleSort");
-        runScannerTestCase("QuickSort");
-        runScannerTestCase("Factorial");
-        runScannerTestCase("LinearSearch");
-        runScannerTestCase("LinkedList");
-        runScannerTestCase("TreeVisitor");
+    public void samplePrograms() {
+        fileNames(SAMPLE_FILES_LOCATION + PROGRAMS_SUBDIR)
+                .forEach(x->produceOut(SAMPLE_FILES_LOCATION, x));
+    }
+
+    /*
+     * Tests all the MiniJava files in the JUNIT resources against
+     * their expected outputs.
+     */
+    @Test
+    public void successfulPrograms() {
+        fileNames(JUNIT_FILES_LOCATION + PROGRAMS_SUBDIR)
+                .forEach(x->compareExpected(JUNIT_FILES_LOCATION, x));
     }
 }

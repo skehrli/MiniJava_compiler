@@ -21,7 +21,7 @@
     <delete file="src/Scanner/scanner.java"/>
     <delete file="src/Scanner/scanner.java~"/>
     <delete>
-      <fileset dir="SamplePrograms/SampleMiniJavaPrograms" includes="**/*.out" />
+      <fileset dir="SamplePrograms/Programs" includes="**/*.out" />
     </delete>
   </target>
 
@@ -115,16 +115,16 @@
   <target name="test" depends="compile-test">
     <junit>
       <classpath>
-      <pathelement location="build/classes" />   
-      <pathelement location="lib/hamcrest-core-1.3.jar"/> 
-      <pathelement location="lib/junit-4.12.jar"/>
-      <pathelement location="lib/java-cup-11b.jar"/>
-    </classpath>
-    <batchtest>
-      <file file="test/junit/TestScanner.java">
-      </file>
-    </batchtest>
-    <formatter type="plain" usefile="false"/>
+        <pathelement location="build/classes" />
+        <pathelement location="lib/hamcrest-core-1.3.jar"/>
+        <pathelement location="lib/junit-4.12.jar"/>
+        <pathelement location="lib/java-cup-11b.jar"/>
+      </classpath>
+      <batchtest>
+        <file file="test/junit/TestScanner.java">
+        </file>
+      </batchtest>
+      <formatter type="plain" usefile="false"/>
     </junit>
   </target>
 
