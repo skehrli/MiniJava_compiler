@@ -84,13 +84,12 @@ public class TestScanner {
     }
 
     private Stream<String> fileNames(String dir) {
-        try {
-            return Files.walk(Paths.get(dir))
+        try { return Files.walk(Paths.get(dir))
                     .map(Path::toFile)
                     .filter(File::isFile)
                     .map(File::getName)
                     .map(x -> x.substring(0, x.length() - 5));
-        } catch (IOException e) { fail(e.getMessage()); return null; }
+        } catch (IOException e) { fail(e.getMessage()); return Stream.empty(); }
     }
 
     /*
