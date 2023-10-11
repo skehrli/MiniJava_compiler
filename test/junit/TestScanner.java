@@ -84,8 +84,8 @@ public class TestScanner {
     }
 
     private Stream<String> fileNames(String dir) {
-        try { return Files.walk(Paths.get(dir))
-                    .map(Path::toFile)
+        try (Stream<Path> paths = Files.walk(Paths.get(dir))) {
+            return paths.map(Path::toFile)
                     .filter(File::isFile)
                     .map(File::getName)
                     .map(x -> x.substring(0, x.length() - 5));
