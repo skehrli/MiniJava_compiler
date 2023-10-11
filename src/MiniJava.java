@@ -14,14 +14,23 @@ public class MiniJava {
             Reader in = new BufferedReader(fileReader);
             scanner s = new scanner(in, sf);
             Symbol t = s.next_token();
+            Boolean hasError = false;
             // args[0] is the compiler flag
-            if (!args[0].equals("-S")) System.exit(0);
+            if (!args[0].equals("-S"))
+                System.exit(0);
             while (t.sym != sym.EOF) {
                 // print each token that we scan
                 System.out.print(s.symbolToString(t) + " ");
                 t = s.next_token();
+                if (t.sym == sym.error) {
+                    hasError = true;
+                }
             }
-            System.exit(0);
+            if (hasError) {
+                System.exit(1);
+            } else {
+                System.exit(0);
+            }
         } catch (Exception e) {
             // yuck: some kind of error in the compiler implementation
             // that we're not expecting (a bug!)
