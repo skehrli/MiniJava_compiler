@@ -2,7 +2,6 @@ import Scanner.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 import Parser.sym;
@@ -74,8 +73,9 @@ public class TestScanner {
         // an error, which gets expected by the test. Messy way of
         // returning to the enclosing function, basically.
         try {
+            System.err.println(caseName);
             drive(dir + FAILURES_SUBDIR, caseName,
-                    s->{}, s->{throw new IllegalStateException();}
+                    s->{}, s->{System.err.println(s); throw new IllegalStateException();}
             );
         } catch (IOException e) { fail(e.getMessage()); }
     }
@@ -132,9 +132,15 @@ public class TestScanner {
                 .forEach(x->compareExpected(JUNIT_FILES_LOCATION, x));
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test//(expected=IllegalStateException.class)
     public void failurePrograms() {
         fileNames(JUNIT_FILES_LOCATION + FAILURES_SUBDIR)
-                .forEach(x->assertFails(JUNIT_FILES_LOCATION, x));
+                .forEach(x-> {
+                    try {
+                        assertFails(JUNIT_FILES_LOCATION, x);
+                        throw new RuntimeException("Did not fail.");
+                    } catch (IllegalStateException ignored) {
+                    }
+                });
     }
 }
