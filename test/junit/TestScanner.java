@@ -2,6 +2,7 @@ import Scanner.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 import Parser.sym;
@@ -33,6 +34,7 @@ public class TestScanner {
     public static final String PROGRAMS_SUBDIR = "Programs/";
     public static final String OUTPUT_SUBDIR = "Outputs/";
     public static final String EXPECTED_SUBDIR = "Expected/";
+    public static final String FAILURES_SUBDIR = "Failures/";
     public static final String INPUT_EXTENSION = ".java";
     public static final String OUTPUT_EXTENSION = ".out";
     public static final String EXPECTED_EXTENSION = ".expected";
@@ -42,11 +44,12 @@ public class TestScanner {
      * to (dir)/Outputs/(caseName).out
      */
     private void produceOut(String dir, String caseName) {
-        try { PrintWriter writer = new PrintWriter(new FileWriter(
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(
                 dir + OUTPUT_SUBDIR + caseName + OUTPUT_EXTENSION
-        ));
-        drive(dir, caseName, writer::println);}
-        catch (IOException e) { fail(e.getMessage()); }
+            ));
+            drive(dir + PROGRAMS_SUBDIR, caseName, writer::println, s->{});
+        } catch (IOException e) { fail(e.getMessage()); }
     }
 
     /*
@@ -54,12 +57,27 @@ public class TestScanner {
      * to the tokenization of the case.
      */
     private void compareExpected(String dir, String caseName) {
-        try { Iterator<String> fin = Arrays.stream(Files.readString(
+        try {
+            Iterator<String> fin = Arrays.stream(Files.readString(
                 Paths.get(dir, EXPECTED_SUBDIR, caseName + EXPECTED_EXTENSION),
                 Charset.defaultCharset()
-        ).split("[ \n\t]")).iterator();
-        drive(dir, caseName, (String str) -> assertEquals(fin.next(), str));}
-        catch (IOException e) { fail(e.getMessage()); }
+            ).split("[ \n\t]")).iterator();
+            drive(dir + PROGRAMS_SUBDIR, caseName, (String str) -> assertEquals(fin.next(), str), s->{});
+        } catch (IOException e) { fail(e.getMessage()); }
+    }
+
+    /*
+     * Assert that we can't actually tokenize the given case.
+     */
+    private void assertFails(String dir, String caseName) {
+        // The idea here: we throw an IllegalStateException if there's
+        // an error, which gets expected by the test. Messy way of
+        // returning to the enclosing function, basically.
+        try {
+            drive(dir + FAILURES_SUBDIR, caseName,
+                    s->{}, s->{throw new IllegalStateException();}
+            );
+        } catch (IOException e) { fail(e.getMessage()); }
     }
 
     /**
@@ -69,16 +87,16 @@ public class TestScanner {
      * @param action The action to perform with each token of the test case.
      * @throws IOException Potentially fails to open the FileInputStream input.
      */
-    private void drive(String dir, String caseName, Consumer<String> action) throws IOException {
-        FileInputStream input = new FileInputStream(
-                dir + PROGRAMS_SUBDIR + caseName + INPUT_EXTENSION
-        );
+    private void drive(String dir, String caseName, Consumer<String> action, Consumer<String> onErr) throws IOException {
+        FileInputStream input = new FileInputStream(dir + caseName + INPUT_EXTENSION);
         ComplexSymbolFactory sf = new ComplexSymbolFactory();
         Reader in = new BufferedReader(new InputStreamReader(input));
         scanner s = new scanner(in, sf);
         Symbol t = s.next_token();
         while (t.sym != sym.EOF) {
+            if (t.sym == sym.error) onErr.accept(s.symbolToString(t));
             action.accept(s.symbolToString(t));
+
             t = s.next_token();
         }
     }
@@ -112,5 +130,11 @@ public class TestScanner {
     public void successfulPrograms() {
         fileNames(JUNIT_FILES_LOCATION + PROGRAMS_SUBDIR)
                 .forEach(x->compareExpected(JUNIT_FILES_LOCATION, x));
+    }
+
+    @Test(expected=IllegalStateException.class)
+    public void failurePrograms() {
+        fileNames(JUNIT_FILES_LOCATION + FAILURES_SUBDIR)
+                .forEach(x->assertFails(JUNIT_FILES_LOCATION, x));
     }
 }
