@@ -1,35 +1,50 @@
+import AST.Program;
+import AST.Visitor.ASTPrintVisitor;
+import AST.Visitor.PrettyPrintVisitor;
+import AST.Visitor.Visitor;
 import Scanner.*;
-import Parser.sym;
+import Parser.*;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.ComplexSymbolFactory;
 import java.io.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class MiniJava {
+    private static final ComplexSymbolFactory sf = new ComplexSymbolFactory();
+    private static String filename;
+    private static boolean error = false;
+
     public static void main(String[] args) {
-        try {
-            // create a scanner on the input file
-            ComplexSymbolFactory sf = new ComplexSymbolFactory();
-            String filename = args[args.length - 1];
-            FileReader fileReader = new FileReader(filename);
-            Reader in = new BufferedReader(fileReader);
-            scanner s = new scanner(in, sf);
-            Symbol t = s.next_token();
-            Boolean hasError = false;
-            // args[0] is the compiler flag
-            if (!args[0].equals("-S"))
-                System.exit(0);
-            while (t.sym != sym.EOF) {
-                // print each token that we scan
-                System.out.print(s.symbolToString(t) + " ");
-                t = s.next_token();
-                if (t.sym == sym.error) {
-                    hasError = true;
-                }
-            }
-            if (hasError) {
+        filename = args[args.length - 1];
+
+        Set<Character> options = new LinkedHashSet<>();
+        for (int i = 0; i < args.length - 1; i++) {
+            if (args[i].charAt(0) != '-') {
+                System.err.println("Could not parse compiler flags.");
                 System.exit(1);
-            } else {
-                System.exit(0);
+            }
+            for (int j = 1; j < args[i].length(); j++)
+                options.add(args[i].charAt(j));
+        }
+        options.forEach(MiniJava::compilerOption);
+        System.exit(error ? 1 : 0);
+    }
+
+    private static void compilerOption(char ch) {
+        try {
+            switch (ch) {
+                case 'S':
+                    printTokens();
+                    break;
+                case 'A':
+                    visitAST(new ASTPrintVisitor());
+                    break;
+                case 'P':
+                    visitAST(new PrettyPrintVisitor());
+                    break;
+                default:
+                    System.err.println("Could not recognize compiler flag '" + ch + "'");
             }
         } catch (Exception e) {
             // yuck: some kind of error in the compiler implementation
@@ -39,5 +54,35 @@ public class MiniJava {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    private static scanner getScanner() {
+        try {
+            return new scanner(new BufferedReader(new FileReader(filename)), sf);
+        } catch (FileNotFoundException e) {
+            System.err.println("File '" + filename + "' not found.");
+            System.exit(1);
+            return null;
+        }
+    }
+
+    private static void printTokens() throws IOException {
+        scanner s = getScanner();
+        Symbol t = s.next_token();
+        while (t.sym != sym.EOF) {
+            // print each token that we scan
+            System.out.print(s.symbolToString(t) + " ");
+            t = s.next_token();
+            if (t.sym == sym.error) {
+                error = true;
+            }
+        }
+    }
+
+    private static void visitAST(Visitor v) throws Exception {
+        parser p = new parser(getScanner(), sf);
+        Symbol root = p.parse();
+        Program program = (Program) root.value;
+        program.accept(v);
     }
 }
