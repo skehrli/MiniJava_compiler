@@ -42,21 +42,105 @@ terminal String IDENTIFIER;
 
 /* Nonterminals (constructed by parser): */
 
-nonterminal List<Statement> Program;
+nonterminal Program Program;
+nonterminal MainClass MainClass;
+nonterminal ClassDeclList ClassDeclList;
+nonterminal ClassDecl ClassDecl;
+nonterminal ClassDeclSimple ClassDeclSimple;
+nonterminal ClassDeclExtends ClassDeclExtends;
+nonterminal VarDeclList VarDeclList;
+nonterminal VarDecl VarDecl;
+nonterminal MethodDeclList MethodDeclList;
+nonterminal MethodDecl MethodDecl;
+nonterminal MethodDeclNoParams MethodDeclNoParams;
+nonterminal MethodDeclParams MethodDeclParams;
+nonterminal ParamList ParamList;
+nonterminal Param Param;
+nonterminal Type Type;
+nonterminal StatementList StatementList;
 nonterminal Statement Statement;
-nonterminal Assign AssignStatement;
+nonterminal ExpList ExpressionList;
+nonterminal Op Operator;
 nonterminal Exp Expression;
 nonterminal Identifier Identifier;
 
 
 /* Precedence declarations: */
 
-precedence left PLUS;
+precedence left BECOMES;
+precedence left AND;
+precedence left LESS;
+precedence left PLUS, MINUS;
+precedence left TIMES;
+precedence right BANG;
+precedence left DEREF;
 
 
 /* Productions: */
 
-Program ::= Statement:s
+Program ::= MainClass | MainClass ClassDeclList;
+
+ClassDeclList ::= ClassDeclList ClassDecl | ClassDecl;
+
+MainClass ::= CLASS Identifier LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LBRACKET Identifier RBRACKET RPAREN RBRACE;
+
+ClassDecl ::= ClassDeclSimple | ClassDeclExtends;
+
+ClassDeclSimple ::= CLASS Identifier LBRACE VarDeclList MethodDeclList RBRACE;
+
+ClassDeclExtends ::= CLASS Identifier EXTENDS Identifier LBRACE VarDeclList MethodDeclList RBRACE;
+
+VarDeclList ::= VarDeclList VarDecl | VarDecl;
+
+VarDecl ::= Type Identifier SEMICOLON;
+
+MethodDeclList ::= MethodDeclList MethodDecl | MethodDecl;
+
+MethodDecl ::= MethodDeclNoParams | MethodDeclParams;
+
+MethodDeclNoParams ::= PUBLIC Type Identifier LPAREN RPAREN LBRACE VarDeclList StatementList RETURN Expression SEMICOLON RBRACE;
+
+MethodDeclParams ::= PUBLIC Type Identifier LPAREN ParamList RPAREN LBRACE VarDeclList StatementList RETURN Expression SEMICOLON RBRACE;
+
+ParamList ::= Param | Param COMMA ParamList;
+
+Param ::= Type Identifier;
+
+StatementList ::= StatementList Statement | Statement;
+
+Type ::= Identifier | INT | BOOLEAN | INT LBRACKET RBRACKET;
+
+Statement ::= LBRACE Statement RBRACE | LBRACE RBRACE
+              | IF LPAREN Expression RPAREN Statement ELSE Statement
+              | WHILE LPAREN Expression RPAREN Statement
+              | SOPL LPAREN Expression RPAREN SEMICOLON
+              | IDENTIFIER BECOMES Expression SEMICOLON
+              | IDENTIFIER LBRACKET Expression RBRACKET BECOMES Expression SEMICOLON
+              ;
+Expression ::= Expression Operator Expression
+               | Expression LBRACKET Expression RBRACKET
+               | Expression DEREF LENGTH
+               | Expression DEREF Identifier LPAREN ExpressionList RPAREN
+               | Expression DEREF Identifier LPAREN RPAREN
+               | TRUE;
+               | FALSE;
+               | Identifier;
+               | THIS;
+               | NEW INT LBRACKET Expression RBRACKET;
+               | NEW Identifier LPAREN RPAREN;
+               | BANG Expression;
+               | LPAREN Expression RPAREN;
+               | INTEGER;
+               ;
+
+ExpressionList ::= Expression | ExpressionList COMMA Expression
+
+Operator ::= AND | LESS | PLUS | MINUS | TIMES;
+
+Identifier ::= IDENTIFIER;
+
+
+/* Program ::= Statement:s
             {: List<Statement> p = new LinkedList<Statement>();
                p.add(s);
                RESULT = p; :}
@@ -78,3 +162,4 @@ Expression    ::= IDENTIFIER:name
             {: RESULT = new Plus(arg1, arg2, arg1xleft); :}
         | LPAREN Expression:expr RPAREN
             {: RESULT = expr; :};
+*/
