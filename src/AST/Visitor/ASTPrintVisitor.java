@@ -9,21 +9,22 @@ public class ASTPrintVisitor implements Visitor {
     private int indent = 0;
 
     private void printLine(ASTNode n) {
-        System.out.print(" (line " + n.line_number +  ")");
+        System.out.print(" (line " + n.line_number + ")");
     }
 
     private void indent() {
-        for (int i = 0; i < indent; i++) System.out.print("\t");
+        for (int i = 0; i < indent; i++)
+            System.out.print("\t");
     }
 
     // MainClass m;
     // ClassDeclList cl;
     public void visit(Program n) {
         indent();
-        System.out.print("Program");
+        System.out.println("Program");
         indent++;
         n.m.accept(this);
-        for ( int i = 0; i < n.cl.size(); i++ ) {
+        for (int i = 0; i < n.cl.size(); i++) {
             System.out.println();
             n.cl.get(i).accept(this);
         }
@@ -37,10 +38,12 @@ public class ASTPrintVisitor implements Visitor {
         System.out.print("MainClass ");
         n.i1.accept(this);
         printLine(n);
+        System.out.println();
 
         indent++;
         n.s.accept(this);
         indent--;
+        System.out.println();
     }
 
     // Identifier i;
@@ -53,12 +56,14 @@ public class ASTPrintVisitor implements Visitor {
         printLine(n);
 
         indent++;
-        for ( int i = 0; i < n.vl.size(); i++ ) {
+        for (int i = 0; i < n.vl.size(); i++) {
             n.vl.get(i).accept(this);
-            if ( i+1 < n.vl.size() ) { System.out.println(); }
+            if (i + 1 < n.vl.size()) {
+                System.out.println();
+            }
         }
 
-        for ( int i = 0; i < n.ml.size(); i++ ) {
+        for (int i = 0; i < n.ml.size(); i++) {
             System.out.println();
             n.ml.get(i).accept(this);
         }
@@ -78,12 +83,14 @@ public class ASTPrintVisitor implements Visitor {
         printLine(n);
 
         indent++;
-        for ( int i = 0; i < n.vl.size(); i++ ) {
+        for (int i = 0; i < n.vl.size(); i++) {
             n.vl.get(i).accept(this);
-            if ( i+1 < n.vl.size() ) { System.out.println(); }
+            if (i + 1 < n.vl.size()) {
+                System.out.println();
+            }
         }
 
-        for ( int i = 0; i < n.ml.size(); i++ ) {
+        for (int i = 0; i < n.ml.size(); i++) {
             System.out.println();
             n.ml.get(i).accept(this);
         }
@@ -111,9 +118,11 @@ public class ASTPrintVisitor implements Visitor {
         indent();
         n.i.accept(this);
         System.out.print(": (");
-        for ( int i = 0; i < n.fl.size(); i++ ) {
+        for (int i = 0; i < n.fl.size(); i++) {
             n.fl.get(i).accept(this);
-            if (i+1 < n.fl.size()) { System.out.print(", "); }
+            if (i + 1 < n.fl.size()) {
+                System.out.print(", ");
+            }
         }
         System.out.print(") -> ");
         n.t.accept(this);
@@ -121,18 +130,20 @@ public class ASTPrintVisitor implements Visitor {
         System.out.println();
 
         indent++;
-        for ( int i = 0; i < n.vl.size(); i++ ) {
+        for (int i = 0; i < n.vl.size(); i++) {
             // Variable declaration line:
             // x: int
             indent();
             n.vl.get(i).accept(this);
             System.out.println();
         }
-        for ( int i = 0; i < n.sl.size(); i++ ) {
+        for (int i = 0; i < n.sl.size(); i++) {
             // Statement line
             indent();
             n.sl.get(i).accept(this);
-            if ( i < n.sl.size() ) { System.out.println(); }
+            if (i < n.sl.size()) {
+                System.out.println();
+            }
         }
 
         // Return statement line
@@ -177,7 +188,7 @@ public class ASTPrintVisitor implements Visitor {
         printLine(n);
         System.out.println();
 
-        for ( int i = 0; i < n.sl.size(); i++ ) {
+        for (int i = 0; i < n.sl.size(); i++) {
             indent();
             n.sl.get(i).accept(this);
             System.out.println();
@@ -228,6 +239,7 @@ public class ASTPrintVisitor implements Visitor {
         System.out.println();
 
         indent++;
+        indent();
         n.e.accept(this);
         indent--;
     }
@@ -337,9 +349,11 @@ public class ASTPrintVisitor implements Visitor {
         System.out.print(".");
         n.i.accept(this);
         System.out.print("(");
-        for ( int i = 0; i < n.el.size(); i++ ) {
+        for (int i = 0; i < n.el.size(); i++) {
             n.el.get(i).accept(this);
-            if ( i+1 < n.el.size() ) { System.out.print(", "); }
+            if (i + 1 < n.el.size()) {
+                System.out.print(", ");
+            }
         }
         System.out.print(")");
     }
@@ -368,6 +382,7 @@ public class ASTPrintVisitor implements Visitor {
 
     // Exp e;
     public void visit(NewArray n) {
+        indent();
         System.out.print("new int [");
         n.e.accept(this);
         System.out.print("]");
@@ -375,14 +390,16 @@ public class ASTPrintVisitor implements Visitor {
 
     // Identifier i;
     public void visit(NewObject n) {
+        indent();
         System.out.print("new ");
-        System.out.print(n.i.s);
+        n.i.accept(this);
         System.out.print("()");
     }
 
     // Exp e;
     public void visit(Not n) {
-        System.out.print("!");
+        indent();
+        System.out.print("! ");
         n.e.accept(this);
     }
 
