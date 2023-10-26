@@ -70,13 +70,15 @@ nonterminal Identifier Identifier;
 
 /* Precedence declarations: */
 
-precedence left BECOMES;
+precedence right BECOMES;
 precedence left AND;
 precedence left LESS;
 precedence left PLUS, MINUS;
 precedence left TIMES;
 precedence right BANG;
-precedence left DEREF;
+// This lbracket precedence left may be dubious; a post on Ed says it works out
+// but that may be faulty.
+precedence left DEREF, LBRACKET;
 
 
 /* Productions: */
