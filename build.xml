@@ -123,6 +123,8 @@
       <batchtest>
         <file file="test/junit/TestScanner.java">
         </file>
+        <file file="test/junit/TestParser.java">
+        </file>
       </batchtest>
       <formatter type="plain" usefile="false"/>
     </junit>
