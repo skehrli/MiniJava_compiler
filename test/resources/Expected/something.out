@@ -1,0 +1,2 @@
+Program	MainClass Main (line 1)		Print (line 3)
+new BST().add(1).add(2).add(0)

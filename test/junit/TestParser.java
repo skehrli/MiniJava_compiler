@@ -28,5 +28,9 @@ public class TestParser {
     public static final String OUTPUT_EXTENSION = ".out";
     public static final String EXPECTED_EXTENSION = ".expected";
 
-
+    @Test
+    public void testMiniJava() throws FileNotFoundException {
+        System.setOut(new PrintStream(new File("test/resources/Expected/something.out")));
+        MiniJava.main(new String[]{"-A", "test/resources/Programs/MethodChaining.java"});
+    }
 }
