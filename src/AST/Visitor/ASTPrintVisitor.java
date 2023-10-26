@@ -19,6 +19,7 @@ public class ASTPrintVisitor implements Visitor {
     // MainClass m;
     // ClassDeclList cl;
     public void visit(Program n) {
+        indent();
         System.out.print("Program");
         indent++;
         n.m.accept(this);
@@ -32,22 +33,22 @@ public class ASTPrintVisitor implements Visitor {
     // Identifier i1,i2;
     // Statement s;
     public void visit(MainClass n) {
+        indent();
         System.out.print("MainClass ");
         n.i1.accept(this);
-        System.out.print("  public static void main (String [] ");
-        n.i2.accept(this);
-        System.out.println(") {");
-        System.out.print("    ");
+        printLine(n);
+
+        indent++;
         n.s.accept(this);
-        System.out.println("  }");
-        System.out.println("}");
+        indent--;
     }
 
     // Identifier i;
     // VarDeclList vl;
     // MethodDeclList ml;
     public void visit(ClassDeclSimple n) {
-        System.out.print("class ");
+        indent();
+        System.out.print("Class ");
         n.i.accept(this);
         System.out.println(" { ");
         for ( int i = 0; i < n.vl.size(); i++ ) {
