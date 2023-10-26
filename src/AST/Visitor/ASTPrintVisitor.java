@@ -222,29 +222,48 @@ public class ASTPrintVisitor implements Visitor {
 
     // Exp e;
     public void visit(Print n) {
-        System.out.print("System.out.println(");
+        indent();
+        System.out.print("Print");
+        printLine(n);
+        System.out.println();
+
+        indent++;
         n.e.accept(this);
-        System.out.print(");");
+        indent--;
     }
 
     // Identifier i;
     // Exp e;
     public void visit(Assign n) {
+        indent();
+        System.out.print("Assign");
+        printLine(n);
+        System.out.println();
+
+        indent++;
+        indent();
         n.i.accept(this);
-        System.out.print(" = ");
+        System.out.print(" := ");
         n.e.accept(this);
-        System.out.print(";");
+        indent--;
     }
 
     // Identifier i;
     // Exp e1,e2;
     public void visit(ArrayAssign n) {
+        indent();
+        System.out.print("ArrayAssign");
+        printLine(n);
+        System.out.println();
+
+        indent++;
+        indent();
         n.i.accept(this);
         System.out.print("[");
         n.e1.accept(this);
-        System.out.print("] = ");
+        System.out.print("] := ");
         n.e2.accept(this);
-        System.out.print(";");
+        indent--;
     }
 
     // Exp e1,e2;
@@ -294,16 +313,20 @@ public class ASTPrintVisitor implements Visitor {
 
     // Exp e1,e2;
     public void visit(ArrayLookup n) {
+        System.out.print("(");
         n.e1.accept(this);
         System.out.print("[");
         n.e2.accept(this);
         System.out.print("]");
+        System.out.print(")");
     }
 
     // Exp e;
     public void visit(ArrayLength n) {
+        System.out.print("(");
         n.e.accept(this);
         System.out.print(".length");
+        System.out.print(")");
     }
 
     // Exp e;
