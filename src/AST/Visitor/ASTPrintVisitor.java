@@ -12,6 +12,10 @@ public class ASTPrintVisitor implements Visitor {
         System.out.print(" (line " + n.line_number +  ")");
     }
 
+    private void indent() {
+        for (int i = 0; i < indent; i++) System.out.print("\t");
+    }
+
     // MainClass m;
     // ClassDeclList cl;
     public void visit(Program n) {
