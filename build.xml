@@ -130,4 +130,12 @@
     </junit>
   </target>
 
+  <target name="testParser" depends="compile-test">
+    <!-- Use the exec task to run a shell script -->
+    <exec executable="bash">
+      <!-- Pass the path to your shell script as an argument -->
+      <arg value="test/testParser.sh" />
+    </exec>
+  </target>
+
 </project>

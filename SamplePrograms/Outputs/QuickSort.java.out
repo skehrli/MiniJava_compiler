@@ -1,0 +1,145 @@
+Program
+	MainClass QuickSort (line 1)
+		Print (line 3)
+			new QS().Start(10)
+
+	Class QS (line 11)
+		number :: int []
+		size :: int
+		Start :: () -> int (line 18)
+			aux01 :: int
+			Assign (line 20)
+				aux01 := this.Init(sz)
+			Assign (line 21)
+				aux01 := this.Print()
+			Print (line 22)
+				9999
+			Assign (line 23)
+				aux01 := (size - 1)
+			Assign (line 24)
+				aux01 := this.Sort(0, aux01)
+			Assign (line 25)
+				aux01 := this.Print()
+			return 0
+
+		Sort :: (right: int) -> int (line 31)
+			v :: int
+			i :: int
+			j :: int
+			nt :: int
+			t :: int
+			cont01 :: boolean
+			cont02 :: boolean
+			aux03 :: int
+			Assign (line 40)
+				t := 0
+			If (left < right) (line 41)
+				Block (line 41)
+					Assign (line 42)
+						v := (number[right])
+					Assign (line 43)
+						i := (left - 1)
+					Assign (line 44)
+						j := right
+					Assign (line 45)
+						cont01 := true
+					While cont01 (line 46)
+						Block (line 46)
+							Assign (line 47)
+								cont02 := true
+							While cont02 (line 48)
+								Block (line 48)
+									Assign (line 49)
+										i := (i + 1)
+									Assign (line 50)
+										aux03 := (number[i])
+									If !((aux03 < v)) (line 51)
+										Assign (line 51)
+											cont02 := true
+									Else
+										Assign (line 52)
+											cont02 := true
+
+							Assign (line 54)
+								cont02 := true
+							While cont02 (line 55)
+								Block (line 55)
+									Assign (line 56)
+										j := (j - 1)
+									Assign (line 57)
+										aux03 := (number[j])
+									If !((v < aux03)) (line 58)
+										Assign (line 58)
+											cont02 := true
+									Else
+										Assign (line 59)
+											cont02 := true
+
+							Assign (line 63)
+								t := (number[i])
+							ArrayAssign (line 64)
+								number[i] := (number[j])
+							ArrayAssign (line 65)
+								number[j] := t
+							If (j < (i + 1)) (line 67)
+								Assign (line 67)
+									cont01 := true
+							Else
+								Assign (line 68)
+									cont01 := true
+
+					ArrayAssign (line 70)
+						number[j] := (number[i])
+					ArrayAssign (line 71)
+						number[i] := (number[right])
+					ArrayAssign (line 72)
+						number[right] := t
+					Assign (line 73)
+						nt := this.Sort(left, (i - 1))
+					Assign (line 74)
+						nt := this.Sort((i + 1), right)
+
+			Else
+				Assign (line 76)
+					nt := 0
+			return 0
+
+		Print :: () -> int (line 82)
+			j :: int
+			Assign (line 84)
+				j := 0
+			While (j < size) (line 85)
+				Block (line 85)
+					Print (line 86)
+						(number[j])
+					Assign (line 87)
+						j := (j + 1)
+
+			return 0
+
+		Init :: () -> int (line 94)
+			Assign (line 95)
+				size := sz
+			Assign (line 96)
+				number := new int [sz]
+			ArrayAssign (line 98)
+				number[0] := 20
+			ArrayAssign (line 99)
+				number[1] := 7
+			ArrayAssign (line 100)
+				number[2] := 12
+			ArrayAssign (line 101)
+				number[3] := 18
+			ArrayAssign (line 102)
+				number[4] := 2
+			ArrayAssign (line 103)
+				number[5] := 11
+			ArrayAssign (line 104)
+				number[6] := 6
+			ArrayAssign (line 105)
+				number[7] := 9
+			ArrayAssign (line 106)
+				number[8] := 19
+			ArrayAssign (line 107)
+				number[9] := 5
+			return 0

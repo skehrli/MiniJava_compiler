@@ -1,0 +1,386 @@
+Program
+	MainClass BinaryTree (line 1)
+		Print (line 3)
+			new BT().Start()
+
+	Class BT (line 9)
+
+		Start :: () -> int (line 11)
+			root :: Tree
+			ntb :: boolean
+			nti :: int
+			Assign (line 16)
+				root := new Tree()
+			Assign (line 17)
+				ntb := root.Init(16)
+			Assign (line 18)
+				ntb := root.Print()
+			Print (line 19)
+				100000000
+			Assign (line 20)
+				ntb := root.Insert(8)
+			Assign (line 21)
+				ntb := root.Print()
+			Assign (line 22)
+				ntb := root.Insert(24)
+			Assign (line 23)
+				ntb := root.Insert(4)
+			Assign (line 24)
+				ntb := root.Insert(12)
+			Assign (line 25)
+				ntb := root.Insert(20)
+			Assign (line 26)
+				ntb := root.Insert(28)
+			Assign (line 27)
+				ntb := root.Insert(14)
+			Assign (line 28)
+				ntb := root.Print()
+			Print (line 29)
+				root.Search(24)
+			Print (line 30)
+				root.Search(12)
+			Print (line 31)
+				root.Search(16)
+			Print (line 32)
+				root.Search(50)
+			Print (line 33)
+				root.Search(12)
+			Assign (line 34)
+				ntb := root.Delete(12)
+			Assign (line 35)
+				ntb := root.Print()
+			Print (line 36)
+				root.Search(12)
+			return 0
+
+	Class Tree (line 43)
+		left :: Tree
+		right :: Tree
+		key :: int
+		has_left :: boolean
+		has_right :: boolean
+		my_null :: Tree
+		Init :: () -> boolean (line 52)
+			Assign (line 53)
+				key := v_key
+			Assign (line 54)
+				has_left := true
+			Assign (line 55)
+				has_right := true
+			return true
+
+		SetRight :: () -> boolean (line 60)
+			Assign (line 61)
+				right := rn
+			return true
+
+		SetLeft :: () -> boolean (line 66)
+			Assign (line 67)
+				left := ln
+			return true
+
+		GetRight :: () -> Tree (line 71)
+			return right
+
+		GetLeft :: () -> Tree (line 75)
+			return left
+
+		GetKey :: () -> int (line 79)
+			return key
+
+		SetKey :: () -> boolean (line 83)
+			Assign (line 84)
+				key := v_key
+			return true
+
+		GetHas_Right :: () -> boolean (line 88)
+			return has_right
+
+		GetHas_Left :: () -> boolean (line 92)
+			return has_left
+
+		SetHas_Left :: () -> boolean (line 96)
+			Assign (line 97)
+				has_left := val
+			return true
+
+		SetHas_Right :: () -> boolean (line 101)
+			Assign (line 102)
+				has_right := val
+			return true
+
+		Compare :: (num2: int) -> boolean (line 109)
+			ntb :: boolean
+			nti :: int
+			Assign (line 113)
+				ntb := true
+			Assign (line 114)
+				nti := (num2 + 1)
+			If (num1 < num2) (line 115)
+				Assign (line 116)
+					ntb := true
+			Else
+				If !((num1 < nti)) (line 117)
+					Assign (line 118)
+						ntb := true
+				Else
+					Assign (line 120)
+						ntb := true
+			return ntb
+
+		Insert :: () -> boolean (line 125)
+			new_node :: Tree
+			ntb :: boolean
+			cont :: boolean
+			key_aux :: int
+			current_node :: Tree
+			Assign (line 132)
+				new_node := new Tree()
+			Assign (line 133)
+				ntb := new_node.Init(v_key)
+			Assign (line 134)
+				current_node := this
+			Assign (line 135)
+				cont := true
+			While cont (line 136)
+				Block (line 136)
+					Assign (line 137)
+						key_aux := current_node.GetKey()
+					If (v_key < key_aux) (line 138)
+						Block (line 138)
+							If current_node.GetHas_Left() (line 139)
+								Assign (line 140)
+									current_node := current_node.GetLeft()
+							Else
+								Block (line 141)
+									Assign (line 142)
+										cont := true
+									Assign (line 143)
+										ntb := current_node.SetHas_Left(true)
+									Assign (line 144)
+										ntb := current_node.SetLeft(new_node)
+
+
+					Else
+						Block (line 146)
+							If current_node.GetHas_Right() (line 147)
+								Assign (line 148)
+									current_node := current_node.GetRight()
+							Else
+								Block (line 149)
+									Assign (line 150)
+										cont := true
+									Assign (line 151)
+										ntb := current_node.SetHas_Right(true)
+									Assign (line 152)
+										ntb := current_node.SetRight(new_node)
+
+
+
+			return true
+
+		Delete :: () -> boolean (line 160)
+			current_node :: Tree
+			parent_node :: Tree
+			cont :: boolean
+			found :: boolean
+			is_root :: boolean
+			key_aux :: int
+			ntb :: boolean
+			Assign (line 169)
+				current_node := this
+			Assign (line 170)
+				parent_node := this
+			Assign (line 171)
+				cont := true
+			Assign (line 172)
+				found := true
+			Assign (line 173)
+				is_root := true
+			While cont (line 174)
+				Block (line 174)
+					Assign (line 175)
+						key_aux := current_node.GetKey()
+					If (v_key < key_aux) (line 176)
+						If current_node.GetHas_Left() (line 177)
+							Block (line 177)
+								Assign (line 178)
+									parent_node := current_node
+								Assign (line 179)
+									current_node := current_node.GetLeft()
+
+						Else
+							Assign (line 181)
+								cont := true
+					Else
+						If (key_aux < v_key) (line 182)
+							If current_node.GetHas_Right() (line 183)
+								Block (line 183)
+									Assign (line 184)
+										parent_node := current_node
+									Assign (line 185)
+										current_node := current_node.GetRight()
+
+							Else
+								Assign (line 187)
+									cont := true
+						Else
+							Block (line 188)
+								If is_root (line 189)
+									If (!(current_node.GetHas_Right()) && !(current_node.GetHas_Left())) (line 190)
+										Assign (line 192)
+											ntb := true
+									Else
+										Assign (line 194)
+											ntb := this.Remove(parent_node, current_node)
+								Else
+									Assign (line 196)
+										ntb := this.Remove(parent_node, current_node)
+								Assign (line 197)
+									found := true
+								Assign (line 198)
+									cont := true
+
+					Assign (line 200)
+						is_root := true
+
+			return found
+
+		Remove :: (c_node: Tree) -> boolean (line 207)
+			ntb :: boolean
+			auxkey1 :: int
+			auxkey2 :: int
+			If c_node.GetHas_Left() (line 212)
+				Assign (line 213)
+					ntb := this.RemoveLeft(p_node, c_node)
+			Else
+				If c_node.GetHas_Right() (line 214)
+					Assign (line 215)
+						ntb := this.RemoveRight(p_node, c_node)
+				Else
+					Block (line 216)
+						Assign (line 217)
+							auxkey1 := c_node.GetKey()
+						Assign (line 220)
+							auxkey2 := p_node.GetLeft().GetKey()
+						If this.Compare(auxkey1, auxkey2) (line 221)
+							Block (line 221)
+								Assign (line 222)
+									ntb := p_node.SetLeft(my_null)
+								Assign (line 223)
+									ntb := p_node.SetHas_Left(true)
+
+						Else
+							Block (line 224)
+								Assign (line 225)
+									ntb := p_node.SetRight(my_null)
+								Assign (line 226)
+									ntb := p_node.SetHas_Right(true)
+
+
+			return true
+
+		RemoveRight :: (c_node: Tree) -> boolean (line 235)
+			ntb :: boolean
+			While c_node.GetHas_Right() (line 238)
+				Block (line 238)
+					Assign (line 242)
+						ntb := c_node.SetKey(c_node.GetRight().GetKey())
+					Assign (line 243)
+						p_node := c_node
+					Assign (line 244)
+						c_node := c_node.GetRight()
+
+			Assign (line 246)
+				ntb := p_node.SetRight(my_null)
+			Assign (line 247)
+				ntb := p_node.SetHas_Right(true)
+			return true
+
+		RemoveLeft :: (c_node: Tree) -> boolean (line 254)
+			ntb :: boolean
+			While c_node.GetHas_Left() (line 257)
+				Block (line 257)
+					Assign (line 261)
+						ntb := c_node.SetKey(c_node.GetLeft().GetKey())
+					Assign (line 262)
+						p_node := c_node
+					Assign (line 263)
+						c_node := c_node.GetLeft()
+
+			Assign (line 265)
+				ntb := p_node.SetLeft(my_null)
+			Assign (line 266)
+				ntb := p_node.SetHas_Left(true)
+			return true
+
+		Search :: () -> int (line 271)
+			cont :: boolean
+			ifound :: int
+			current_node :: Tree
+			key_aux :: int
+			Assign (line 277)
+				current_node := this
+			Assign (line 278)
+				cont := true
+			Assign (line 279)
+				ifound := 0
+			While cont (line 280)
+				Block (line 280)
+					Assign (line 281)
+						key_aux := current_node.GetKey()
+					If (v_key < key_aux) (line 282)
+						If current_node.GetHas_Left() (line 283)
+							Assign (line 284)
+								current_node := current_node.GetLeft()
+						Else
+							Assign (line 286)
+								cont := true
+					Else
+						If (key_aux < v_key) (line 287)
+							If current_node.GetHas_Right() (line 288)
+								Assign (line 289)
+									current_node := current_node.GetRight()
+							Else
+								Assign (line 291)
+									cont := true
+						Else
+							Block (line 292)
+								Assign (line 293)
+									ifound := 1
+								Assign (line 294)
+									cont := true
+
+
+			return ifound
+
+		Print :: () -> boolean (line 301)
+			current_node :: Tree
+			ntb :: boolean
+			Assign (line 305)
+				current_node := this
+			Assign (line 306)
+				ntb := this.RecPrint(current_node)
+			return true
+
+		RecPrint :: () -> boolean (line 311)
+			ntb :: boolean
+			If node.GetHas_Left() (line 314)
+				Block (line 314)
+					Assign (line 317)
+						ntb := this.RecPrint(node.GetLeft())
+
+			Else
+				Assign (line 319)
+					ntb := true
+			Print (line 320)
+				node.GetKey()
+			If node.GetHas_Right() (line 321)
+				Block (line 321)
+					Assign (line 324)
+						ntb := this.RecPrint(node.GetRight())
+
+			Else
+				Assign (line 326)
+					ntb := true
+			return true

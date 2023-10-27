@@ -1,0 +1,107 @@
+Program
+	MainClass LinearSearch (line 1)
+		Print (line 3)
+			new LS().Start(10)
+
+	Class LS (line 11)
+		number :: int []
+		size :: int
+		Start :: () -> int (line 17)
+			aux01 :: int
+			aux02 :: int
+			Assign (line 21)
+				aux01 := this.Init(sz)
+			Assign (line 22)
+				aux02 := this.Print()
+			Print (line 23)
+				9999
+			Print (line 24)
+				this.Search(8)
+			Print (line 25)
+				this.Search(12)
+			Print (line 26)
+				this.Search(17)
+			Print (line 27)
+				this.Search(50)
+			return 55
+
+		Print :: () -> int (line 32)
+			j :: int
+			Assign (line 35)
+				j := 1
+			While (j < size) (line 36)
+				Block (line 36)
+					Print (line 37)
+						(number[j])
+					Assign (line 38)
+						j := (j + 1)
+
+			return 0
+
+		Search :: () -> int (line 45)
+			j :: int
+			ls01 :: boolean
+			ifound :: int
+			aux01 :: int
+			aux02 :: int
+			nt :: int
+			Assign (line 53)
+				j := 1
+			Assign (line 54)
+				ls01 := true
+			Assign (line 55)
+				ifound := 0
+			While (j < size) (line 58)
+				Block (line 58)
+					Assign (line 59)
+						aux01 := (number[j])
+					Assign (line 60)
+						aux02 := (num + 1)
+					If (aux01 < num) (line 61)
+						Assign (line 61)
+							nt := 0
+					Else
+						If !((aux01 < aux02)) (line 62)
+							Assign (line 62)
+								nt := 0
+						Else
+							Block (line 63)
+								Assign (line 64)
+									ls01 := true
+								Assign (line 65)
+									ifound := 1
+								Assign (line 66)
+									j := size
+
+					Assign (line 68)
+						j := (j + 1)
+
+			return ifound
+
+		Init :: () -> int (line 78)
+			j :: int
+			k :: int
+			aux01 :: int
+			aux02 :: int
+			Assign (line 84)
+				size := sz
+			Assign (line 85)
+				number := new int [sz]
+			Assign (line 87)
+				j := 1
+			Assign (line 88)
+				k := (size + 1)
+			While (j < size) (line 89)
+				Block (line 89)
+					Assign (line 90)
+						aux01 := (2 * j)
+					Assign (line 91)
+						aux02 := (k - 3)
+					ArrayAssign (line 92)
+						number[j] := (aux01 + aux02)
+					Assign (line 93)
+						j := (j + 1)
+					Assign (line 94)
+						k := (k - 1)
+
+			return 0

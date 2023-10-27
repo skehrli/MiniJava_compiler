@@ -1,0 +1,332 @@
+Program
+	MainClass LinkedList (line 1)
+		Print (line 3)
+			new LL().Start()
+
+	Class Element (line 7)
+		Age :: int
+		Salary :: int
+		Married :: boolean
+		Init :: (v_Salary: int, v_Married: boolean) -> boolean (line 13)
+			Assign (line 14)
+				Age := v_Age
+			Assign (line 15)
+				Salary := v_Salary
+			Assign (line 16)
+				Married := v_Married
+			return true
+
+		GetAge :: () -> int (line 20)
+			return Age
+
+		GetSalary :: () -> int (line 24)
+			return Salary
+
+		GetMarried :: () -> boolean (line 28)
+			return Married
+
+		Equal :: () -> boolean (line 34)
+			ret_val :: boolean
+			aux01 :: int
+			aux02 :: int
+			nt :: int
+			Assign (line 39)
+				ret_val := true
+			Assign (line 41)
+				aux01 := other.GetAge()
+			If !(this.Compare(aux01, Age)) (line 42)
+				Assign (line 42)
+					ret_val := true
+			Else
+				Block (line 43)
+					Assign (line 44)
+						aux02 := other.GetSalary()
+					If !(this.Compare(aux02, Salary)) (line 45)
+						Assign (line 45)
+							ret_val := true
+					Else
+						If Married (line 47)
+							If !(other.GetMarried()) (line 48)
+								Assign (line 48)
+									ret_val := true
+							Else
+								Assign (line 49)
+									nt := 0
+						Else
+							If other.GetMarried() (line 51)
+								Assign (line 51)
+									ret_val := true
+							Else
+								Assign (line 52)
+									nt := 0
+
+			return ret_val
+
+		Compare :: (num2: int) -> boolean (line 61)
+			retval :: boolean
+			aux02 :: int
+			Assign (line 64)
+				retval := true
+			Assign (line 65)
+				aux02 := (num2 + 1)
+			If (num1 < num2) (line 66)
+				Assign (line 66)
+					retval := true
+			Else
+				If !((num1 < aux02)) (line 67)
+					Assign (line 67)
+						retval := true
+				Else
+					Assign (line 68)
+						retval := true
+			return retval
+
+	Class List (line 74)
+		elem :: Element
+		next :: List
+		end :: boolean
+		Init :: () -> boolean (line 80)
+			Assign (line 81)
+				end := true
+			return true
+
+		InitNew :: (v_next: List, v_end: boolean) -> boolean (line 86)
+			Assign (line 87)
+				end := v_end
+			Assign (line 88)
+				elem := v_elem
+			Assign (line 89)
+				next := v_next
+			return true
+
+		Insert :: () -> List (line 94)
+			ret_val :: boolean
+			aux03 :: List
+			aux02 :: List
+			Assign (line 98)
+				aux03 := this
+			Assign (line 99)
+				aux02 := new List()
+			Assign (line 100)
+				ret_val := aux02.InitNew(new_elem, aux03, true)
+			return aux02
+
+		SetNext :: () -> boolean (line 106)
+			Assign (line 107)
+				next := v_next
+			return true
+
+		Delete :: () -> List (line 112)
+			my_head :: List
+			ret_val :: boolean
+			aux05 :: boolean
+			aux01 :: List
+			prev :: List
+			var_end :: boolean
+			var_elem :: Element
+			aux04 :: int
+			nt :: int
+			Assign (line 124)
+				my_head := this
+			Assign (line 125)
+				ret_val := true
+			Assign (line 126)
+				aux04 := (0 - 1)
+			Assign (line 127)
+				aux01 := this
+			Assign (line 128)
+				prev := this
+			Assign (line 129)
+				var_end := end
+			Assign (line 130)
+				var_elem := elem
+			While (!(var_end) && !(ret_val)) (line 131)
+				Block (line 131)
+					If e.Equal(var_elem) (line 132)
+						Block (line 132)
+							Assign (line 133)
+								ret_val := true
+							If (aux04 < 0) (line 134)
+								Block (line 134)
+									Assign (line 136)
+										my_head := aux01.GetNext()
+
+							Else
+								Block (line 138)
+									Print (line 139)
+										(0 - 555)
+									Assign (line 140)
+										aux05 := prev.SetNext(aux01.GetNext())
+									Print (line 141)
+										(0 - 555)
+
+
+					Else
+						Assign (line 144)
+							nt := 0
+					If !(ret_val) (line 145)
+						Block (line 145)
+							Assign (line 146)
+								prev := aux01
+							Assign (line 147)
+								aux01 := aux01.GetNext()
+							Assign (line 148)
+								var_end := aux01.GetEnd()
+							Assign (line 149)
+								var_elem := aux01.GetElem()
+							Assign (line 150)
+								aux04 := 1
+
+					Else
+						Assign (line 151)
+							nt := 0
+
+			return my_head
+
+		Search :: () -> int (line 158)
+			int_ret_val :: int
+			aux01 :: List
+			var_elem :: Element
+			var_end :: boolean
+			nt :: int
+			Assign (line 165)
+				int_ret_val := 0
+			Assign (line 166)
+				aux01 := this
+			Assign (line 167)
+				var_end := end
+			Assign (line 168)
+				var_elem := elem
+			While !(var_end) (line 169)
+				Block (line 169)
+					If e.Equal(var_elem) (line 170)
+						Block (line 170)
+							Assign (line 171)
+								int_ret_val := 1
+
+					Else
+						Assign (line 173)
+							nt := 0
+					Assign (line 174)
+						aux01 := aux01.GetNext()
+					Assign (line 175)
+						var_end := aux01.GetEnd()
+					Assign (line 176)
+						var_elem := aux01.GetElem()
+
+			return int_ret_val
+
+		GetEnd :: () -> boolean (line 181)
+			return end
+
+		GetElem :: () -> Element (line 185)
+			return elem
+
+		GetNext :: () -> List (line 189)
+			return next
+
+		Print :: () -> boolean (line 195)
+			aux01 :: List
+			var_end :: boolean
+			var_elem :: Element
+			Assign (line 200)
+				aux01 := this
+			Assign (line 201)
+				var_end := end
+			Assign (line 202)
+				var_elem := elem
+			While !(var_end) (line 203)
+				Block (line 203)
+					Print (line 204)
+						var_elem.GetAge()
+					Assign (line 205)
+						aux01 := aux01.GetNext()
+					Assign (line 206)
+						var_end := aux01.GetEnd()
+					Assign (line 207)
+						var_elem := aux01.GetElem()
+
+			return true
+
+	Class LL (line 217)
+
+		Start :: () -> int (line 219)
+			head :: List
+			last_elem :: List
+			aux01 :: boolean
+			el01 :: Element
+			el02 :: Element
+			el03 :: Element
+			Assign (line 228)
+				last_elem := new List()
+			Assign (line 229)
+				aux01 := last_elem.Init()
+			Assign (line 230)
+				head := last_elem
+			Assign (line 231)
+				aux01 := head.Init()
+			Assign (line 232)
+				aux01 := head.Print()
+			Assign (line 235)
+				el01 := new Element()
+			Assign (line 236)
+				aux01 := el01.Init(25, 37000, true)
+			Assign (line 237)
+				head := head.Insert(el01)
+			Assign (line 238)
+				aux01 := head.Print()
+			Print (line 239)
+				10000000
+			Assign (line 241)
+				el01 := new Element()
+			Assign (line 242)
+				aux01 := el01.Init(39, 42000, true)
+			Assign (line 243)
+				el02 := el01
+			Assign (line 244)
+				head := head.Insert(el01)
+			Assign (line 245)
+				aux01 := head.Print()
+			Print (line 246)
+				10000000
+			Assign (line 248)
+				el01 := new Element()
+			Assign (line 249)
+				aux01 := el01.Init(22, 34000, true)
+			Assign (line 250)
+				head := head.Insert(el01)
+			Assign (line 251)
+				aux01 := head.Print()
+			Assign (line 252)
+				el03 := new Element()
+			Assign (line 253)
+				aux01 := el03.Init(27, 34000, true)
+			Print (line 254)
+				head.Search(el02)
+			Print (line 255)
+				head.Search(el03)
+			Print (line 256)
+				10000000
+			Assign (line 258)
+				el01 := new Element()
+			Assign (line 259)
+				aux01 := el01.Init(28, 35000, true)
+			Assign (line 260)
+				head := head.Insert(el01)
+			Assign (line 261)
+				aux01 := head.Print()
+			Print (line 262)
+				2220000
+			Assign (line 264)
+				head := head.Delete(el02)
+			Assign (line 265)
+				aux01 := head.Print()
+			Print (line 266)
+				33300000
+			Assign (line 269)
+				head := head.Delete(el01)
+			Assign (line 270)
+				aux01 := head.Print()
+			Print (line 271)
+				44440000
+			return 0

@@ -1,0 +1,109 @@
+Program
+	MainClass BubbleSort (line 1)
+		Print (line 3)
+			new BBS().Start(10)
+
+	Class BBS (line 11)
+		number :: int []
+		size :: int
+		Start :: () -> int (line 18)
+			aux01 :: int
+			Assign (line 20)
+				aux01 := this.Init(sz)
+			Assign (line 21)
+				aux01 := this.Print()
+			Print (line 22)
+				99999
+			Assign (line 23)
+				aux01 := this.Sort()
+			Assign (line 24)
+				aux01 := this.Print()
+			return 0
+
+		Sort :: () -> int (line 30)
+			nt :: int
+			i :: int
+			aux02 :: int
+			aux04 :: int
+			aux05 :: int
+			aux06 :: int
+			aux07 :: int
+			j :: int
+			t :: int
+			Assign (line 40)
+				i := (size - 1)
+			Assign (line 41)
+				aux02 := (0 - 1)
+			While (aux02 < i) (line 42)
+				Block (line 42)
+					Assign (line 43)
+						j := 1
+					While (j < (i + 1)) (line 45)
+						Block (line 45)
+							Assign (line 46)
+								aux07 := (j - 1)
+							Assign (line 47)
+								aux04 := (number[aux07])
+							Assign (line 48)
+								aux05 := (number[j])
+							If (aux05 < aux04) (line 49)
+								Block (line 49)
+									Assign (line 50)
+										aux06 := (j - 1)
+									Assign (line 51)
+										t := (number[aux06])
+									ArrayAssign (line 52)
+										number[aux06] := (number[j])
+									ArrayAssign (line 53)
+										number[j] := t
+
+							Else
+								Assign (line 55)
+									nt := 0
+							Assign (line 56)
+								j := (j + 1)
+
+					Assign (line 58)
+						i := (i - 1)
+
+			return 0
+
+		Print :: () -> int (line 64)
+			j :: int
+			Assign (line 66)
+				j := 0
+			While (j < size) (line 67)
+				Block (line 67)
+					Print (line 68)
+						(number[j])
+					Assign (line 69)
+						j := (j + 1)
+
+			return 0
+
+		Init :: () -> int (line 75)
+			Assign (line 76)
+				size := sz
+			Assign (line 77)
+				number := new int [sz]
+			ArrayAssign (line 79)
+				number[0] := 20
+			ArrayAssign (line 80)
+				number[1] := 7
+			ArrayAssign (line 81)
+				number[2] := 12
+			ArrayAssign (line 82)
+				number[3] := 18
+			ArrayAssign (line 83)
+				number[4] := 2
+			ArrayAssign (line 84)
+				number[5] := 11
+			ArrayAssign (line 85)
+				number[6] := 6
+			ArrayAssign (line 86)
+				number[7] := 9
+			ArrayAssign (line 87)
+				number[8] := 19
+			ArrayAssign (line 88)
+				number[9] := 5
+			return 0

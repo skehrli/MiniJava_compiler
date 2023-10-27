@@ -107,8 +107,26 @@ ClassDecl ::=
       CLASS:c Identifier:i LBRACE VarDeclList:vl MethodDeclList:ml RBRACE {:
         RESULT = new ClassDeclSimple(i, vl, ml, cxleft);
     :}
+    | CLASS:c Identifier:i LBRACE MethodDeclList:ml RBRACE {:
+        RESULT = new ClassDeclSimple(i, new VarDeclList(cxleft), ml, cxleft);
+    :}
+    | CLASS:c Identifier:i LBRACE VarDeclList:vl RBRACE {:
+        RESULT = new ClassDeclSimple(i, vl, new MethodDeclList(cxleft), cxleft);
+    :}
+    | CLASS:c Identifier:i LBRACE RBRACE {:
+        RESULT = new ClassDeclSimple(i, new VarDeclList(cxleft), new MethodDeclList(cxleft), cxleft);
+    :} 
     | CLASS:c Identifier:i1 EXTENDS Identifier:i2 LBRACE VarDeclList:vl MethodDeclList:ml RBRACE {:
         RESULT = new ClassDeclExtends(i1, i2, vl, ml, cxleft);
+    :}
+    | CLASS:c Identifier:i1 EXTENDS Identifier:i2 LBRACE MethodDeclList:ml RBRACE {:
+        RESULT = new ClassDeclExtends(i1, i2, new VarDeclList(cxleft), ml, cxleft);
+    :}
+    | CLASS:c Identifier:i1 EXTENDS Identifier:i2 LBRACE VarDeclList:vl RBRACE {:
+        RESULT = new ClassDeclExtends(i1, i2, vl, new MethodDeclList(cxleft), cxleft);
+    :}
+    | CLASS:c Identifier:i1 EXTENDS Identifier:i2 LBRACE RBRACE {:
+        RESULT = new ClassDeclExtends(i1, i2, new VarDeclList(cxleft), new MethodDeclList(cxleft), cxleft);
     :};
 
 VarDeclList ::=
@@ -139,8 +157,26 @@ MethodDecl ::=
       PUBLIC:p Type:t Identifier:i LPAREN:l RPAREN LBRACE VarDeclList:vl StatementList:sl RETURN Expression:e SEMICOLON RBRACE {:
         RESULT = new MethodDecl(t, i, new FormalList(lxright), vl, sl, e, pxleft);
     :}
-    | PUBLIC:p Type:t Identifier:i LPAREN FormalList:fl RPAREN LBRACE VarDeclList:vl StatementList:sl RETURN Expression:e SEMICOLON RBRACE {:
+    | PUBLIC:p Type:t Identifier:i LPAREN:l RPAREN LBRACE StatementList:sl RETURN Expression:e SEMICOLON RBRACE {:
+        RESULT = new MethodDecl(t, i, new FormalList(lxright), new VarDeclList(lxright), sl, e, pxleft);
+    :}
+    | PUBLIC:p Type:t Identifier:i LPAREN:l RPAREN LBRACE VarDeclList:vl RETURN Expression:e SEMICOLON RBRACE {:
+        RESULT = new MethodDecl(t, i, new FormalList(lxright), vl, new StatementList(lxright), e, pxleft);
+    :}
+    | PUBLIC:p Type:t Identifier:i LPAREN:l RPAREN LBRACE RETURN Expression:e SEMICOLON RBRACE {:
+        RESULT = new MethodDecl(t, i, new FormalList(lxright), new VarDeclList(lxright), new StatementList(lxright), e, pxleft);
+    :}
+    | PUBLIC:p Type:t Identifier:i LPAREN:l FormalList:fl RPAREN LBRACE VarDeclList:vl StatementList:sl RETURN Expression:e SEMICOLON RBRACE {:
         RESULT = new MethodDecl(t, i, fl, vl, sl, e, pxleft);
+    :}
+    | PUBLIC:p Type:t Identifier:i LPAREN:l FormalList:fl RPAREN LBRACE VarDeclList:vl RETURN Expression:e SEMICOLON RBRACE {:
+        RESULT = new MethodDecl(t, i, fl, vl, new StatementList(lxright), e, pxleft);
+    :}
+    | PUBLIC:p Type:t Identifier:i LPAREN:l FormalList:fl RPAREN LBRACE StatementList:sl RETURN Expression:e SEMICOLON RBRACE {:
+        RESULT = new MethodDecl(t, i, fl, new VarDeclList(lxright), sl, e, pxleft);
+    :}
+    | PUBLIC:p Type:t Identifier:i LPAREN:l FormalList:fl RPAREN LBRACE RETURN Expression:e SEMICOLON RBRACE {:
+        RESULT = new MethodDecl(t, i, fl, new VarDeclList(lxright), new StatementList(lxright), e, pxleft);
     :};
 
 FormalList ::=
