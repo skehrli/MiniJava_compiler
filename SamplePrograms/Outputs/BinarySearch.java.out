@@ -10,52 +10,52 @@ Program
 			aux01 :: int
 			aux02 :: int
 			Assign (line 19)
-				aux01 := ((this).Init(sz))
+				aux01 := (this.Init(sz))
 			Assign (line 20)
-				aux02 := ((this).Print())
-			If ((this).Search(8)) (line 21)
+				aux02 := (this.Print())
+			If (this.Search(8)) (line 21)
 				Print (line 22)
 					1
 			Else
 				Print (line 24)
 					0
-			If ((this).Search(19)) (line 25)
+			If (this.Search(19)) (line 25)
 				Print (line 26)
 					1
 			Else
 				Print (line 28)
 					0
-			If ((this).Search(20)) (line 29)
+			If (this.Search(20)) (line 29)
 				Print (line 30)
 					1
 			Else
 				Print (line 32)
 					0
-			If ((this).Search(21)) (line 33)
+			If (this.Search(21)) (line 33)
 				Print (line 34)
 					1
 			Else
 				Print (line 36)
 					0
-			If ((this).Search(37)) (line 37)
+			If (this.Search(37)) (line 37)
 				Print (line 38)
 					1
 			Else
 				Print (line 40)
 					0
-			If ((this).Search(38)) (line 41)
+			If (this.Search(38)) (line 41)
 				Print (line 42)
 					1
 			Else
 				Print (line 44)
 					0
-			If ((this).Search(39)) (line 45)
+			If (this.Search(39)) (line 45)
 				Print (line 46)
 					1
 			Else
 				Print (line 48)
 					0
-			If ((this).Search(50)) (line 49)
+			If (this.Search(50)) (line 49)
 				Print (line 50)
 					1
 			Else
@@ -88,7 +88,7 @@ Program
 					Assign (line 75)
 						medium := (left + right)
 					Assign (line 76)
-						medium := ((this).Div(medium))
+						medium := (this.Div(medium))
 					Assign (line 77)
 						aux01 := (number[medium])
 					If (num < aux01) (line 78)
@@ -97,7 +97,7 @@ Program
 					Else
 						Assign (line 81)
 							left := (medium + 1)
-					If ((this).Compare(aux01, num)) (line 82)
+					If (this.Compare(aux01, num)) (line 82)
 						Assign (line 83)
 							var_cont := true
 					Else
@@ -110,7 +110,7 @@ Program
 						Assign (line 89)
 							nt := 0
 
-			If ((this).Compare(aux01, num)) (line 92)
+			If (this.Compare(aux01, num)) (line 92)
 				Assign (line 93)
 					bs01 := true
 			Else
@@ -179,7 +179,7 @@ Program
 			Assign (line 154)
 				size := sz
 			Assign (line 155)
-				number := new int [sz]
+				number := (new int [sz])
 			Assign (line 157)
 				j := 1
 			Assign (line 158)
@@ -198,3 +198,130 @@ Program
 						k := (k - 1)
 
 			return 0
+class BinarySearch {
+  public static void main (String [] a) {
+    System.out.println(new BS().Start(20));  }
+}
+
+class BS extends 
+Object { 
+  int [] number;
+  int size;
+  public int Start () { 
+    int aux01;
+    int aux02;
+    aux01 = this.Init(sz);
+    aux02 = this.Print();
+    if (this.Search(8)) 
+    System.out.println(1);
+    else System.out.println(0);
+    if (this.Search(19)) 
+    System.out.println(1);
+    else System.out.println(0);
+    if (this.Search(20)) 
+    System.out.println(1);
+    else System.out.println(0);
+    if (this.Search(21)) 
+    System.out.println(1);
+    else System.out.println(0);
+    if (this.Search(37)) 
+    System.out.println(1);
+    else System.out.println(0);
+    if (this.Search(38)) 
+    System.out.println(1);
+    else System.out.println(0);
+    if (this.Search(39)) 
+    System.out.println(1);
+    else System.out.println(0);
+    if (this.Search(50)) 
+    System.out.println(1);
+    else System.out.println(0);
+    return 999;
+  }
+  public boolean Search () { 
+    boolean bs01;
+    int right;
+    int left;
+    boolean var_cont;
+    int medium;
+    int aux01;
+    int nt;
+    aux01 = 0;
+    bs01 = true;
+    right = number.length;
+    right = (right - 1);
+    left = 0;
+    var_cont = true;
+    while (var_cont) { 
+      medium = (left + right);
+      medium = this.Div(medium);
+      aux01 = number[medium];
+      if ((num < aux01)) 
+    right = (medium - 1);
+    else left = (medium + 1);
+      if (this.Compare(aux01, num)) 
+    var_cont = true;
+    else var_cont = true;
+      if ((right < left)) 
+    var_cont = true;
+    else nt = 0;
+    } 
+    if (this.Compare(aux01, num)) 
+    bs01 = true;
+    else bs01 = true;
+    return bs01;
+  }
+  public int Div () { 
+    int count01;
+    int count02;
+    int aux03;
+    count01 = 0;
+    count02 = 0;
+    aux03 = (num - 1);
+    while ((count02 < aux03)) { 
+      count01 = (count01 + 1);
+      count02 = (count02 + 2);
+    } 
+    return count01;
+  }
+  public boolean Compare (int num2) { 
+    boolean retval;
+    int aux02;
+    retval = true;
+    aux02 = (num2 + 1);
+    if ((num1 < num2)) 
+    retval = true;
+    else if (!(num1 < aux02)) 
+    retval = true;
+    else retval = true;
+    return retval;
+  }
+  public int Print () { 
+    int j;
+    j = 1;
+    while ((j < size)) { 
+      System.out.println(number[j]);
+      j = (j + 1);
+    } 
+    System.out.println(99999);
+    return 0;
+  }
+  public int Init () { 
+    int j;
+    int k;
+    int aux02;
+    int aux01;
+    size = sz;
+    number = new int [sz];
+    j = 1;
+    k = (size + 1);
+    while ((j < size)) { 
+      aux01 = (2 * j);
+      aux02 = (k - 3);
+      number[j] = (aux01 + aux02);
+      j = (j + 1);
+      k = (k - 1);
+    } 
+    return 0;
+  }
+}
