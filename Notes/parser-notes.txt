@@ -1,6 +1,15 @@
-- There are no conflicts remaining (see cup.out file)
-- For the grammar, we avoided epsilon-productions, by creating different productions, one of which with the non-terminal included and one without
-- we parse an arbitrary amount of flags both with -S -A syntax and -SA syntax. If we have the same flag n times (for example -SSS) the scanned tokens are printed n (in this case three) times. If an invalid flag is passed, we exit with code 1 and do not execute anything (even if there are other valid flags before that)
-- if the parser finds a mistake, it throws an exception and won't continue parsing
-- our testing is in /SamplePrograms/, where the /Programs/ subdirectory holds minijava source files and the /Outputs/ subdirectory holds outputs of the compiler with both -A and -P flag.
-- the team partners worked mostly together on the project. Both contributed to and debugged the productions, Mark wrote the semantic actions and the MiniJava main file. Both spent around 8-10 hours on the lab.
+- There are no conflicts remaining (see cup.out file).
+- For the grammar, we avoided epsilon-productions by creating different productions,
+  one of which has the non-terminal included and one does not.
+- We parse an arbitrary amount of flags both with -S -A syntax and -SA syntax.
+  If we have the same flag n times (for example -SSS) the flag is only executed once.
+  Flags are executed in the order of their first being provided.
+  If an invalid flag is passed, we exit with code 1 and do not execute anything (even if there are other valid flags before that).
+- If the parser finds a mistake, it throws an exception and won't continue parsing.
+- The parser will be called even in the event of a lexical error.
+- Much of our testing is in /SamplePrograms/, where the /Programs/ subdirectory holds Minijava
+  source files and the /Outputs/ subdirectory holds outputs of the compiler with both -A and -P flag.
+  We also used some of the valid testing files in the test/resources/Programs directory (not all
+  of them are valid MiniJava) to test.
+- The team partners worked mostly together on the project. Both contributed to and debugged the productions,
+  Mark wrote the semantic actions and the MiniJava main file. Both spent around 8-10 hours on the lab.

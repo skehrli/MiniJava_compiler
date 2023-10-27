@@ -11,6 +11,7 @@ class Main {
     a = a + b.foo();
     b = a + a[b];
     c = a + new A()[0 - 1].method()[c - a].foo(a, b[a] + c.a(), c).z();
+    d = a[b[1]];
     return 0;
   }
 }
