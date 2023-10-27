@@ -14,6 +14,7 @@ public class MiniJava {
     private static final ComplexSymbolFactory sf = new ComplexSymbolFactory();
     private static String filename;
     private static boolean error = false;
+    private static final Set<Character> flags = Set.of('S', 'A', 'P');
 
     public static void main(String[] args) {
         filename = args[args.length - 1];
@@ -24,8 +25,14 @@ public class MiniJava {
                 System.err.println("Could not parse compiler flags.");
                 System.exit(1);
             }
-            for (int j = 1; j < args[i].length(); j++)
-                options.add(args[i].charAt(j));
+            for (int j = 1; j < args[i].length(); j++) {
+                char ch = args[i].charAt(j);
+                if (!flags.contains(ch)) {
+                    System.err.println("Could not recognize compiler flag '" + ch + "'");
+                    System.exit(1);
+                }
+                options.add(ch);
+            }
         }
         options.forEach(MiniJava::compilerOption);
         System.exit(error ? 1 : 0);
@@ -44,7 +51,7 @@ public class MiniJava {
                     visitAST(new PrettyPrintVisitor());
                     break;
                 default:
-                    System.err.println("Could not recognize compiler flag '" + ch + "'");
+                    throw new RuntimeException("Passed unrecognizable flag.");
             }
         } catch (Exception e) {
             // yuck: some kind of error in the compiler implementation
