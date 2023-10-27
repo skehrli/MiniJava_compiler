@@ -1,7 +1,7 @@
 Program
 	MainClass LinkedList (line 1)
 		Print (line 3)
-			new LL().Start()
+			((new LL()).Start())
 
 	Class Element (line 7)
 		Age :: int
@@ -33,27 +33,27 @@ Program
 			Assign (line 39)
 				ret_val := true
 			Assign (line 41)
-				aux01 := other.GetAge()
-			If !(this.Compare(aux01, Age)) (line 42)
+				aux01 := ((other).GetAge())
+			If !(((this).Compare(aux01, Age))) (line 42)
 				Assign (line 42)
 					ret_val := true
 			Else
 				Block (line 43)
 					Assign (line 44)
-						aux02 := other.GetSalary()
-					If !(this.Compare(aux02, Salary)) (line 45)
+						aux02 := ((other).GetSalary())
+					If !(((this).Compare(aux02, Salary))) (line 45)
 						Assign (line 45)
 							ret_val := true
 					Else
 						If Married (line 47)
-							If !(other.GetMarried()) (line 48)
+							If !(((other).GetMarried())) (line 48)
 								Assign (line 48)
 									ret_val := true
 							Else
 								Assign (line 49)
 									nt := 0
 						Else
-							If other.GetMarried() (line 51)
+							If ((other).GetMarried()) (line 51)
 								Assign (line 51)
 									ret_val := true
 							Else
@@ -108,7 +108,7 @@ Program
 			Assign (line 99)
 				aux02 := new List()
 			Assign (line 100)
-				ret_val := aux02.InitNew(new_elem, aux03, true)
+				ret_val := ((aux02).InitNew(new_elem, aux03, true))
 			return aux02
 
 		SetNext :: () -> boolean (line 106)
@@ -142,21 +142,21 @@ Program
 				var_elem := elem
 			While (!(var_end) && !(ret_val)) (line 131)
 				Block (line 131)
-					If e.Equal(var_elem) (line 132)
+					If ((e).Equal(var_elem)) (line 132)
 						Block (line 132)
 							Assign (line 133)
 								ret_val := true
 							If (aux04 < 0) (line 134)
 								Block (line 134)
 									Assign (line 136)
-										my_head := aux01.GetNext()
+										my_head := ((aux01).GetNext())
 
 							Else
 								Block (line 138)
 									Print (line 139)
 										(0 - 555)
 									Assign (line 140)
-										aux05 := prev.SetNext(aux01.GetNext())
+										aux05 := ((prev).SetNext(((aux01).GetNext())))
 									Print (line 141)
 										(0 - 555)
 
@@ -169,11 +169,11 @@ Program
 							Assign (line 146)
 								prev := aux01
 							Assign (line 147)
-								aux01 := aux01.GetNext()
+								aux01 := ((aux01).GetNext())
 							Assign (line 148)
-								var_end := aux01.GetEnd()
+								var_end := ((aux01).GetEnd())
 							Assign (line 149)
-								var_elem := aux01.GetElem()
+								var_elem := ((aux01).GetElem())
 							Assign (line 150)
 								aux04 := 1
 
@@ -199,7 +199,7 @@ Program
 				var_elem := elem
 			While !(var_end) (line 169)
 				Block (line 169)
-					If e.Equal(var_elem) (line 170)
+					If ((e).Equal(var_elem)) (line 170)
 						Block (line 170)
 							Assign (line 171)
 								int_ret_val := 1
@@ -208,11 +208,11 @@ Program
 						Assign (line 173)
 							nt := 0
 					Assign (line 174)
-						aux01 := aux01.GetNext()
+						aux01 := ((aux01).GetNext())
 					Assign (line 175)
-						var_end := aux01.GetEnd()
+						var_end := ((aux01).GetEnd())
 					Assign (line 176)
-						var_elem := aux01.GetElem()
+						var_elem := ((aux01).GetElem())
 
 			return int_ret_val
 
@@ -238,13 +238,13 @@ Program
 			While !(var_end) (line 203)
 				Block (line 203)
 					Print (line 204)
-						var_elem.GetAge()
+						((var_elem).GetAge())
 					Assign (line 205)
-						aux01 := aux01.GetNext()
+						aux01 := ((aux01).GetNext())
 					Assign (line 206)
-						var_end := aux01.GetEnd()
+						var_end := ((aux01).GetEnd())
 					Assign (line 207)
-						var_elem := aux01.GetElem()
+						var_elem := ((aux01).GetElem())
 
 			return true
 
@@ -260,73 +260,73 @@ Program
 			Assign (line 228)
 				last_elem := new List()
 			Assign (line 229)
-				aux01 := last_elem.Init()
+				aux01 := ((last_elem).Init())
 			Assign (line 230)
 				head := last_elem
 			Assign (line 231)
-				aux01 := head.Init()
+				aux01 := ((head).Init())
 			Assign (line 232)
-				aux01 := head.Print()
+				aux01 := ((head).Print())
 			Assign (line 235)
 				el01 := new Element()
 			Assign (line 236)
-				aux01 := el01.Init(25, 37000, true)
+				aux01 := ((el01).Init(25, 37000, true))
 			Assign (line 237)
-				head := head.Insert(el01)
+				head := ((head).Insert(el01))
 			Assign (line 238)
-				aux01 := head.Print()
+				aux01 := ((head).Print())
 			Print (line 239)
 				10000000
 			Assign (line 241)
 				el01 := new Element()
 			Assign (line 242)
-				aux01 := el01.Init(39, 42000, true)
+				aux01 := ((el01).Init(39, 42000, true))
 			Assign (line 243)
 				el02 := el01
 			Assign (line 244)
-				head := head.Insert(el01)
+				head := ((head).Insert(el01))
 			Assign (line 245)
-				aux01 := head.Print()
+				aux01 := ((head).Print())
 			Print (line 246)
 				10000000
 			Assign (line 248)
 				el01 := new Element()
 			Assign (line 249)
-				aux01 := el01.Init(22, 34000, true)
+				aux01 := ((el01).Init(22, 34000, true))
 			Assign (line 250)
-				head := head.Insert(el01)
+				head := ((head).Insert(el01))
 			Assign (line 251)
-				aux01 := head.Print()
+				aux01 := ((head).Print())
 			Assign (line 252)
 				el03 := new Element()
 			Assign (line 253)
-				aux01 := el03.Init(27, 34000, true)
+				aux01 := ((el03).Init(27, 34000, true))
 			Print (line 254)
-				head.Search(el02)
+				((head).Search(el02))
 			Print (line 255)
-				head.Search(el03)
+				((head).Search(el03))
 			Print (line 256)
 				10000000
 			Assign (line 258)
 				el01 := new Element()
 			Assign (line 259)
-				aux01 := el01.Init(28, 35000, true)
+				aux01 := ((el01).Init(28, 35000, true))
 			Assign (line 260)
-				head := head.Insert(el01)
+				head := ((head).Insert(el01))
 			Assign (line 261)
-				aux01 := head.Print()
+				aux01 := ((head).Print())
 			Print (line 262)
 				2220000
 			Assign (line 264)
-				head := head.Delete(el02)
+				head := ((head).Delete(el02))
 			Assign (line 265)
-				aux01 := head.Print()
+				aux01 := ((head).Print())
 			Print (line 266)
 				33300000
 			Assign (line 269)
-				head := head.Delete(el01)
+				head := ((head).Delete(el01))
 			Assign (line 270)
-				aux01 := head.Print()
+				aux01 := ((head).Print())
 			Print (line 271)
 				44440000
 			return 0

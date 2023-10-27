@@ -1,7 +1,7 @@
 Program
 	MainClass BubbleSort (line 1)
 		Print (line 3)
-			new BBS().Start(10)
+			((new BBS()).Start(10))
 
 	Class BBS (line 11)
 		number :: int []
@@ -9,15 +9,15 @@ Program
 		Start :: () -> int (line 18)
 			aux01 :: int
 			Assign (line 20)
-				aux01 := this.Init(sz)
+				aux01 := ((this).Init(sz))
 			Assign (line 21)
-				aux01 := this.Print()
+				aux01 := ((this).Print())
 			Print (line 22)
 				99999
 			Assign (line 23)
-				aux01 := this.Sort()
+				aux01 := ((this).Sort())
 			Assign (line 24)
-				aux01 := this.Print()
+				aux01 := ((this).Print())
 			return 0
 
 		Sort :: () -> int (line 30)

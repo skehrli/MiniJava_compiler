@@ -346,6 +346,7 @@ public class ASTPrintVisitor implements Visitor {
     // Identifier i;
     // ExpList el;
     public void visit(Call n) {
+        System.out.print("(");
         n.e.accept(this);
         System.out.print(".");
         n.i.accept(this);
@@ -356,6 +357,7 @@ public class ASTPrintVisitor implements Visitor {
                 System.out.print(", ");
             }
         }
+        System.out.print(")");
         System.out.print(")");
     }
 
@@ -384,17 +386,21 @@ public class ASTPrintVisitor implements Visitor {
     // Exp e;
     public void visit(NewArray n) {
         // indent();
+        System.out.print("(");
         System.out.print("new int [");
         n.e.accept(this);
         System.out.print("]");
+        System.out.print(")");
     }
 
     // Identifier i;
     public void visit(NewObject n) {
         // indent();
+        System.out.print("(");
         System.out.print("new ");
         n.i.accept(this);
         System.out.print("()");
+        System.out.print(")");
     }
 
     // Exp e;

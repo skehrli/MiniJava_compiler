@@ -1,7 +1,7 @@
 Program
 	MainClass LinearSearch (line 1)
 		Print (line 3)
-			new LS().Start(10)
+			((new LS()).Start(10))
 
 	Class LS (line 11)
 		number :: int []
@@ -10,19 +10,19 @@ Program
 			aux01 :: int
 			aux02 :: int
 			Assign (line 21)
-				aux01 := this.Init(sz)
+				aux01 := ((this).Init(sz))
 			Assign (line 22)
-				aux02 := this.Print()
+				aux02 := ((this).Print())
 			Print (line 23)
 				9999
 			Print (line 24)
-				this.Search(8)
+				((this).Search(8))
 			Print (line 25)
-				this.Search(12)
+				((this).Search(12))
 			Print (line 26)
-				this.Search(17)
+				((this).Search(17))
 			Print (line 27)
-				this.Search(50)
+				((this).Search(50))
 			return 55
 
 		Print :: () -> int (line 32)

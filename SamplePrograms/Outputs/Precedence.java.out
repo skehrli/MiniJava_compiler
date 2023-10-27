@@ -1,0 +1,13 @@
+Program
+	MainClass Main (line 1)
+		Print (line 3)
+			((new Main()).get())
+
+	Class Main (line 7)
+
+		get :: () -> int (line 8)
+			a :: int
+			b :: int
+			Assign (line 11)
+				a := (a + ((b).foo()))
+			return 0

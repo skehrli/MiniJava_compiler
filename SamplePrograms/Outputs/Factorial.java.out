@@ -1,7 +1,7 @@
 Program
 	MainClass Factorial (line 1)
 		Print (line 3)
-			new Fac().ComputeFac(10)
+			((new Fac()).ComputeFac(10))
 
 	Class Fac (line 7)
 
@@ -12,5 +12,5 @@ Program
 					num_aux := 1
 			Else
 				Assign (line 14)
-					num_aux := (num * this.ComputeFac((num - 1)))
+					num_aux := (num * ((this).ComputeFac((num - 1))))
 			return num_aux

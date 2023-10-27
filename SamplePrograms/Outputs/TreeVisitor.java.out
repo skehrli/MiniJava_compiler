@@ -1,7 +1,7 @@
 Program
 	MainClass TreeVisitor (line 5)
 		Print (line 7)
-			new TV().Start()
+			((new TV()).Start())
 
 	Class TV (line 11)
 
@@ -13,27 +13,27 @@ Program
 			Assign (line 19)
 				root := new Tree()
 			Assign (line 20)
-				ntb := root.Init(16)
+				ntb := ((root).Init(16))
 			Assign (line 21)
-				ntb := root.Print()
+				ntb := ((root).Print())
 			Print (line 22)
 				100000000
 			Assign (line 23)
-				ntb := root.Insert(8)
+				ntb := ((root).Insert(8))
 			Assign (line 24)
-				ntb := root.Insert(24)
+				ntb := ((root).Insert(24))
 			Assign (line 25)
-				ntb := root.Insert(4)
+				ntb := ((root).Insert(4))
 			Assign (line 26)
-				ntb := root.Insert(12)
+				ntb := ((root).Insert(12))
 			Assign (line 27)
-				ntb := root.Insert(20)
+				ntb := ((root).Insert(20))
 			Assign (line 28)
-				ntb := root.Insert(28)
+				ntb := ((root).Insert(28))
 			Assign (line 29)
-				ntb := root.Insert(14)
+				ntb := ((root).Insert(14))
 			Assign (line 30)
-				ntb := root.Print()
+				ntb := ((root).Print())
 			Print (line 31)
 				100000000
 			Assign (line 32)
@@ -41,25 +41,25 @@ Program
 			Print (line 33)
 				50000000
 			Assign (line 34)
-				nti := root.accept(v)
+				nti := ((root).accept(v))
 			Print (line 35)
 				100000000
 			Print (line 36)
-				root.Search(24)
+				((root).Search(24))
 			Print (line 37)
-				root.Search(12)
+				((root).Search(12))
 			Print (line 38)
-				root.Search(16)
+				((root).Search(16))
 			Print (line 39)
-				root.Search(50)
+				((root).Search(50))
 			Print (line 40)
-				root.Search(12)
+				((root).Search(12))
 			Assign (line 41)
-				ntb := root.Delete(12)
+				ntb := ((root).Delete(12))
 			Assign (line 42)
-				ntb := root.Print()
+				ntb := ((root).Print())
 			Print (line 43)
-				root.Search(12)
+				((root).Search(12))
 			return 0
 
 	Class Tree (line 50)
@@ -146,7 +146,7 @@ Program
 			Assign (line 146)
 				new_node := new Tree()
 			Assign (line 147)
-				ntb := new_node.Init(v_key)
+				ntb := ((new_node).Init(v_key))
 			Assign (line 148)
 				current_node := this
 			Assign (line 149)
@@ -154,35 +154,35 @@ Program
 			While cont (line 150)
 				Block (line 150)
 					Assign (line 151)
-						key_aux := current_node.GetKey()
+						key_aux := ((current_node).GetKey())
 					If (v_key < key_aux) (line 152)
 						Block (line 152)
-							If current_node.GetHas_Left() (line 153)
+							If ((current_node).GetHas_Left()) (line 153)
 								Assign (line 154)
-									current_node := current_node.GetLeft()
+									current_node := ((current_node).GetLeft())
 							Else
 								Block (line 155)
 									Assign (line 156)
 										cont := true
 									Assign (line 157)
-										ntb := current_node.SetHas_Left(true)
+										ntb := ((current_node).SetHas_Left(true))
 									Assign (line 158)
-										ntb := current_node.SetLeft(new_node)
+										ntb := ((current_node).SetLeft(new_node))
 
 
 					Else
 						Block (line 160)
-							If current_node.GetHas_Right() (line 161)
+							If ((current_node).GetHas_Right()) (line 161)
 								Assign (line 162)
-									current_node := current_node.GetRight()
+									current_node := ((current_node).GetRight())
 							Else
 								Block (line 163)
 									Assign (line 164)
 										cont := true
 									Assign (line 165)
-										ntb := current_node.SetHas_Right(true)
+										ntb := ((current_node).SetHas_Right(true))
 									Assign (line 166)
-										ntb := current_node.SetRight(new_node)
+										ntb := ((current_node).SetRight(new_node))
 
 
 
@@ -209,26 +209,26 @@ Program
 			While cont (line 187)
 				Block (line 187)
 					Assign (line 188)
-						key_aux := current_node.GetKey()
+						key_aux := ((current_node).GetKey())
 					If (v_key < key_aux) (line 189)
-						If current_node.GetHas_Left() (line 190)
+						If ((current_node).GetHas_Left()) (line 190)
 							Block (line 190)
 								Assign (line 191)
 									parent_node := current_node
 								Assign (line 192)
-									current_node := current_node.GetLeft()
+									current_node := ((current_node).GetLeft())
 
 						Else
 							Assign (line 194)
 								cont := true
 					Else
 						If (key_aux < v_key) (line 195)
-							If current_node.GetHas_Right() (line 196)
+							If ((current_node).GetHas_Right()) (line 196)
 								Block (line 196)
 									Assign (line 197)
 										parent_node := current_node
 									Assign (line 198)
-										current_node := current_node.GetRight()
+										current_node := ((current_node).GetRight())
 
 							Else
 								Assign (line 200)
@@ -236,15 +236,15 @@ Program
 						Else
 							Block (line 201)
 								If is_root (line 202)
-									If (!(current_node.GetHas_Right()) && !(current_node.GetHas_Left())) (line 203)
+									If (!(((current_node).GetHas_Right())) && !(((current_node).GetHas_Left()))) (line 203)
 										Assign (line 205)
 											ntb := true
 									Else
 										Assign (line 207)
-											ntb := this.Remove(parent_node, current_node)
+											ntb := ((this).Remove(parent_node, current_node))
 								Else
 									Assign (line 209)
-										ntb := this.Remove(parent_node, current_node)
+										ntb := ((this).Remove(parent_node, current_node))
 								Assign (line 210)
 									found := true
 								Assign (line 211)
@@ -259,68 +259,68 @@ Program
 			ntb :: boolean
 			auxkey1 :: int
 			auxkey2 :: int
-			If c_node.GetHas_Left() (line 223)
+			If ((c_node).GetHas_Left()) (line 223)
 				Assign (line 224)
-					ntb := this.RemoveLeft(p_node, c_node)
+					ntb := ((this).RemoveLeft(p_node, c_node))
 			Else
-				If c_node.GetHas_Right() (line 225)
+				If ((c_node).GetHas_Right()) (line 225)
 					Assign (line 226)
-						ntb := this.RemoveRight(p_node, c_node)
+						ntb := ((this).RemoveRight(p_node, c_node))
 				Else
 					Block (line 227)
 						Assign (line 228)
-							auxkey1 := c_node.GetKey()
+							auxkey1 := ((c_node).GetKey())
 						Assign (line 229)
-							auxkey2 := p_node.GetLeft().GetKey()
-						If this.Compare(auxkey1, auxkey2) (line 230)
+							auxkey2 := ((((p_node).GetLeft())).GetKey())
+						If ((this).Compare(auxkey1, auxkey2)) (line 230)
 							Block (line 230)
 								Assign (line 231)
-									ntb := p_node.SetLeft(my_null)
+									ntb := ((p_node).SetLeft(my_null))
 								Assign (line 232)
-									ntb := p_node.SetHas_Left(true)
+									ntb := ((p_node).SetHas_Left(true))
 
 						Else
 							Block (line 233)
 								Assign (line 234)
-									ntb := p_node.SetRight(my_null)
+									ntb := ((p_node).SetRight(my_null))
 								Assign (line 235)
-									ntb := p_node.SetHas_Right(true)
+									ntb := ((p_node).SetHas_Right(true))
 
 
 			return true
 
 		RemoveRight :: (c_node: Tree) -> boolean (line 241)
 			ntb :: boolean
-			While c_node.GetHas_Right() (line 243)
+			While ((c_node).GetHas_Right()) (line 243)
 				Block (line 243)
 					Assign (line 244)
-						ntb := c_node.SetKey(c_node.GetRight().GetKey())
+						ntb := ((c_node).SetKey(((((c_node).GetRight())).GetKey())))
 					Assign (line 245)
 						p_node := c_node
 					Assign (line 246)
-						c_node := c_node.GetRight()
+						c_node := ((c_node).GetRight())
 
 			Assign (line 248)
-				ntb := p_node.SetRight(my_null)
+				ntb := ((p_node).SetRight(my_null))
 			Assign (line 249)
-				ntb := p_node.SetHas_Right(true)
+				ntb := ((p_node).SetHas_Right(true))
 			return true
 
 		RemoveLeft :: (c_node: Tree) -> boolean (line 253)
 			ntb :: boolean
-			While c_node.GetHas_Left() (line 255)
+			While ((c_node).GetHas_Left()) (line 255)
 				Block (line 255)
 					Assign (line 256)
-						ntb := c_node.SetKey(c_node.GetLeft().GetKey())
+						ntb := ((c_node).SetKey(((((c_node).GetLeft())).GetKey())))
 					Assign (line 257)
 						p_node := c_node
 					Assign (line 258)
-						c_node := c_node.GetLeft()
+						c_node := ((c_node).GetLeft())
 
 			Assign (line 260)
-				ntb := p_node.SetLeft(my_null)
+				ntb := ((p_node).SetLeft(my_null))
 			Assign (line 261)
-				ntb := p_node.SetHas_Left(true)
+				ntb := ((p_node).SetHas_Left(true))
 			return true
 
 		Search :: () -> int (line 265)
@@ -337,19 +337,19 @@ Program
 			While cont (line 274)
 				Block (line 274)
 					Assign (line 275)
-						key_aux := current_node.GetKey()
+						key_aux := ((current_node).GetKey())
 					If (v_key < key_aux) (line 276)
-						If current_node.GetHas_Left() (line 277)
+						If ((current_node).GetHas_Left()) (line 277)
 							Assign (line 278)
-								current_node := current_node.GetLeft()
+								current_node := ((current_node).GetLeft())
 						Else
 							Assign (line 280)
 								cont := true
 					Else
 						If (key_aux < v_key) (line 281)
-							If current_node.GetHas_Right() (line 282)
+							If ((current_node).GetHas_Right()) (line 282)
 								Assign (line 283)
-									current_node := current_node.GetRight()
+									current_node := ((current_node).GetRight())
 							Else
 								Assign (line 285)
 									cont := true
@@ -369,25 +369,25 @@ Program
 			Assign (line 298)
 				current_node := this
 			Assign (line 299)
-				ntb := this.RecPrint(current_node)
+				ntb := ((this).RecPrint(current_node))
 			return true
 
 		RecPrint :: () -> boolean (line 303)
 			ntb :: boolean
-			If node.GetHas_Left() (line 306)
+			If ((node).GetHas_Left()) (line 306)
 				Block (line 306)
 					Assign (line 307)
-						ntb := this.RecPrint(node.GetLeft())
+						ntb := ((this).RecPrint(((node).GetLeft())))
 
 			Else
 				Assign (line 309)
 					ntb := true
 			Print (line 310)
-				node.GetKey()
-			If node.GetHas_Right() (line 311)
+				((node).GetKey())
+			If ((node).GetHas_Right()) (line 311)
 				Block (line 311)
 					Assign (line 312)
-						ntb := this.RecPrint(node.GetRight())
+						ntb := ((this).RecPrint(((node).GetRight())))
 
 			Else
 				Assign (line 314)
@@ -399,7 +399,7 @@ Program
 			Print (line 321)
 				333
 			Assign (line 322)
-				nti := v.visit(this)
+				nti := ((v).visit(this))
 			return 0
 
 	Class Visitor (line 328)
@@ -407,22 +407,22 @@ Program
 		r :: Tree
 		visit :: () -> int (line 332)
 			nti :: int
-			If n.GetHas_Right() (line 335)
+			If ((n).GetHas_Right()) (line 335)
 				Block (line 335)
 					Assign (line 336)
-						r := n.GetRight()
+						r := ((n).GetRight())
 					Assign (line 337)
-						nti := r.accept(this)
+						nti := ((r).accept(this))
 
 			Else
 				Assign (line 339)
 					nti := 0
-			If n.GetHas_Left() (line 341)
+			If ((n).GetHas_Left()) (line 341)
 				Block (line 341)
 					Assign (line 342)
-						l := n.GetLeft()
+						l := ((n).GetLeft())
 					Assign (line 343)
-						nti := l.accept(this)
+						nti := ((l).accept(this))
 
 			Else
 				Assign (line 345)
@@ -433,24 +433,24 @@ Program
 
 		visit :: () -> int (line 354)
 			nti :: int
-			If n.GetHas_Right() (line 357)
+			If ((n).GetHas_Right()) (line 357)
 				Block (line 357)
 					Assign (line 358)
-						r := n.GetRight()
+						r := ((n).GetRight())
 					Assign (line 359)
-						nti := r.accept(this)
+						nti := ((r).accept(this))
 
 			Else
 				Assign (line 361)
 					nti := 0
 			Print (line 363)
-				n.GetKey()
-			If n.GetHas_Left() (line 365)
+				((n).GetKey())
+			If ((n).GetHas_Left()) (line 365)
 				Block (line 365)
 					Assign (line 366)
-						l := n.GetLeft()
+						l := ((n).GetLeft())
 					Assign (line 367)
-						nti := l.accept(this)
+						nti := ((l).accept(this))
 
 			Else
 				Assign (line 369)

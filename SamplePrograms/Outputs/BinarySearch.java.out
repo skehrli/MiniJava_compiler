@@ -1,7 +1,7 @@
 Program
 	MainClass BinarySearch (line 1)
 		Print (line 3)
-			new BS().Start(20)
+			((new BS()).Start(20))
 
 	Class BS extends Object (line 10)
 		number :: int []
@@ -10,52 +10,52 @@ Program
 			aux01 :: int
 			aux02 :: int
 			Assign (line 19)
-				aux01 := this.Init(sz)
+				aux01 := ((this).Init(sz))
 			Assign (line 20)
-				aux02 := this.Print()
-			If this.Search(8) (line 21)
+				aux02 := ((this).Print())
+			If ((this).Search(8)) (line 21)
 				Print (line 22)
 					1
 			Else
 				Print (line 24)
 					0
-			If this.Search(19) (line 25)
+			If ((this).Search(19)) (line 25)
 				Print (line 26)
 					1
 			Else
 				Print (line 28)
 					0
-			If this.Search(20) (line 29)
+			If ((this).Search(20)) (line 29)
 				Print (line 30)
 					1
 			Else
 				Print (line 32)
 					0
-			If this.Search(21) (line 33)
+			If ((this).Search(21)) (line 33)
 				Print (line 34)
 					1
 			Else
 				Print (line 36)
 					0
-			If this.Search(37) (line 37)
+			If ((this).Search(37)) (line 37)
 				Print (line 38)
 					1
 			Else
 				Print (line 40)
 					0
-			If this.Search(38) (line 41)
+			If ((this).Search(38)) (line 41)
 				Print (line 42)
 					1
 			Else
 				Print (line 44)
 					0
-			If this.Search(39) (line 45)
+			If ((this).Search(39)) (line 45)
 				Print (line 46)
 					1
 			Else
 				Print (line 48)
 					0
-			If this.Search(50) (line 49)
+			If ((this).Search(50)) (line 49)
 				Print (line 50)
 					1
 			Else
@@ -88,7 +88,7 @@ Program
 					Assign (line 75)
 						medium := (left + right)
 					Assign (line 76)
-						medium := this.Div(medium)
+						medium := ((this).Div(medium))
 					Assign (line 77)
 						aux01 := (number[medium])
 					If (num < aux01) (line 78)
@@ -97,7 +97,7 @@ Program
 					Else
 						Assign (line 81)
 							left := (medium + 1)
-					If this.Compare(aux01, num) (line 82)
+					If ((this).Compare(aux01, num)) (line 82)
 						Assign (line 83)
 							var_cont := true
 					Else
@@ -110,7 +110,7 @@ Program
 						Assign (line 89)
 							nt := 0
 
-			If this.Compare(aux01, num) (line 92)
+			If ((this).Compare(aux01, num)) (line 92)
 				Assign (line 93)
 					bs01 := true
 			Else

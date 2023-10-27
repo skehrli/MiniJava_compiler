@@ -1,7 +1,7 @@
 Program
 	MainClass QuickSort (line 1)
 		Print (line 3)
-			new QS().Start(10)
+			((new QS()).Start(10))
 
 	Class QS (line 11)
 		number :: int []
@@ -9,17 +9,17 @@ Program
 		Start :: () -> int (line 18)
 			aux01 :: int
 			Assign (line 20)
-				aux01 := this.Init(sz)
+				aux01 := ((this).Init(sz))
 			Assign (line 21)
-				aux01 := this.Print()
+				aux01 := ((this).Print())
 			Print (line 22)
 				9999
 			Assign (line 23)
 				aux01 := (size - 1)
 			Assign (line 24)
-				aux01 := this.Sort(0, aux01)
+				aux01 := ((this).Sort(0, aux01))
 			Assign (line 25)
-				aux01 := this.Print()
+				aux01 := ((this).Print())
 			return 0
 
 		Sort :: (right: int) -> int (line 31)
@@ -95,9 +95,9 @@ Program
 					ArrayAssign (line 72)
 						number[right] := t
 					Assign (line 73)
-						nt := this.Sort(left, (i - 1))
+						nt := ((this).Sort(left, (i - 1)))
 					Assign (line 74)
-						nt := this.Sort((i + 1), right)
+						nt := ((this).Sort((i + 1), right))
 
 			Else
 				Assign (line 76)
