@@ -1,0 +1,7 @@
+CSE 401/m501 23au Project III - Semantics
+
+Parameters of a method declaration were dropped. (-3)
+
+Pretty printer prints true keyword in place of false. (-1)
+
+Total: 56/60
