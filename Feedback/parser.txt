@@ -1,4 +1,4 @@
-CSE 401/m501 23au Project III - Semantics
+CSE 401/m501 23au Project II - Parser
 
 Parameters of a method declaration were dropped. (-3)
 
