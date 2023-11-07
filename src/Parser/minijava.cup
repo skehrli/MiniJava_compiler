@@ -182,6 +182,7 @@ MethodDecl ::=
 FormalList ::=
       Formal:p {:
         RESULT = new FormalList(pxleft);
+        RESULT.add(p);
     :}
     | FormalList:pl COMMA Formal:p {:
         pl.add(p);
