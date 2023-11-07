@@ -139,7 +139,7 @@ white = {eol}|[ \t]
 
 /* constants */
 "true" { return symbol(sym.TRUE); }
-"false" { return symbol(sym.TRUE); }
+"false" { return symbol(sym.FALSE); }
 (0|[1-9]({digit})*) {
   return symbol(sym.INTEGER, yytext());
 }
