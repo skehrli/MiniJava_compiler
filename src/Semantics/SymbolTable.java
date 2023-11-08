@@ -5,22 +5,56 @@ import java.util.Hashtable;
 
 public class SymbolTable {
     SymbolTable parentScope;
-    Dictionary<String, Type> methods = new Hashtable<>();
-    Dictionary<String, Type> instances = new Hashtable<>();
+    Dictionary<String, MethodType> methods = new Hashtable<>();
+    Dictionary<String, InstanceType> instances = new Hashtable<>();
+    Dictionary<String, ClassType> classes = new Hashtable<>();
+    Dictionary<String, SymbolTable> children = new Hashtable<>();
 
-    public Type getMethod(String s) {
-        return methods.get(s);
+    public SymbolTable() {}
+    public SymbolTable(SymbolTable s) {parentScope = s;}
+
+    public MethodType getMethod(String s) {
+        MethodType t = methods.get(s);
+        if (t == null && parentScope == null) return null;
+        else if (t == null) return parentScope.getMethod(s);
+        return t;
     }
 
-    public Type addMethod(String s, Type t) {
-        return methods.put(s, t);
+    public boolean addMethod(String s, MethodType t) {
+        if (methods.get(s) != null) return false;
+        methods.put(s, t);
+        children.put(s, new SymbolTable(this));
+        return true;
     }
 
-    public Type getInstance(String s) {
-        return instances.get(s);
+    public InstanceType getInstance(String s) {
+        InstanceType t = instances.get(s);
+        if (t == null && parentScope == null) return null;
+        else if (t == null) return parentScope.getInstance(s);
+        return t;
     }
 
-    public Type addInstance(String s, Type t) {
-        return instances.put(s, t);
+    public boolean addInstance(String s, InstanceType t) {
+        if (instances.get(s) != null) return false;
+        instances.put(s, t);
+        return true;
+    }
+
+    public ClassType getClass(String s) {
+        ClassType t = classes.get(s);
+        if (t == null && parentScope == null) return null;
+        else if (t == null) return parentScope.getClass(s);
+        return t;
+    }
+
+    public boolean addClass(String s, ClassType t) {
+        if (classes.get(s) != null) return false;
+        classes.put(s, t);
+        children.put(s, new SymbolTable(this));
+        return true;
+    }
+
+    public SymbolTable getScope(String s) {
+        return children.get(s);
     }
 }
