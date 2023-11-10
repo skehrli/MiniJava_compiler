@@ -7,5 +7,10 @@ public class Boolean implements InstanceType {
         return single;
     }
 
-    private Boolean() {}
+    private Boolean() {
+    }
+
+    public String toString() {
+        return "Boolean";
+    }
 }

@@ -11,4 +11,8 @@ public class Ref implements InstanceType {
     boolean assignmentCompatible(Type b) {
         return Type.subtype(c, b);
     }
+
+    public String toString() {
+        return "Ref";
+    }
 }

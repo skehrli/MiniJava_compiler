@@ -5,8 +5,8 @@ import java.util.LinkedHashMap;
 
 public class Method implements MethodType {
     private InstanceType returnType = Bottom.get();
-    private final Map<String, InstanceType> parameterTypes = new LinkedHashMap<>();
-    private final Map<String, InstanceType> variables = new LinkedHashMap<>();
+    public final Map<String, InstanceType> parameterTypes = new LinkedHashMap<>();
+    public final Map<String, InstanceType> variables = new LinkedHashMap<>();
     // private static final MethodType single = new Method();
 
     // public static Method get() {

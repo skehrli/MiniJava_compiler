@@ -4,12 +4,13 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 
 public class DeclaredClass implements ClassType {
-    private final Map<String, InstanceType> instances = new LinkedHashMap<>();
-    private final Map<String, MethodType> methods = new LinkedHashMap<>();
-    private ClassType superclass = Bottom.get();
+    public final Map<String, InstanceType> instances = new LinkedHashMap<>();
+    public final Map<String, MethodType> methods = new LinkedHashMap<>();
+    public ClassType superclass = Bottom.get();
 
     // Has superclass = null
-    public DeclaredClass() {}
+    public DeclaredClass() {
+    }
 
     // Derived class constructor
     public DeclaredClass(ClassType c) {
@@ -17,7 +18,8 @@ public class DeclaredClass implements ClassType {
     }
 
     public boolean addMethod(String s, MethodType m) {
-        if (Type.valid(methods.get(s))) return false;
+        if (Type.valid(methods.get(s)))
+            return false;
         methods.put(s, m);
         return true;
     }
@@ -31,7 +33,8 @@ public class DeclaredClass implements ClassType {
     }
 
     public boolean addField(String s, InstanceType i) {
-        if (Type.valid(instances.get(s))) return false;
+        if (Type.valid(instances.get(s)))
+            return false;
         instances.put(s, i);
         return true;
     }

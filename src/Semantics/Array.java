@@ -9,4 +9,8 @@ public class Array implements InstanceType {
 
     private Array() {
     }
+
+    public String toString() {
+        return "Array";
+    }
 }

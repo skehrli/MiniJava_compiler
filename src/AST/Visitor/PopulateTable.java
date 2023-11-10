@@ -79,7 +79,7 @@ public class PopulateTable implements Visitor {
             currentMethod.addParam(n.fl.get(i).i.toString(), convertType(n.fl.get(i).t));
         }
         for (int i = 0; i < n.vl.size(); i++) {
-            currentMethod.addVariable(n.vl.get(i).i, convertType(n.vl.get(i).t));
+            currentMethod.addVariable(n.vl.get(i).i.toString(), convertType(n.vl.get(i).t));
         }
     }
 

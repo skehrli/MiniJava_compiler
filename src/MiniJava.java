@@ -1,7 +1,7 @@
-import AST.Program;
-import AST.Visitor.ASTPrintVisitor;
-import AST.Visitor.PrettyPrintVisitor;
-import AST.Visitor.Visitor;
+import AST.*;
+import AST.Visitor.*;
+import Semantics.*;
+import java.util.LinkedHashMap;
 import Scanner.*;
 import Parser.*;
 import java_cup.runtime.Symbol;
@@ -14,7 +14,8 @@ public class MiniJava {
     private static final ComplexSymbolFactory sf = new ComplexSymbolFactory();
     private static String filename;
     private static boolean error = false;
-    private static final Set<Character> flags = Set.of('S', 'A', 'P');
+    private static final Set<Character> flags = Set.of('S', 'A', 'P', 'T');
+    private static final LinkedHashMap<String, ClassType> symTable = new LinkedHashMap<>();
 
     public static void main(String[] args) {
         filename = args[args.length - 1];
@@ -38,6 +39,28 @@ public class MiniJava {
         System.exit(error ? 1 : 0);
     }
 
+    private static void printTable() {
+        for (String s : symTable.keySet()) {
+            ClassType cl = symTable.get(s);
+            if (cl instanceof MainClassType) {
+                System.out.println("Main Class");
+            } else {
+                DeclaredClass cls = (DeclaredClass) cl;
+                System.out.format("Class %s with Superclass %s\n", s, cls.superclass);
+                for (String decl : cls.instances.keySet()) {
+                    System.out.format("Field %s::%s\n", decl, cls.instances.get(decl).toString());
+                }
+                for (String decl : cls.methods.keySet()) {
+                    System.out.format("Method %s::%s\n", decl, cls.methods.get(decl).getReturn());
+                    for (String var : ((Method) cls.methods.get(decl)).variables.keySet()) {
+                        System.out.format("Variable %s::%s\n", var,
+                                ((Method) cls.methods.get(decl)).variables.get(var).toString());
+                    }
+                }
+            }
+        }
+    }
+
     private static void compilerOption(char ch) {
         try {
             switch (ch) {
@@ -49,6 +72,10 @@ public class MiniJava {
                     break;
                 case 'P':
                     visitAST(new PrettyPrintVisitor());
+                    break;
+                case 'T':
+                    visitAST(new PopulateTable(symTable));
+                    printTable();
                     break;
                 default:
                     throw new RuntimeException("Passed unrecognizable flag.");

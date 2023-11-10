@@ -4,9 +4,16 @@ public class Int implements InstanceType {
     private static Int single;
 
     public static Int get() {
-        if (single == null) single = new Int();
+        if (single == null)
+            single = new Int();
         return single;
     }
 
-    private Int() {}
+    private Int() {
+    }
+
+    public String toString() {
+        return "Int";
+    }
+
 }
