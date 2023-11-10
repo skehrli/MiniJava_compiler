@@ -7,5 +7,6 @@ public class Array implements InstanceType {
         return single;
     }
 
-    private Array() {}
+    private Array() {
+    }
 }

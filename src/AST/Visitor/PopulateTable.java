@@ -14,8 +14,10 @@ public class PopulateTable implements Visitor {
 
     @Override
     public void visit(Program n) {
-        if (!sym.addClass(n.m.i1.s, new DeclaredClass()))
-            return;
+        n.m.accept(this);
+        for (int i = 0; i < n.cl.size(); i++) {
+            n.cl.get(i).accept(this);
+        }
     }
 
     @Override
