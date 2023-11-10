@@ -1,8 +1,6 @@
 package Semantics;
 
-import jflex.Main;
-
-public class MainClassType implements ClassType{
+public class MainClassType implements ClassType {
     MainMethod main = MainMethod.get();
 
     private static final MainClassType single = new MainClassType();
@@ -13,6 +11,13 @@ public class MainClassType implements ClassType{
 
     @Override
     public MethodType getMethod(String s) {
+        if (s.equals("main")) return main;
+        return Bottom.get();
+    }
+
+    public MethodType getMethod() {
         return main;
     }
+
+    private MainClassType() {}
 }

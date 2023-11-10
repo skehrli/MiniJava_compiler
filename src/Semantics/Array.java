@@ -1,10 +1,9 @@
 package Semantics;
 
 public class Array implements InstanceType {
-    private static Array single;
+    private static final Array single = new Array();
 
     public static Array get() {
-        if (single == null) single = new Array();
         return single;
     }
 

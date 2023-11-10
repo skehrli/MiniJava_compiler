@@ -1,11 +1,11 @@
 package Semantics;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class DeclaredClass implements ClassType {
-    private final Dictionary<String, InstanceType> instances = new Hashtable<>();
-    private final Dictionary<String, MethodType> methods = new Hashtable<>();
+    private final Map<String, InstanceType> instances = new LinkedHashMap<>();
+    private final Map<String, MethodType> methods = new LinkedHashMap<>();
     private ClassType superclass = Bottom.get();
 
     // Has superclass = null

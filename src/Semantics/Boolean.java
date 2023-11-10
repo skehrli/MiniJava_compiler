@@ -1,10 +1,9 @@
 package Semantics;
 
 public class Boolean implements InstanceType {
-    private static Boolean single;
+    private static final Boolean single = new Boolean();
 
     public static Boolean get() {
-        if (single == null) single = new Boolean();
         return single;
     }
 

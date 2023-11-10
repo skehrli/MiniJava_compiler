@@ -6,4 +6,6 @@ public class MainMethod implements MethodType {
     public static MainMethod get() {
         return single;
     }
+
+    private MainMethod() {}
 }
