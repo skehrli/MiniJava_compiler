@@ -11,4 +11,8 @@ public interface Type {
     static boolean subtype(Type a, Type b) {
         return a == b;
     }
+
+    static boolean valid(Type t) {
+        return t != Bottom.get() && t != null;
+    }
 }
