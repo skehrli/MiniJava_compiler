@@ -4,10 +4,20 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 public interface ClassType extends Type {
-    boolean addMethod(String s, MethodType m);
+    default boolean addMethod(String s, MethodType m) {
+        return false;
+    }
 
-    MethodType getMethod(String s);
-    boolean addField(String s, MethodType m);
-    InstanceType getField(String s);
+    default MethodType getMethod(String s) {
+        return Bottom.get();
+    }
+
+    default boolean addField(String s, MethodType m) {
+        return  false;
+    }
+
+    default InstanceType getField(String s) {
+        return Bottom.get();
+    }
 }
 
