@@ -1,24 +1,26 @@
 package AST.Visitor;
 
+import java.util.LinkedHashMap;
+
 import AST.*;
-import Semantics.DeclaredClass;
-import Semantics.SymbolTable;
+import Semantics.*;
 
 public class PopulateTable implements Visitor {
-    SymbolTable sym;
+    LinkedHashMap<String, ClassType> symTable;
 
-    public PopulateTable(SymbolTable s) {
-        sym = s;
+    public PopulateTable(LinkedHashMap<String, ClassType> s) {
+        symTable = s;
     }
 
     @Override
     public void visit(Program n) {
-        if (!sym.addClass(n.m.i1.s, new DeclaredClass())) return;
+        if (!sym.addClass(n.m.i1.s, new DeclaredClass()))
+            return;
     }
 
     @Override
     public void visit(MainClass n) {
-
+        symTable.put(n.i1.toString(), new MainClassType());
     }
 
     @Override
