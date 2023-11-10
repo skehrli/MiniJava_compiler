@@ -7,5 +7,6 @@ public abstract class Type extends ASTNode {
     public Type(Location pos) {
         super(pos);
     }
+
     public abstract void accept(Visitor v);
 }

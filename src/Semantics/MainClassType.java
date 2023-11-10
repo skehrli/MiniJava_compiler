@@ -5,13 +5,18 @@ public class MainClassType implements ClassType {
 
     private static final MainClassType single = new MainClassType();
 
+    public MainClassType(MainMethod main) {
+        this.main = main;
+    }
+
     public static MainClassType get() {
         return single;
     }
 
     @Override
     public MethodType getMethod(String s) {
-        if (s.equals("main")) return main;
+        if (s.equals("main"))
+            return main;
         return Bottom.get();
     }
 
@@ -19,5 +24,6 @@ public class MainClassType implements ClassType {
         return main;
     }
 
-    private MainClassType() {}
+    private MainClassType() {
+    }
 }

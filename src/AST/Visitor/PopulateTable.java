@@ -7,6 +7,21 @@ import Semantics.*;
 
 public class PopulateTable implements Visitor {
     LinkedHashMap<String, ClassType> symTable;
+    Method currentMethod;
+
+    public InstanceType convertType(ASTNode astType) {
+        if (astType instanceof IntegerType) {
+            return Int.get();
+        } else if (astType instanceof BooleanType) {
+            return Semantics.Boolean.get();
+        } else if (astType instanceof IntArrayType) {
+            return Array.get();
+        } else if (astType instanceof Identifier) {
+            return new Ref((DeclaredClass) symTable.get(((Identifier) astType).s));
+        } else {
+            return Bottom.get();
+        }
+    }
 
     public PopulateTable(LinkedHashMap<String, ClassType> s) {
         symTable = s;
@@ -22,27 +37,50 @@ public class PopulateTable implements Visitor {
 
     @Override
     public void visit(MainClass n) {
-        symTable.put(n.i1.toString(), new MainClassType());
+        symTable.put(n.i1.toString(), MainClassType.get());
     }
 
     @Override
     public void visit(ClassDeclSimple n) {
-
+        DeclaredClass cl = new DeclaredClass();
+        for (int i = 0; i < n.vl.size(); i++) {
+            cl.addField(n.vl.get(i).toString(), convertType(n.vl.get(i).t));
+        }
+        for (int i = 0; i < n.ml.size(); i++) {
+            Method method = new Method(convertType(n.ml.get(i).t));
+            n.ml.get(i).accept(this);
+            cl.addMethod(n.ml.get(i).toString(), method);
+        }
+        symTable.put(n.i.toString(), cl);
     }
 
     @Override
     public void visit(ClassDeclExtends n) {
-
+        DeclaredClass cl = new DeclaredClass(symTable.get(n.j.toString()));
+        for (int i = 0; i < n.vl.size(); i++) {
+            cl.addField(n.vl.get(i).toString(), convertType(n.vl.get(i).t));
+        }
+        for (int i = 0; i < n.ml.size(); i++) {
+            Method method = new Method(convertType(n.ml.get(i).t));
+            currentMethod = method;
+            n.ml.get(i).accept(this);
+            cl.addMethod(n.ml.get(i).toString(), method);
+        }
+        symTable.put(n.i.toString(), cl);
     }
 
     @Override
     public void visit(VarDecl n) {
-
     }
 
     @Override
     public void visit(MethodDecl n) {
-
+        for (int i = 0; i < n.fl.size(); i++) {
+            currentMethod.addParam(n.fl.get(i).i.toString(), convertType(n.fl.get(i).t));
+        }
+        for (int i = 0; i < n.vl.size(); i++) {
+            currentMethod.addVariable(n.vl.get(i).i, convertType(n.vl.get(i).t));
+        }
     }
 
     @Override
