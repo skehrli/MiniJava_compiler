@@ -1,6 +1,6 @@
 package Semantics;
 
-public class Boolean extends InstanceType {
+public class Boolean implements InstanceType {
     private static Boolean single;
 
     public static Boolean get() {

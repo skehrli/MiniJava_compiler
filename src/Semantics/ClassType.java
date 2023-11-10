@@ -3,28 +3,11 @@ package Semantics;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class ClassType extends Type {
-    Dictionary<String, InstanceType> instances = new Hashtable<>();
-    Dictionary<String, MethodType> methods = new Hashtable<>();
-    ClassType superclass;
+public interface ClassType extends Type {
+    boolean addMethod(String s, MethodType m);
 
-    // Has superclass = null
-    public ClassType() {}
-
-    // Derived class constructor
-    public ClassType(ClassType c) {
-        superclass = c;
-    }
-
-    public boolean addMethod(String s, MethodType m) {
-        if (methods.get(s) != null) return false;
-        methods.put(s, m);
-        return true;
-    }
-
-    public boolean addInstance(String s, InstanceType i) {
-        if (instances.get(s) != null) return false;
-        instances.put(s, i);
-        return true;
-    }
+    MethodType getMethod(String s);
+    boolean addField(String s, MethodType m);
+    InstanceType getField(String s);
 }
+

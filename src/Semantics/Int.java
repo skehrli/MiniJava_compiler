@@ -1,6 +1,6 @@
 package Semantics;
 
-public class Int extends InstanceType {
+public class Int implements InstanceType {
     private static Int single;
 
     public static Int get() {

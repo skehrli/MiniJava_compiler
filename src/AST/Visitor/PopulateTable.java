@@ -1,7 +1,7 @@
 package AST.Visitor;
 
 import AST.*;
-import Semantics.ClassType;
+import Semantics.DeclaredClass;
 import Semantics.SymbolTable;
 
 public class PopulateTable implements Visitor {
@@ -13,7 +13,7 @@ public class PopulateTable implements Visitor {
 
     @Override
     public void visit(Program n) {
-        sym.addClass(n.m.i1.s, new ClassType());
+        if (!sym.addClass(n.m.i1.s, new DeclaredClass())) return;
     }
 
     @Override

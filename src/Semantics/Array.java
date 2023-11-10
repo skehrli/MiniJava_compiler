@@ -1,6 +1,6 @@
 package Semantics;
 
-public class Array extends InstanceType {
+public class Array implements InstanceType {
     private static Array single;
 
     public static Array get() {

@@ -1,6 +1,6 @@
 package Semantics;
 
-public class Bottom extends InstanceType {
+public class Bottom implements InstanceType, MethodType, ClassType {
     private static Bottom single;
 
     public static Bottom get() {

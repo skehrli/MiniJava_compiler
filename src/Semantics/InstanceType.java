@@ -1,3 +1,3 @@
 package Semantics;
 
-public abstract class InstanceType extends Type {}
+public interface InstanceType extends Type {}
