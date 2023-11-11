@@ -6,7 +6,8 @@ import java.util.LinkedHashMap;
 public class DeclaredClass implements ClassType {
     public final Map<String, InstanceType> instances = new LinkedHashMap<>();
     public final Map<String, MethodType> methods = new LinkedHashMap<>();
-    public ClassType superclass = Bottom.get();
+    public ClassType superclass = null;
+    // public ClassType superclass = Bottom.get();
 
     // Has superclass = null
     public DeclaredClass() {
@@ -27,7 +28,8 @@ public class DeclaredClass implements ClassType {
     public MethodType getMethod(String s) {
         MethodType result = methods.get(s);
         if (!Type.valid(result)) {
-            return superclass.getMethod(s);
+            if (superclass != null)
+                return superclass.getMethod(s);
         }
         return result;
     }
@@ -42,7 +44,10 @@ public class DeclaredClass implements ClassType {
     public InstanceType getField(String s) {
         InstanceType result = instances.get(s);
         if (!Type.valid(result)) {
-            return superclass.getField(s);
+            if (superclass != null)
+                return superclass.getField(s);
+            else
+                return null;
         }
         return result;
     }

@@ -7,6 +7,7 @@ import Semantics.*;
 
 public class PopulateTable implements Visitor {
     LinkedHashMap<String, ClassType> symTable;
+    DeclaredClass currentClass;
     Method currentMethod;
 
     public InstanceType convertType(ASTNode astType) {
@@ -43,13 +44,25 @@ public class PopulateTable implements Visitor {
     @Override
     public void visit(ClassDeclSimple n) {
         DeclaredClass cl = new DeclaredClass();
+        currentClass = cl;
         for (int i = 0; i < n.vl.size(); i++) {
-            cl.addField(n.vl.get(i).toString(), convertType(n.vl.get(i).t));
+            String fieldName = n.vl.get(i).toString();
+            if (cl.methods.containsKey(fieldName)) {
+                System.err.format("Line %d: Fields must have unique names.\n", n.line_number);
+            } else {
+                cl.addField(fieldName, convertType(n.vl.get(i).t));
+            }
         }
         for (int i = 0; i < n.ml.size(); i++) {
             Method method = new Method(convertType(n.ml.get(i).t));
-            n.ml.get(i).accept(this);
-            cl.addMethod(n.ml.get(i).toString(), method);
+            String methodName = n.ml.get(i).toString();
+            if (cl.methods.containsKey(methodName)) {
+                System.err.format("Line %d: Methods must have unique names. Overloading not allowed\n", n.line_number);
+            } else {
+                currentMethod = method;
+                n.ml.get(i).accept(this);
+                cl.addMethod(n.ml.get(i).toString(), method);
+            }
         }
         symTable.put(n.i.toString(), cl);
     }
@@ -57,16 +70,26 @@ public class PopulateTable implements Visitor {
     @Override
     public void visit(ClassDeclExtends n) {
         DeclaredClass cl = new DeclaredClass(symTable.get(n.j.toString()));
+        currentClass = cl;
         for (int i = 0; i < n.vl.size(); i++) {
-            cl.addField(n.vl.get(i).toString(), convertType(n.vl.get(i).t));
+            String fieldName = n.vl.get(i).toString();
+            if (cl.methods.containsKey(fieldName)) {
+                System.err.format("Line %d: Fields must have unique names.\n", n.line_number);
+            } else {
+                cl.addField(fieldName, convertType(n.vl.get(i).t));
+            }
         }
         for (int i = 0; i < n.ml.size(); i++) {
             Method method = new Method(convertType(n.ml.get(i).t));
             currentMethod = method;
-            n.ml.get(i).accept(this);
+            if (!cl.addMethod(n.ml.get(i).toString(), method))
+                System.err.format("Line %d: Methods must have unique names. Overloading not allowed\n",
+                        n.ml.get(i).line_number);
             cl.addMethod(n.ml.get(i).toString(), method);
+            n.ml.get(i).accept(this);
         }
-        symTable.put(n.i.toString(), cl);
+    }symTable.put(n.i.toString(),cl);
+
     }
 
     @Override
@@ -76,11 +99,18 @@ public class PopulateTable implements Visitor {
     @Override
     public void visit(MethodDecl n) {
         for (int i = 0; i < n.fl.size(); i++) {
-            currentMethod.addParam(n.fl.get(i).i.toString(), convertType(n.fl.get(i).t));
+            if (!currentMethod.addParam(n.fl.get(i).i.toString(), convertType(n.fl.get(i).t))) {
+                System.err.format("Line %d: Parameters must have unique names.\n",
+                        n.fl.get(i).line_number);
+            }
         }
         for (int i = 0; i < n.vl.size(); i++) {
-            currentMethod.addVariable(n.vl.get(i).i.toString(), convertType(n.vl.get(i).t));
+            if (!currentMethod.addVariable(n.vl.get(i).i.toString(), convertType(n.vl.get(i).t)) 
+                System.err.format("Line %d: %s declared previously.\n",
+                        n.vl.get(i).line_number, n.vl.get(i).i.toString());
         }
+    }
+
     }
 
     @Override

@@ -1,7 +1,7 @@
 package Semantics;
 
 public class Ref implements InstanceType {
-    DeclaredClass c;
+    public DeclaredClass c;
 
     public Ref(DeclaredClass c) {
         this.c = c;
