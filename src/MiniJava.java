@@ -74,6 +74,7 @@ public class MiniJava {
                     visitAST(new PrettyPrintVisitor());
                     break;
                 case 'T':
+                    visitAST(new PopulateClasses(symTable));
                     visitAST(new PopulateTable(symTable));
                     visitAST(new ExpressionTypeVisitor(symTable));
                     // printTable();

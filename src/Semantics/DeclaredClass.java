@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 public class DeclaredClass implements ClassType {
     public final Map<String, InstanceType> instances = new LinkedHashMap<>();
     public final Map<String, MethodType> methods = new LinkedHashMap<>();
-    public ClassType superclass = null;
+    public DeclaredClass superclass = null;
     // public ClassType superclass = Bottom.get();
 
     // Has superclass = null
@@ -14,7 +14,7 @@ public class DeclaredClass implements ClassType {
     }
 
     // Derived class constructor
-    public DeclaredClass(ClassType c) {
+    public DeclaredClass(DeclaredClass c) {
         superclass = c;
     }
 

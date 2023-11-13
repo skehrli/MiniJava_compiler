@@ -127,7 +127,6 @@ public class ExpressionTypeVisitor implements Visitor {
 
     @Override
     public void visit(IdentifierType n) {
-
     }
 
     @Override
@@ -353,7 +352,7 @@ public class ExpressionTypeVisitor implements Visitor {
             n.expType = Bottom.get();
         } else if (cl instanceof MainClassType) {
             System.err.format("Line %d: Cannot instantiate main class.\n", n.line_number);
-            n.expType = Bottom.get();
+            // raise Exception
         } else {
             n.expType = new Ref(symTable.get(n.i.toString()));
         }
@@ -371,5 +370,6 @@ public class ExpressionTypeVisitor implements Visitor {
 
     @Override
     public void visit(Identifier n) {
+
     }
 }
