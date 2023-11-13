@@ -85,11 +85,10 @@ public class PopulateTable implements Visitor {
             if (!cl.addMethod(n.ml.get(i).toString(), method))
                 System.err.format("Line %d: Methods must have unique names. Overloading not allowed\n",
                         n.ml.get(i).line_number);
-            cl.addMethod(n.ml.get(i).toString(), method);
+            cl.addMethod(n.ml.get(i).i.toString(), method);
             n.ml.get(i).accept(this);
         }
-    }symTable.put(n.i.toString(),cl);
-
+        symTable.put(n.i.toString(), cl);
     }
 
     @Override
@@ -105,12 +104,10 @@ public class PopulateTable implements Visitor {
             }
         }
         for (int i = 0; i < n.vl.size(); i++) {
-            if (!currentMethod.addVariable(n.vl.get(i).i.toString(), convertType(n.vl.get(i).t)) 
+            if (!currentMethod.addVariable(n.vl.get(i).i.toString(), convertType(n.vl.get(i).t)))
                 System.err.format("Line %d: %s declared previously.\n",
                         n.vl.get(i).line_number, n.vl.get(i).i.toString());
         }
-    }
-
     }
 
     @Override

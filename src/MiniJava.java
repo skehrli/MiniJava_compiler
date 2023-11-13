@@ -75,7 +75,8 @@ public class MiniJava {
                     break;
                 case 'T':
                     visitAST(new PopulateTable(symTable));
-                    printTable();
+                    visitAST(new ExpressionTypeVisitor(symTable));
+                    // printTable();
                     break;
                 default:
                     throw new RuntimeException("Passed unrecognizable flag.");

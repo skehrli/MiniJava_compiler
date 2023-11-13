@@ -7,11 +7,6 @@ public class Method implements MethodType {
     private InstanceType returnType = Bottom.get();
     public final Map<String, InstanceType> parameterTypes = new LinkedHashMap<>();
     public final Map<String, InstanceType> variables = new LinkedHashMap<>();
-    // private static final MethodType single = new Method();
-
-    // public static Method get() {
-    // return single;
-    // }
 
     public Method() {
     }
