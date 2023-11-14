@@ -275,8 +275,8 @@ public class ExpressionTypeVisitor implements Visitor {
         n.e.accept(this);
         InstanceType callerType = n.e.expType;
         if (callerType instanceof Semantics.Ref) {
-            MethodType method = ((DeclaredClass) ((Semantics.Ref) callerType).c).methods.get(n.i.toString());
-            if (method == null || !(method instanceof Semantics.Method)) {
+            MethodType method = ((Semantics.Ref) callerType).c.getMethod(n.i.toString());
+            if (method == Bottom.get()) {
                 System.err.format("Line %d: %s not a valid method for Type %s.\n", n.line_number, n.i.toString(),
                         n.e.expType);
                 n.expType = Semantics.Bottom.get();
