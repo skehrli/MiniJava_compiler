@@ -34,6 +34,7 @@ public class PopulateClasses implements Visitor {
         currentClass = cl;
         if (symTable.containsKey(n.i.toString())) {
             System.err.format("Line %d: Classes must have unique names.\n", n.line_number);
+            // throw new Exception("Duplicate class declaration");
         } else {
             symTable.put(n.i.toString(), cl);
         }
