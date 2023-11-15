@@ -58,6 +58,32 @@ public class PopulateTable implements Visitor {
             if (cl.methods.containsKey(methodName)) {
                 System.err.format("Line %d: Methods must have unique names. Overloading not allowed\n", n.line_number);
             } else {
+                DeclaredClass superclass = cl.superclass;
+                while (superclass != null) {
+                    if (superclass.methods.containsKey(methodName)) {
+                        // check if equal signature
+                        Method superClassMethod = (Method) superclass.methods.get(methodName);
+                        if (superClassMethod.parameterTypes.size() != method.parameterTypes.size()) {
+                            System.err.format(
+                                    "Line %d: Method overrides a superclass method, but with wrong signature\n",
+                                    n.line_number);
+
+                        }
+                        InstanceType[] params1 = (InstanceType[]) method.parameterTypes.values().toArray();
+                        InstanceType[] params2 = (InstanceType[]) superClassMethod.parameterTypes.values().toArray();
+                        for (int j = 0; j < superClassMethod.parameterTypes.size(); j++) {
+                            if (params1[i] != params2[i]) {
+                                if (params1[i] instanceof Ref && params2[i] instanceof Ref
+                                        && ((Ref) params1[i]).c == ((Ref) params2[i]).c) {
+                                    continue;
+                                }
+                                System.err.format(
+                                        "Line %d: Method overrides a superclass method, but with wrong signature\n",
+                                        n.line_number);
+                            }
+                        }
+                    }
+                }
                 currentMethod = method;
                 n.ml.get(i).accept(this);
                 cl.addMethod(n.ml.get(i).i.toString(), method);

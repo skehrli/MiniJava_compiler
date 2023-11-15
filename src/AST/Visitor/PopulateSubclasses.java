@@ -38,18 +38,21 @@ public class PopulateSubclasses implements Visitor {
         return dfs(table, pre, it, iteration, superClIdx);
     }
 
-    public void findInheritanceCycles() {
+    public boolean findInheritanceCycles() {
         int n = symTable.size();
         String[] table = symTable.keySet().toArray(new String[0]);
         int[] predecessor = new int[n];
         int[] iteration = new int[n];
+        boolean cycleFound = false;
         for (int i = 1; i < n; i++) {
             if (iteration[i] > 0)
                 continue;
             if (dfs(table, predecessor, iteration, i, i)) {
                 System.err.format("Cycle in the Inheritance Graph.\n");
+                cycleFound = true;
             }
         }
+        return cycleFound;
     }
 
     @Override
@@ -57,7 +60,9 @@ public class PopulateSubclasses implements Visitor {
         for (int i = 0; i < n.cl.size(); i++) {
             n.cl.get(i).accept(this);
         }
-        findInheritanceCycles();
+        if (findInheritanceCycles()) {
+
+        }
     }
 
     @Override
