@@ -4,7 +4,7 @@ public interface Type {
 
     /* t1: a := t2: b */
     static boolean assignmentCompatible(InstanceType a, InstanceType b) {
-        if (a == Bottom.get() || b == Bottom.get()) {
+        if (a == Bottom.get() || b == Bottom.get() || a == Top.get() || b == Top.get()) {
             return true;
         }
         if (a instanceof Ref && b instanceof Ref) {

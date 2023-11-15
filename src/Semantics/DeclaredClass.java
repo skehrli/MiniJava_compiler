@@ -51,6 +51,8 @@ public class DeclaredClass implements ClassType {
         if (!Type.valid(result)) {
             if (superclass != null)
                 return superclass().getMethod(s);
+            else
+                return Bottom.get();
         }
         return result;
     }
@@ -73,7 +75,9 @@ public class DeclaredClass implements ClassType {
         return result;
     }
 
-    public String toString() { return this.name; }
+    public String toString() {
+        return this.name;
+    }
 
     @Override
     public boolean setSuperclass(String s) {
@@ -83,7 +87,8 @@ public class DeclaredClass implements ClassType {
 
     @Override
     public ClassType superclass() {
-        if (superclass == null) return Top.get();
+        if (superclass == null)
+            return Top.get();
         return Top.symTable.get(superclass);
     }
 }

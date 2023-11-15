@@ -39,7 +39,8 @@ public class PopulateTable implements Visitor {
     }
 
     @Override
-    public void visit(MainClass n) {}
+    public void visit(MainClass n) {
+    }
 
     @Override
     public void visit(ClassDeclSimple n) {
@@ -84,7 +85,8 @@ public class PopulateTable implements Visitor {
             currentMethod = method;
             n.ml.get(i).accept(this);
 
-            if (cl.superclass() == Bottom.get()) continue;
+            if (cl.superclass() == Bottom.get())
+                continue;
             if (!overrideCorrect(m.i, cl.superclass())) {
                 symTable.err("Incorrect signature for overridden method " + m.i + ".", n);
             }
@@ -95,13 +97,15 @@ public class PopulateTable implements Visitor {
         Method method = (Method) currentClass.getMethod(methodName);
         while (superclass != Top.get() && superclass != Bottom.get()) {
             MethodType superMethodOpt = superclass.getMethod(methodName);
-            if (superMethodOpt.params() != method.params()) return false;
+            if (superMethodOpt.params() != method.params())
+                return false;
 
             Method superMethod = (Method) superMethodOpt;
             Iterator<InstanceType> sit = superMethod.parameters.values().iterator(),
                     it = method.parameters.values().iterator();
             for (int j = 0; j < superMethod.params(); j++) {
-                if (!Type.sameType(sit.next(), it.next())) return false;
+                if (!Type.sameType(sit.next(), it.next()))
+                    return false;
             }
             if (!Type.assignmentCompatible(superMethod.getReturn(), method.getReturn()))
                 return false;
@@ -111,7 +115,8 @@ public class PopulateTable implements Visitor {
     }
 
     @Override
-    public void visit(VarDecl n) { }
+    public void visit(VarDecl n) {
+    }
 
     @Override
     public void visit(MethodDecl n) {

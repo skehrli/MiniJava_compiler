@@ -13,6 +13,13 @@ public class ExpressionTypeVisitor implements Visitor {
         symTable = s;
     }
 
+    // returns whether a is valid for b, where b is a primitive type
+    public boolean validType(InstanceType a, InstanceType b) {
+        if (a == Top.get() || a == Bottom.get())
+            return true;
+        return a == b;
+    }
+
     public Semantics.InstanceType findInScope(String id) {
         InstanceType var = Bottom.get();
         boolean isMainClass = currentClass instanceof MainClassType;
@@ -124,7 +131,7 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(If n) {
         n.e.accept(this);
-        if (n.e.expType != Semantics.Boolean.get()) {
+        if (!validType(n.e.expType, Semantics.Boolean.get())) {
             symTable.err("Expression in if not of boolean type.", n.e);
         }
         n.s1.accept(this);
@@ -134,7 +141,7 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(While n) {
         n.e.accept(this);
-        if (n.e.expType != Semantics.Boolean.get()) {
+        if (!validType(n.e.expType, Semantics.Boolean.get())) {
             symTable.err("Expression in while not of boolean type.", n.e);
         }
         n.s.accept(this);
@@ -143,9 +150,10 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(Print n) {
         n.e.accept(this);
-        if (n.e.expType != Semantics.Int.get()) {
+        if (!validType(n.e.expType, Semantics.Int.get())) {
             symTable.err("Argument of System.out.println not of integer type.", n.e);
         }
+
     }
 
     @Override
@@ -163,10 +171,10 @@ public class ExpressionTypeVisitor implements Visitor {
         n.e1.accept(this);
         n.e2.accept(this);
         InstanceType t = findInScope(n.i.toString());
-        if (t != Semantics.Array.get()) {
+        if (!validType(t, Semantics.Array.get())) {
             System.err.format("Line %d: %s not of type array.\n", n.line_number, n.i.toString());
         }
-        if (n.e1.expType != Semantics.Int.get() && n.e1.expType != Bottom.get()) {
+        if (!validType(n.e1.expType, Semantics.Int.get())) {
             System.err.format("Line %d: Array is not indexed with an int.\n", n.e1.line_number);
         }
         if (!Type.assignmentCompatible(n.e1.expType, Semantics.Int.get())) {
@@ -179,7 +187,7 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(And n) {
         n.e1.accept(this);
         n.e2.accept(this);
-        if (n.e1.expType != Semantics.Boolean.get() || n.e2.expType != Semantics.Boolean.get()) {
+        if (!validType(n.e1.expType, Semantics.Boolean.get()) || !validType(n.e2.expType, Semantics.Boolean.get())) {
             System.err.format("Line %d: Operands of && must be of type boolean, boolean but are type %s, %s.\n",
                     n.e1.line_number, n.e1.expType.toString(), n.e2.expType.toString());
         }
@@ -190,7 +198,7 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(LessThan n) {
         n.e1.accept(this);
         n.e2.accept(this);
-        if (n.e1.expType != Semantics.Int.get() || n.e2.expType != Semantics.Int.get()) {
+        if (!validType(n.e1.expType, Semantics.Int.get()) || !validType(n.e2.expType, Semantics.Int.get())) {
             System.err.format("Line %d: Operands of '<' must be of type Int, Int but are type %s, %s.\n",
                     n.e1.line_number, n.e1.expType.toString(), n.e2.expType.toString());
         }
@@ -201,7 +209,7 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(Plus n) {
         n.e1.accept(this);
         n.e2.accept(this);
-        if (n.e1.expType != Semantics.Int.get() || n.e2.expType != Semantics.Int.get()) {
+        if (!validType(n.e1.expType, Semantics.Int.get()) || !validType(n.e2.expType, Semantics.Int.get())) {
             System.err.format("Line %d: Operands of '+' must be of type Int, Int but are type %s, %s.\n",
                     n.e1.line_number, n.e1.expType.toString(), n.e2.expType.toString());
         }
@@ -212,7 +220,7 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(Minus n) {
         n.e1.accept(this);
         n.e2.accept(this);
-        if (n.e1.expType != Semantics.Int.get() || n.e2.expType != Semantics.Int.get()) {
+        if (!validType(n.e1.expType, Semantics.Int.get()) || !validType(n.e2.expType, Semantics.Int.get())) {
             System.err.format("Line %d: Operands of '-' must be of type Int, Int but are type %s, %s.\n",
                     n.e1.line_number, n.e1.expType.toString(), n.e2.expType.toString());
         }
@@ -223,7 +231,7 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(Times n) {
         n.e1.accept(this);
         n.e2.accept(this);
-        if (n.e1.expType != Semantics.Int.get() || n.e2.expType != Semantics.Int.get()) {
+        if (!validType(n.e1.expType, Semantics.Int.get()) || !validType(n.e2.expType, Semantics.Int.get())) {
             System.err.format("Line %d: Operands of '*' must be of type Int, Int but are type %s, %s.\n",
                     n.e1.line_number, n.e1.expType.toString(), n.e2.expType.toString());
         }
@@ -234,11 +242,11 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(ArrayLookup n) {
         n.e1.accept(this);
         n.e2.accept(this);
-        if (n.e1.expType != Semantics.Array.get() && n.e1.expType != Bottom.get()) {
+        if (!validType(n.e1.expType, Semantics.Array.get())) {
             System.err.format("Line %d: Expected type array, but is type %s.\n",
                     n.e1.line_number, n.e1.expType.toString());
         }
-        if (n.e2.expType != Semantics.Int.get() && n.e2.expType != Bottom.get()) {
+        if (!validType(n.e2.expType, Semantics.Int.get())) {
             System.err.format("Line %d: Array must be indexed with int, but found %s.\n",
                     n.e2.line_number, n.e2.expType.toString());
         }
@@ -248,7 +256,7 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(ArrayLength n) {
         n.e.accept(this);
-        if (n.e.expType != Array.get() && n.e.expType != Bottom.get()) {
+        if (!validType(n.e.expType, Semantics.Array.get())) {
             System.err.format("Line %d: Expression must be of type Array, but found %s.\n", n.e.line_number,
                     n.e.expType);
         }
@@ -262,7 +270,7 @@ public class ExpressionTypeVisitor implements Visitor {
         InstanceType callerType = n.e.expType;
         if (callerType instanceof Semantics.Ref) {
             MethodType method = symTable.get(((Semantics.Ref) callerType).s).getMethod(n.i.toString());
-            if (method == Bottom.get()) {
+            if (method == Bottom.get() || method == Top.get()) {
                 System.err.format("Line %d: %s not a valid method for Type %s.\n", n.line_number, n.i.toString(),
                         n.e.expType);
                 n.expType = Semantics.Bottom.get();
@@ -279,9 +287,10 @@ public class ExpressionTypeVisitor implements Visitor {
                 boolean parameters_match = true;
                 for (InstanceType t : m.parameters.values()) {
                     if (!Type.assignmentCompatible(t, n.el.get(i).expType)) {
-                        System.err.format("Line %d: Wrong argument type of %s: Type %s instead of %s.\n",
+                        System.err.format("Line %d: Argument %d of Method is of wrong type: %s instead of %s.\n",
                                 n.el.get(i).line_number,
-                                n.el.get(i).toString(), n.el.get(i).expType, t);
+                                i + 1,
+                                n.el.get(i).expType, t);
                         parameters_match = false;
                         break;
                     }
@@ -290,8 +299,10 @@ public class ExpressionTypeVisitor implements Visitor {
                 n.expType = parameters_match ? m.getReturn() : Bottom.get();
             }
         } else {
-            System.err.format("Line %d: LHS of call is not a reference type; has type %s.\n", n.line_number,
-                    n.e.expType);
+            if (callerType != Bottom.get() && callerType != Top.get()) {
+                System.err.format("Line %d: LHS of call is not a reference type; has type %s.\n", n.line_number,
+                        n.e.expType);
+            }
             n.expType = Semantics.Bottom.get();
         }
     }
@@ -324,8 +335,7 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(NewArray n) {
         n.e.accept(this);
-        Semantics.Type t = n.e.expType;
-        if (t != Semantics.Int.get() && t != Semantics.Bottom.get()) {
+        if (!validType(n.e.expType, Semantics.Int.get())) {
             symTable.err("Array length must be of type int, but found " + n.e.expType + ".", n);
         }
         n.expType = Semantics.Array.get();
@@ -334,7 +344,7 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(NewObject n) {
         ClassType cl = symTable.get(n.i.toString());
-        if (cl == Bottom.get()) {
+        if (cl == Bottom.get() || cl == Top.get()) {
             symTable.err("Class " + n.i + " not found.", n);
             n.expType = Bottom.get();
         } else if (cl == MainClassType.get()) {
@@ -348,8 +358,7 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(Not n) {
         n.e.accept(this);
-        Semantics.Type t = n.e.expType;
-        if (t != Bottom.get() && t != Semantics.Boolean.get()) {
+        if (!validType(n.e.expType, Semantics.Boolean.get())) {
             symTable.err("Argument to (!) must be of boolean type.", n);
         }
         n.expType = Semantics.Boolean.get();
