@@ -24,6 +24,17 @@ public class ExpressionTypeVisitor implements Visitor {
             DeclaredClass curClass = (DeclaredClass) currentClass;
             if (curClass.instances.containsKey(id)) {
                 var = curClass.instances.get(id);
+            } else if ((curClass.superclass() instanceof DeclaredClass)) {
+                DeclaredClass supercls = (DeclaredClass) curClass.superclass();
+                while (true) {
+                    if (supercls.instances.containsKey(id)) {
+                        var = supercls.instances.get(id);
+                    }
+                    if (!(supercls.superclass() instanceof DeclaredClass)) {
+                        break;
+                    }
+                    supercls = (DeclaredClass) supercls.superclass();
+                }
             }
         }
         return var;
@@ -67,7 +78,8 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(MethodDecl n) {
         DeclaredClass cl = (DeclaredClass) currentClass;
         MethodType m = cl.getMethod(n.i.toString());
-        if (m == Bottom.get()) return;
+        if (m == Bottom.get())
+            return;
         currentMethod = (Method) m;
         for (int i = 0; i < n.sl.size(); i++) {
             n.sl.get(i).accept(this);
@@ -278,7 +290,8 @@ public class ExpressionTypeVisitor implements Visitor {
                 n.expType = parameters_match ? m.getReturn() : Bottom.get();
             }
         } else {
-            System.err.format("Line %d: LHS of call is not a reference type; has type %s.\n", n.line_number, n.e.expType);
+            System.err.format("Line %d: LHS of call is not a reference type; has type %s.\n", n.line_number,
+                    n.e.expType);
             n.expType = Semantics.Bottom.get();
         }
     }
@@ -343,5 +356,6 @@ public class ExpressionTypeVisitor implements Visitor {
     }
 
     @Override
-    public void visit(Identifier n) {}
+    public void visit(Identifier n) {
+    }
 }
