@@ -13,6 +13,6 @@ public class Ref implements InstanceType {
     }
 
     public String toString() {
-        return "Ref";
+        return c.toString();
     }
 }

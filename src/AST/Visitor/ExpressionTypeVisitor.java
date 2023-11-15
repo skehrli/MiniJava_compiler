@@ -304,7 +304,7 @@ public class ExpressionTypeVisitor implements Visitor {
                 n.expType = parameters_match ? m.getReturn() : Bottom.get();
             }
         } else {
-            System.err.format("Line %d: LHS is not a reference type.\n", n.line_number);
+            System.err.format("Line %d: LHS of call is not a reference type; has type %s.\n", n.line_number, n.e.expType);
             n.expType = Semantics.Bottom.get();
         }
     }

@@ -52,9 +52,12 @@ public class MiniJava {
                 continue;
             }
             DeclaredClass cls = (DeclaredClass) cl;
-            System.out.format("class %s <: %s\n", s, cls.superclass);
+            System.out.format("class %s", s);
+            if (cls.superclass != null) System.out.format(" <: %s\n", cls.superclass);
+            else System.out.println(" <: ⊤");
+
             for (String decl : cls.instances.keySet()) {
-                System.out.format("\tfield %s :: %s\n", decl, cls.instances.get(decl).toString());
+                System.out.format("\tfield %s :: %s\n", decl, cls.getField(decl));
             }
             for (String decl : cls.methods.keySet()) {
                 StringBuilder b = new StringBuilder("\tmethod ");
