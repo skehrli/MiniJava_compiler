@@ -46,29 +46,24 @@ public class PopulateTable implements Visitor {
         currentClass = cl;
         for (int i = 0; i < n.vl.size(); i++) {
             String fieldName = n.vl.get(i).i.toString();
-            if (cl.methods.containsKey(fieldName)) {
+            if (!cl.addField(fieldName, convertType(n.vl.get(i).t))) {
                 System.err.format("Line %d: Fields must have unique names.\n", n.line_number);
-            } else {
-                cl.addField(fieldName, convertType(n.vl.get(i).t));
             }
         }
         for (int i = 0; i < n.ml.size(); i++) {
             Method method = new Method(convertType(n.ml.get(i).t));
             String methodName = n.ml.get(i).i.toString();
-            if (cl.methods.containsKey(methodName)) {
+            if (!cl.addMethod(methodName, method)) {
                 System.err.format("Line %d: Methods must have unique names. Overloading not allowed\n", n.line_number);
             } else {
                 currentMethod = method;
                 n.ml.get(i).accept(this);
-                cl.addMethod(n.ml.get(i).i.toString(), method);
             }
         }
     }
 
     @Override
     public void visit(ClassDeclExtends n) {
-        System.err.println(n.i.toString());
-        symTable.keySet().forEach(System.out::println);
         DeclaredClass cl = (DeclaredClass) symTable.get(n.i.toString());
         currentClass = cl;
         for (int i = 0; i < n.vl.size(); i++) {

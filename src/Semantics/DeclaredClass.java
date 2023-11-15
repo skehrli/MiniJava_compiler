@@ -7,14 +7,17 @@ public class DeclaredClass implements ClassType {
     public final Map<String, InstanceType> instances = new LinkedHashMap<>();
     public final Map<String, MethodType> methods = new LinkedHashMap<>();
     public DeclaredClass superclass = null;
+    public String name;
     // public ClassType superclass = Bottom.get();
 
     // Has superclass = null
-    public DeclaredClass() {
+    public DeclaredClass(String name) {
+        this.name = name;
     }
 
     // Derived class constructor
-    public DeclaredClass(DeclaredClass c) {
+    public DeclaredClass(String name, DeclaredClass c) {
+        this.name = name;
         superclass = c;
     }
 
@@ -51,4 +54,6 @@ public class DeclaredClass implements ClassType {
         }
         return result;
     }
+
+    public String toString() { return this.name; }
 }

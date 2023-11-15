@@ -42,20 +42,35 @@ public class MiniJava {
     private static void printTable() {
         for (String s : symTable.keySet()) {
             ClassType cl = symTable.get(s);
-            if (cl instanceof MainClassType) {
-                System.out.println("Main Class");
-            } else {
-                DeclaredClass cls = (DeclaredClass) cl;
-                System.out.format("Class %s with Superclass %s\n", s, cls.superclass);
-                for (String decl : cls.instances.keySet()) {
-                    System.out.format("Field %s::%s\n", decl, cls.instances.get(decl).toString());
+            if (cl == MainClassType.get()) {
+                System.out.format("main class %s\n", cl);
+                continue;
+            }
+            if (cl == Bottom.get()) {
+                System.out.format("class %s :: %s\n", s, cl);
+                continue;
+            }
+            DeclaredClass cls = (DeclaredClass) cl;
+            System.out.format("class %s <: %s\n", s, cls.superclass);
+            for (String decl : cls.instances.keySet()) {
+                System.out.format("\tfield %s :: %s\n", decl, cls.instances.get(decl).toString());
+            }
+            for (String decl : cls.methods.keySet()) {
+                StringBuilder b = new StringBuilder("\tmethod ");
+                b.append(decl).append(" :: ");
+                if (cls.getMethod(decl) == Bottom.get())
+                    b.append(Bottom.get());
+                else {
+                    b.append('(');
+                    ((Method) cls.getMethod(decl)).parameterTypes.forEach((key, value) -> b.append(key).append(": ").append(value).append(", "));
+                    if (!((Method) cls.getMethod(decl)).parameterTypes.isEmpty()) b.delete(b.length() - 2, b.length());
+                    b.append(") -> ").append(cls.getMethod(decl).getReturn());
                 }
-                for (String decl : cls.methods.keySet()) {
-                    System.out.format("Method %s::%s\n", decl, cls.methods.get(decl).getReturn());
-                    for (String var : ((Method) cls.methods.get(decl)).variables.keySet()) {
-                        System.out.format("Variable %s::%s\n", var,
-                                ((Method) cls.methods.get(decl)).variables.get(var).toString());
-                    }
+
+                System.out.println(b);
+                for (String var : ((Method) cls.methods.get(decl)).variables.keySet()) {
+                    System.out.format("\t\tvariable %s :: %s\n", var,
+                            ((Method) cls.methods.get(decl)).variables.get(var).toString());
                 }
             }
         }

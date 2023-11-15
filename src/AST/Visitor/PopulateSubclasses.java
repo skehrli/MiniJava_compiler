@@ -25,6 +25,7 @@ public class PopulateSubclasses implements Visitor {
     }
 
     public boolean dfs(String[] table, int[] pre, int[] it, int iteration, int curr) {
+        if (symTable.get(table[curr]) == Bottom.get()) return false;
         DeclaredClass cl = (DeclaredClass) symTable.get(table[curr]);
         it[curr] = iteration;
         if (cl.superclass == null)
@@ -75,7 +76,12 @@ public class PopulateSubclasses implements Visitor {
             System.err.format("Line %d: Cannot extend the Main class.\n", n.line_number);
             // throw new Exception("Main Class extended.");
         }
-        DeclaredClass cl = new DeclaredClass((DeclaredClass) superClass);
+        if (superClass == null) {
+            System.err.format("Line %d: Class %s extends %s; superclass cannot be resolved.\n",
+                    n.line_number, n.i.toString(), n.j.toString());
+            symTable.put(n.j.toString(), Bottom.get());
+        }
+        DeclaredClass cl = new DeclaredClass(n.i.toString(), (DeclaredClass) superClass);
         currentClass = cl;
         if (symTable.containsKey(n.i.toString())) {
             System.err.format("Line %d: Classes must have unique names.\n", n.line_number);

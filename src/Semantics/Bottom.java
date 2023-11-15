@@ -13,6 +13,6 @@ public class Bottom implements InstanceType, MethodType, ClassType {
     }
 
     public String toString() {
-        return "Bottom";
+        return "⊥";
     }
 }
