@@ -25,24 +25,26 @@ public class PopulateSubclasses implements Visitor {
     }
 
     public boolean dfs(String[] table, int[] pre, int[] it, int iteration, int curr) {
-        if (symTable.get(table[curr]) == Bottom.get()) return false;
+        if (symTable.get(table[curr]) == Bottom.get())
+            return false;
         DeclaredClass cl = (DeclaredClass) symTable.get(table[curr]);
         it[curr] = iteration;
         if (cl.superclass == null)
             return false;
-        if (cl.superclass == Bottom.get()) return false;
+        if (cl.superclass == Bottom.get())
+            return false;
         DeclaredClass sup = (DeclaredClass) cl.superclass;
         int superClIdx = getIndexOfClass(sup);
         pre[superClIdx] = curr;
         if (it[superClIdx] == iteration) {
             System.err.format("Cycle in the Inheritance Graph:\n");
-            System.err.format("%s -> %s", table[superClIdx], table[curr]);
+            System.err.format("%s <- %s", table[superClIdx], table[curr]);
             int next = pre[curr];
             while (next != superClIdx) {
-                System.err.format(" -> %s", table[next]);
+                System.err.format(" <- %s", table[next]);
                 next = pre[next];
             }
-            System.err.println();
+            System.err.format(" <- %s\n", table[superClIdx]);
             return true;
         }
         return dfs(table, pre, it, iteration, superClIdx);
@@ -84,7 +86,8 @@ public class PopulateSubclasses implements Visitor {
 
     @Override
     public void visit(ClassDeclExtends n) {
-        if (symTable.get(n.i.toString()) == Bottom.get()) return;
+        if (symTable.get(n.i.toString()) == Bottom.get())
+            return;
         DeclaredClass cls = (DeclaredClass) symTable.get(n.i.toString());
         ClassType superClass = symTable.get(n.j.toString());
         if (superClass == MainClassType.get()) {
