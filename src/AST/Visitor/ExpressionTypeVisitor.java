@@ -352,7 +352,7 @@ public class ExpressionTypeVisitor implements Visitor {
             n.expType = Bottom.get();
         } else if (cl instanceof MainClassType) {
             System.err.format("Line %d: Cannot instantiate main class.\n", n.line_number);
-            // raise Exception
+            System.exit(1);
         } else {
             n.expType = new Ref(symTable.get(n.i.toString()));
         }

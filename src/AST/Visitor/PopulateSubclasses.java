@@ -62,7 +62,7 @@ public class PopulateSubclasses implements Visitor {
             n.cl.get(i).accept(this);
         }
         if (findInheritanceCycles()) {
-
+            System.exit(1);
         }
     }
 
@@ -79,7 +79,7 @@ public class PopulateSubclasses implements Visitor {
         ClassType superClass = symTable.get(n.j.toString());
         if (superClass == MainClassType.get()) {
             System.err.format("Line %d: Cannot extend the Main class.\n", n.line_number);
-            // throw new Exception("Main Class extended.");
+            System.exit(1);
         }
         if (superClass == null) {
             System.err.format("Line %d: Class %s extends %s; superclass cannot be resolved.\n",
