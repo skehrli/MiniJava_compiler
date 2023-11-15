@@ -1,13 +1,13 @@
 package Semantics;
 
 public class Ref implements InstanceType {
-    public ClassType c;
+    public String s;
 
-    public Ref(ClassType c) {
-        this.c = c;
+    public Ref(String s) {
+        this.s = s;
     }
 
     public String toString() {
-        return c.toString();
+        return s;
     }
 }

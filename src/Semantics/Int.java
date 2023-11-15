@@ -13,7 +13,7 @@ public class Int implements InstanceType {
     }
 
     public String toString() {
-        return "Int";
+        return "int";
     }
 
 }

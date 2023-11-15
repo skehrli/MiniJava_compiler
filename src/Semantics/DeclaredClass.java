@@ -1,12 +1,14 @@
 package Semantics;
 
+import AST.Identifier;
+
 import java.util.Map;
 import java.util.LinkedHashMap;
 
 public class DeclaredClass implements ClassType {
     public final Map<String, InstanceType> instances = new LinkedHashMap<>();
     public final Map<String, MethodType> methods = new LinkedHashMap<>();
-    public ClassType superclass = null;
+    public String superclass;
     public String name;
     // public ClassType superclass = Bottom.get();
 
@@ -15,10 +17,26 @@ public class DeclaredClass implements ClassType {
         this.name = name;
     }
 
+    public DeclaredClass(Identifier name) {
+        this.name = name.toString();
+    }
+
     // Derived class constructor
-    public DeclaredClass(String name, DeclaredClass c) {
+    public DeclaredClass(String name, String superclass) {
         this.name = name;
-        superclass = c;
+        this.superclass = superclass;
+    }
+
+    public DeclaredClass(String name, Identifier superclass) {
+        this(name, superclass.toString());
+    }
+
+    public DeclaredClass(Identifier name, String superclass) {
+        this(name.toString(), superclass);
+    }
+
+    public DeclaredClass(Identifier name, Identifier superclass) {
+        this(name.toString(), superclass.toString());
     }
 
     public boolean addMethod(String s, MethodType m) {
@@ -32,7 +50,7 @@ public class DeclaredClass implements ClassType {
         MethodType result = methods.get(s);
         if (!Type.valid(result)) {
             if (superclass != null)
-                return superclass.getMethod(s);
+                return superclass().getMethod(s);
         }
         return result;
     }
@@ -48,7 +66,7 @@ public class DeclaredClass implements ClassType {
         InstanceType result = instances.get(s);
         if (!Type.valid(result)) {
             if (superclass != null)
-                return superclass.getField(s);
+                return superclass().getField(s);
             else
                 return null;
         }
@@ -56,4 +74,16 @@ public class DeclaredClass implements ClassType {
     }
 
     public String toString() { return this.name; }
+
+    @Override
+    public boolean setSuperclass(String s) {
+        superclass = s;
+        return true;
+    }
+
+    @Override
+    public ClassType superclass() {
+        if (superclass == null) return Top.get();
+        return Top.symTable.get(superclass);
+    }
 }

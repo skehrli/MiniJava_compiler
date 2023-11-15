@@ -1,12 +1,13 @@
 package AST.Visitor;
 
-import java.util.LinkedHashMap;
-
 import AST.*;
 import Semantics.*;
+import Semantics.Type;
+
+import java.util.Iterator;
 
 public class PopulateTable implements Visitor {
-    LinkedHashMap<String, ClassType> symTable;
+    SymbolTable symTable;
     DeclaredClass currentClass;
     Method currentMethod;
 
@@ -18,18 +19,19 @@ public class PopulateTable implements Visitor {
         } else if (astType instanceof IntArrayType) {
             return Array.get();
         } else if (astType instanceof IdentifierType) {
-            return new Ref((DeclaredClass) symTable.get(((IdentifierType) astType).s));
+            return new Ref(((IdentifierType) astType).s);
         } else {
             return Bottom.get();
         }
     }
 
-    public PopulateTable(LinkedHashMap<String, ClassType> s) {
+    public PopulateTable(SymbolTable s) {
         symTable = s;
     }
 
     @Override
     public void visit(Program n) {
+        new ResolveClasses(symTable).resolve(n);
         n.m.accept(this);
         for (int i = 0; i < n.cl.size(); i++) {
             n.cl.get(i).accept(this);
@@ -37,100 +39,92 @@ public class PopulateTable implements Visitor {
     }
 
     @Override
-    public void visit(MainClass n) {
-    }
+    public void visit(MainClass n) {}
 
     @Override
     public void visit(ClassDeclSimple n) {
-        DeclaredClass cl = (DeclaredClass) symTable.get(n.i.toString());
+        DeclaredClass cl = (DeclaredClass) symTable.get(n.i);
         currentClass = cl;
         for (int i = 0; i < n.vl.size(); i++) {
-            String fieldName = n.vl.get(i).i.toString();
-            if (!cl.addField(fieldName, convertType(n.vl.get(i).t))) {
-                System.err.format("Line %d: Fields must have unique names.\n", n.line_number);
+            VarDecl field = n.vl.get(i);
+            if (!cl.addField(field.i, convertType(field.t))) {
+                symTable.err("Fields must have unique names.", n);
             }
         }
         for (int i = 0; i < n.ml.size(); i++) {
-            Method method = new Method(convertType(n.ml.get(i).t));
-            String methodName = n.ml.get(i).i.toString();
-            if (!cl.addMethod(methodName, method)) {
-                System.err.format("Line %d: Methods must have unique names. Overloading not allowed\n", n.line_number);
+            MethodDecl m = n.ml.get(i);
+            Method method = new Method(convertType(m.t));
+            if (!cl.addMethod(m.i, method)) {
+                symTable.err("Methods must have unique names. Overloading not allowed.", n);
+                continue;
             }
+            currentMethod = method;
+            n.ml.get(i).accept(this);
         }
     }
 
     @Override
     public void visit(ClassDeclExtends n) {
-        DeclaredClass cl = (DeclaredClass) symTable.get(n.i.toString());
+        DeclaredClass cl = (DeclaredClass) symTable.get(n.i);
         currentClass = cl;
         for (int i = 0; i < n.vl.size(); i++) {
-            String fieldName = n.vl.get(i).i.toString();
-            if (cl.methods.containsKey(fieldName)) {
-                System.err.format("Line %d: Fields must have unique names.\n", n.line_number);
-            } else {
-                cl.addField(fieldName, convertType(n.vl.get(i).t));
+            VarDecl field = n.vl.get(i);
+            if (!cl.addField(field.i, convertType(field.t))) {
+                symTable.err("Fields must have unique names.", n);
             }
         }
+
         for (int i = 0; i < n.ml.size(); i++) {
-            Method method = new Method(convertType(n.ml.get(i).t));
+            MethodDecl m = n.ml.get(i);
+            Method method = new Method(convertType(m.t));
+            if (!cl.addMethod(m.i, method)) {
+                symTable.err("Methods must have unique names. Overloading not allowed.", n);
+                continue;
+            }
             currentMethod = method;
             n.ml.get(i).accept(this);
-            if (!cl.addMethod(n.ml.get(i).i.toString(), method))
-                System.err.format("Line %d: Methods must have unique names. Overloading not allowed\n",
-                        n.ml.get(i).line_number);
 
-
-            String methodName = n.ml.get(i).i.toString();
-            if (cl.superclass == Bottom.get()) continue;
-            DeclaredClass superclass = (DeclaredClass) cl.superclass;
-            while (superclass != null) {
-                if (superclass.methods.containsKey(methodName)) {
-                    // check if equal signature
-                    Method superClassMethod = (Method) superclass.methods.get(methodName);
-                    if (superClassMethod.parameterTypes.size() != method.parameterTypes.size()) {
-                        System.err.format(
-                                "Line %d: Method overrides a superclass method, but with wrong signature\n",
-                                n.line_number);
-
-                    }
-                    InstanceType[] params1 = method.parameterTypes.values().toArray(new InstanceType[0]);
-                    InstanceType[] params2 = superClassMethod.parameterTypes.values().toArray(new InstanceType[0]);
-                    for (int j = 0; j < superClassMethod.parameterTypes.size(); j++) {
-                        if (params1[i] != params2[i]) {
-                            if (params1[i] instanceof Ref && params2[i] instanceof Ref
-                                    && ((Ref) params1[i]).c == ((Ref) params2[i]).c) {
-                                continue;
-                            }
-                            System.err.format(
-                                    "Line %d: Method overrides a superclass method, but with wrong signature\n",
-                                    n.line_number);
-                        }
-                    }
-                    if (cl.superclass == Bottom.get()) continue;
-                    superclass = (DeclaredClass) superclass.superclass;
-                }
-                currentMethod = method;
-                n.ml.get(i).accept(this);
+            if (cl.superclass() == Bottom.get()) continue;
+            if (!overrideCorrect(m.i, cl.superclass())) {
+                symTable.err("Incorrect signature for overridden method " + m.i + ".", n);
             }
         }
+    }
+
+    private boolean overrideCorrect(Identifier methodName, ClassType superclass) {
+        Method method = (Method) currentClass.getMethod(methodName);
+        while (superclass != Top.get() && superclass != Bottom.get()) {
+            MethodType superMethodOpt = superclass.getMethod(methodName);
+            if (superMethodOpt.params() != method.params()) return false;
+
+            Method superMethod = (Method) superMethodOpt;
+            Iterator<InstanceType> sit = superMethod.parameters.values().iterator(),
+                    it = method.parameters.values().iterator();
+            for (int j = 0; j < superMethod.params(); j++) {
+                if (!Type.sameType(sit.next(), it.next())) return false;
+            }
+            if (!Type.assignmentCompatible(superMethod.getReturn(), method.getReturn()))
+                return false;
+            superclass = superclass.superclass();
+        }
+        return true;
     }
 
     @Override
-    public void visit(VarDecl n) {
-    }
+    public void visit(VarDecl n) { }
 
     @Override
     public void visit(MethodDecl n) {
         for (int i = 0; i < n.fl.size(); i++) {
-            if (!currentMethod.addParam(n.fl.get(i).i.toString(), convertType(n.fl.get(i).t))) {
-                System.err.format("Line %d: Parameters must have unique names.\n",
-                        n.fl.get(i).line_number);
+            Formal formal = n.fl.get(i);
+            if (!currentMethod.addParam(formal.i, convertType(formal.t))) {
+                symTable.err("Parameters must have unique names.", formal);
             }
         }
         for (int i = 0; i < n.vl.size(); i++) {
-            if (!currentMethod.addVariable(n.vl.get(i).i.toString(), convertType(n.vl.get(i).t)))
-                System.err.format("Line %d: %s declared previously.\n",
-                        n.vl.get(i).line_number, n.vl.get(i).i.toString());
+            VarDecl var = n.vl.get(i);
+            if (!currentMethod.addVariable(var.i, convertType(var.t)))
+                symTable.err(var.i + " declared previously.", var);
         }
     }
 

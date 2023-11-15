@@ -11,6 +11,6 @@ public class Boolean implements InstanceType {
     }
 
     public String toString() {
-        return "Boolean";
+        return "bool";
     }
 }

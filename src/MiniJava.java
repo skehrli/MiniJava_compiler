@@ -1,7 +1,6 @@
 import AST.*;
 import AST.Visitor.*;
 import Semantics.*;
-import java.util.LinkedHashMap;
 import Scanner.*;
 import Parser.*;
 import java_cup.runtime.Symbol;
@@ -15,7 +14,7 @@ public class MiniJava {
     private static String filename;
     private static boolean error = false;
     private static final Set<Character> flags = Set.of('S', 'A', 'P', 'T');
-    private static final LinkedHashMap<String, ClassType> symTable = new LinkedHashMap<>();
+    private static final SymbolTable symTable = new SymbolTable();
     static Program program = null;
 
     public static void main(String[] args) {
@@ -41,7 +40,7 @@ public class MiniJava {
     }
 
     private static void printTable() {
-        for (String s : symTable.keySet()) {
+        for (String s : symTable.classes.keySet()) {
             ClassType cl = symTable.get(s);
             if (cl == MainClassType.get()) {
                 System.out.format("main class %s\n", cl);
@@ -52,9 +51,7 @@ public class MiniJava {
                 continue;
             }
             DeclaredClass cls = (DeclaredClass) cl;
-            System.out.format("class %s", s);
-            if (cls.superclass != null) System.out.format(" <: %s\n", cls.superclass);
-            else System.out.println(" <: ⊤");
+            System.out.format("class %s%s\n", s, cls.superclass() != Top.get() ? " <: " + cls.superclass : "");
 
             for (String decl : cls.instances.keySet()) {
                 System.out.format("\tfield %s :: %s\n", decl, cls.getField(decl));
@@ -66,8 +63,8 @@ public class MiniJava {
                     b.append(Bottom.get());
                 else {
                     b.append('(');
-                    ((Method) cls.getMethod(decl)).parameterTypes.forEach((key, value) -> b.append(key).append(": ").append(value).append(", "));
-                    if (!((Method) cls.getMethod(decl)).parameterTypes.isEmpty()) b.delete(b.length() - 2, b.length());
+                    ((Method) cls.getMethod(decl)).parameters.forEach((key, value) -> b.append(key).append(": ").append(value).append(", "));
+                    if (!((Method) cls.getMethod(decl)).parameters.isEmpty()) b.delete(b.length() - 2, b.length());
                     b.append(") -> ").append(cls.getMethod(decl).getReturn());
                 }
 
@@ -93,11 +90,15 @@ public class MiniJava {
                     visitAST(new PrettyPrintVisitor());
                     break;
                 case 'T':
-                    visitAST(new PopulateClasses(symTable));
-                    visitAST(new PopulateSubclasses(symTable));
-                    visitAST(new PopulateTable(symTable));
-                    visitAST(new ExpressionTypeVisitor(symTable));
-                    printTable();
+                    Top.symTable = symTable;
+                    try {
+                        visitAST(new PopulateTable(symTable));
+                        visitAST(new ExpressionTypeVisitor(symTable));
+                    } catch (RuntimeException e){
+                        System.err.println("Fatal error: " + e.getMessage() + "\n");
+                    } finally {
+                        printTable();
+                    }
                     break;
                 default:
                     throw new RuntimeException("Passed unrecognizable flag.");

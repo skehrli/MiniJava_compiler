@@ -11,6 +11,6 @@ public class Array implements InstanceType {
     }
 
     public String toString() {
-        return "Array";
+        return "int[]";
     }
 }

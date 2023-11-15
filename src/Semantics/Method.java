@@ -5,34 +5,39 @@ import java.util.LinkedHashMap;
 
 public class Method implements MethodType {
     private InstanceType returnType = Bottom.get();
-    public final Map<String, InstanceType> parameterTypes = new LinkedHashMap<>();
+    public final Map<String, InstanceType> parameters = new LinkedHashMap<>();
     public final Map<String, InstanceType> variables = new LinkedHashMap<>();
-
-    public Method() {
-    }
 
     public Method(InstanceType returnType) {
         this.returnType = returnType;
     }
 
+    @Override
     public boolean addVariable(String s, InstanceType i) {
-        if (variables.get(s) != null)
-            return false;
+        if (parameters.get(s) != null) return false;
+        if (variables.get(s) != null) return false;
         variables.put(s, i);
         return true;
     }
 
     @Override
+    public InstanceType getVariable(String s) {
+        if (variables.get(s) == null) return Bottom.get();
+        addVariable(s, Bottom.get());
+        return variables.get(s);
+    }
+
+    @Override
     public boolean addParam(String s, InstanceType i) {
-        if (parameterTypes.get(s) != null)
+        if (parameters.get(s) != null)
             return false;
-        parameterTypes.put(s, i);
+        parameters.put(s, i);
         return true;
     }
 
     @Override
     public InstanceType getParam(String s) {
-        InstanceType result = parameterTypes.get(s);
+        InstanceType result = parameters.get(s);
         if (Type.valid(result))
             return result;
         return Bottom.get();
@@ -42,4 +47,7 @@ public class Method implements MethodType {
     public InstanceType getReturn() {
         return returnType;
     }
+
+    @Override
+    public int params() { return parameters.size(); }
 }
