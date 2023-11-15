@@ -81,7 +81,7 @@ public class PopulateTable implements Visitor {
 
 
             String methodName = n.ml.get(i).i.toString();
-            if (cl.superclass == Bottom.get()) return;
+            if (cl.superclass == Bottom.get()) continue;
             DeclaredClass superclass = (DeclaredClass) cl.superclass;
             while (superclass != null) {
                 if (superclass.methods.containsKey(methodName)) {
@@ -106,7 +106,7 @@ public class PopulateTable implements Visitor {
                                     n.line_number);
                         }
                     }
-                    if (cl.superclass == Bottom.get()) return;
+                    if (cl.superclass == Bottom.get()) continue;
                     superclass = (DeclaredClass) superclass.superclass;
                 }
                 currentMethod = method;

@@ -74,7 +74,7 @@ public class ExpressionTypeVisitor implements Visitor {
 
     @Override
     public void visit(ClassDeclSimple n) {
-        currentClass = (DeclaredClass) symTable.get(n.i.toString());
+        currentClass = symTable.get(n.i.toString());
         for (int i = 0; i < n.ml.size(); i++) {
             n.ml.get(i).accept(this);
         }
@@ -82,7 +82,7 @@ public class ExpressionTypeVisitor implements Visitor {
 
     @Override
     public void visit(ClassDeclExtends n) {
-        currentClass = (DeclaredClass) symTable.get(n.i.toString());
+        currentClass = symTable.get(n.i.toString());
         for (int i = 0; i < n.ml.size(); i++) {
             n.ml.get(i).accept(this);
         }
@@ -95,7 +95,9 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(MethodDecl n) {
         DeclaredClass cl = (DeclaredClass) currentClass;
-        currentMethod = (Method) cl.methods.get(n.i.toString());
+        MethodType m = cl.getMethod(n.i.toString());
+        if (m == Bottom.get()) return;
+        currentMethod = (Method) m;
         for (int i = 0; i < n.sl.size(); i++) {
             n.sl.get(i).accept(this);
         }
