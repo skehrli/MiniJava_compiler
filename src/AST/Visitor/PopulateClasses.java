@@ -42,6 +42,13 @@ public class PopulateClasses implements Visitor {
 
     @Override
     public void visit(ClassDeclExtends n) {
+        DeclaredClass cl = new DeclaredClass(n.i.toString());
+        currentClass = cl;
+        if (symTable.containsKey(n.i.toString())) {
+            System.err.format("Line %d: Classes must have unique names.\n", n.line_number);
+        } else {
+            symTable.put(n.i.toString(), cl);
+        }
     }
 
     @Override

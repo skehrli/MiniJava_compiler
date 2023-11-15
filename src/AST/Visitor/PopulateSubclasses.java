@@ -30,7 +30,8 @@ public class PopulateSubclasses implements Visitor {
         it[curr] = iteration;
         if (cl.superclass == null)
             return false;
-        DeclaredClass sup = cl.superclass;
+        if (cl.superclass == Bottom.get()) return false;
+        DeclaredClass sup = (DeclaredClass) cl.superclass;
         int superClIdx = getIndexOfClass(sup);
         pre[superClIdx] = curr;
         System.out.format("dfs on %d\n", curr);
@@ -84,23 +85,21 @@ public class PopulateSubclasses implements Visitor {
 
     @Override
     public void visit(ClassDeclExtends n) {
+        if (symTable.get(n.i.toString()) == Bottom.get()) return;
+        DeclaredClass cls = (DeclaredClass) symTable.get(n.i.toString());
         ClassType superClass = symTable.get(n.j.toString());
         if (superClass == MainClassType.get()) {
             System.err.format("Line %d: Cannot extend the Main class.\n", n.line_number);
-            System.exit(1);
+            throw new RuntimeException();
         }
         if (superClass == null) {
             System.err.format("Line %d: Class %s extends %s; superclass cannot be resolved.\n",
                     n.line_number, n.i.toString(), n.j.toString());
             symTable.put(n.j.toString(), Bottom.get());
+            cls.superclass = Bottom.get();
+            return;
         }
-        DeclaredClass cl = new DeclaredClass(n.i.toString(), (DeclaredClass) superClass);
-        currentClass = cl;
-        if (symTable.containsKey(n.i.toString())) {
-            System.err.format("Line %d: Classes must have unique names.\n", n.line_number);
-        } else {
-            symTable.put(n.i.toString(), cl);
-        }
+        cls.superclass = superClass;
     }
 
     @Override
