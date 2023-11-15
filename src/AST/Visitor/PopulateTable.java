@@ -67,6 +67,8 @@ public class PopulateTable implements Visitor {
 
     @Override
     public void visit(ClassDeclExtends n) {
+        System.err.println(n.i.toString());
+        symTable.keySet().forEach(System.out::println);
         DeclaredClass cl = (DeclaredClass) symTable.get(n.i.toString());
         currentClass = cl;
         for (int i = 0; i < n.vl.size(); i++) {

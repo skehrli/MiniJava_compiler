@@ -15,7 +15,7 @@ public class PopulateSubclasses implements Visitor {
     }
 
     public int getIndexOfClass(ClassType s) {
-        ClassType[] table = (ClassType[]) symTable.values().toArray();
+        ClassType[] table = symTable.values().toArray(new ClassType[0]);
         for (int i = 0; i < symTable.size(); i++) {
             ClassType cl = table[i];
             if (s == cl)
@@ -40,9 +40,9 @@ public class PopulateSubclasses implements Visitor {
 
     public void findInheritanceCycles() {
         int n = symTable.size();
-        String table[] = (String[]) symTable.keySet().toArray();
-        int predecessor[] = new int[n];
-        int iteration[] = new int[n];
+        String[] table = symTable.keySet().toArray(new String[0]);
+        int[] predecessor = new int[n];
+        int[] iteration = new int[n];
         for (int i = 1; i < n; i++) {
             if (iteration[i] > 0)
                 continue;
@@ -71,7 +71,7 @@ public class PopulateSubclasses implements Visitor {
     @Override
     public void visit(ClassDeclExtends n) {
         ClassType superClass = symTable.get(n.j.toString());
-        if (superClass instanceof MainClassType) {
+        if (superClass == MainClassType.get()) {
             System.err.format("Line %d: Cannot extend the Main class.\n", n.line_number);
             // throw new Exception("Main Class extended.");
         }

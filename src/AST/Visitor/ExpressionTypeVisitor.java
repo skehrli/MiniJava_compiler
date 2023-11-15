@@ -292,7 +292,7 @@ public class ExpressionTypeVisitor implements Visitor {
                 int i = 0;
                 boolean parameters_match = true;
                 for (InstanceType t : m.parameterTypes.values()) {
-                    if (!sameType(t, n.el.get(i).expType)) {
+                    if (!assignmentCompatible(t, n.el.get(i).expType)) {
                         System.err.format("Line %d: Wrong argument type of %s: Type %s instead of %s.\n",
                                 n.el.get(i).line_number,
                                 n.el.get(i).toString(), n.el.get(i).expType, t);
