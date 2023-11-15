@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 public class DeclaredClass implements ClassType {
     public final Map<String, InstanceType> instances = new LinkedHashMap<>();
     public final Map<String, MethodType> methods = new LinkedHashMap<>();
-    public String superclass = null;
+    private String superclass = null;
     public String name;
 
     public DeclaredClass(String name) {
@@ -18,7 +18,6 @@ public class DeclaredClass implements ClassType {
     public DeclaredClass(Identifier name) {
         this(name.toString());
     }
-
 
     public boolean addMethod(String s, MethodType m) {
         if (Type.valid(methods.get(s)))
@@ -30,8 +29,7 @@ public class DeclaredClass implements ClassType {
     public MethodType getMethod(String s) {
         MethodType result = methods.get(s);
         if (!Type.valid(result)) {
-            if (superclass != null)
-                return superclass().getMethod(s);
+            return superclass().getMethod(s);
         }
         return result;
     }
@@ -46,15 +44,14 @@ public class DeclaredClass implements ClassType {
     public InstanceType getField(String s) {
         InstanceType result = instances.get(s);
         if (!Type.valid(result)) {
-            if (superclass != null)
-                return superclass().getField(s);
-            else
-                return null;
+            return superclass().getField(s);
         }
         return result;
     }
 
-    public String toString() { return this.name; }
+    public String toString() {
+        return this.name;
+    }
 
     @Override
     public boolean setSuperclass(String s) {
@@ -64,7 +61,8 @@ public class DeclaredClass implements ClassType {
 
     @Override
     public ClassType superclass() {
-        if (superclass == null) return Top.get();
+        if (superclass == null)
+            return Top.get();
         return Top.symTable.get(superclass);
     }
 }

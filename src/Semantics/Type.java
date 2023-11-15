@@ -4,19 +4,18 @@ public interface Type {
 
     /* t1: a := t2: b */
     static boolean assignmentCompatible(InstanceType a, InstanceType b) {
-        if (a == Bottom.get() || b == Bottom.get()) {
+        if (b == Bottom.get() || a == Top.get()) {
             return true;
         }
-        if (a instanceof Ref && b instanceof Ref) {
-            ClassType c1 = Top.symTable.get(((Ref) a).s);
-            ClassType c2 = Top.symTable.get(((Ref) b).s);
-            while (c1 != c2 && c2.superclass() != Bottom.get() && c2.superclass() != Top.get()) {
-                c2 = c2.superclass();
-            }
-            return c1 == c2;
-        } else {
+        if (!(a instanceof Ref ar) || !(b instanceof Ref br)) {
             return a == b;
         }
+        ClassType c1 = Top.symTable.get(ar.s),
+                  c2 = Top.symTable.get(br.s);
+        while (c1 != c2 && c2.superclass() != Bottom.get() && c2.superclass() != Top.get()) {
+            c2 = c2.superclass();
+        }
+        return c1 == c2;
     }
 
     static boolean sameType(Semantics.Type a, Semantics.Type b) {

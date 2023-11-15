@@ -53,7 +53,8 @@ public class ExpressionTypeVisitor implements Visitor {
     }
 
     @Override
-    public void visit(VarDecl n) {}
+    public void visit(VarDecl n) {
+    }
 
     @Override
     public void visit(MethodDecl n) {
@@ -73,19 +74,26 @@ public class ExpressionTypeVisitor implements Visitor {
     }
 
     @Override
-    public void visit(Formal n) {}
+    public void visit(Formal n) {
+    }
 
     @Override
-    public void visit(IntArrayType n) {}
+    public void visit(IntArrayType n) {
+
+    }
 
     @Override
-    public void visit(BooleanType n) {}
+    public void visit(BooleanType n) {
+
+    }
 
     @Override
-    public void visit(IntegerType n) {}
+    public void visit(IntegerType n) {
+    }
 
     @Override
-    public void visit(IdentifierType n) {}
+    public void visit(IdentifierType n) {
+    }
 
     @Override
     public void visit(Block n) {
@@ -262,7 +270,6 @@ public class ExpressionTypeVisitor implements Visitor {
             }
             i++;
         }
-        n.expType = m.getReturn();
     }
 
     @Override
@@ -303,12 +310,12 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(NewObject n) {
         ClassType cl = symTable.get(n.i.toString());
-        if (cl == Bottom.get()) {
+        if (cl == Bottom.get() || cl == Top.get()) {
             symTable.err("Class " + n.i + " not found.", n);
             n.expType = Bottom.get();
         } else if (cl == MainClassType.get()) {
             symTable.err();
-            throw new RuntimeException("Cannot instantiate main class on line " + n.line_number + ".");
+            throw new RuntimeException("Illegal instantiation of main class on line " + n.line_number + ".");
         } else {
             n.expType = new Ref(n.i.toString());
         }
@@ -325,5 +332,6 @@ public class ExpressionTypeVisitor implements Visitor {
     }
 
     @Override
-    public void visit(Identifier n) {}
+    public void visit(Identifier n) {
+    }
 }

@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 
 public class Method implements MethodType {
-    private InstanceType returnType = Bottom.get();
-    public final Map<String, InstanceType> parameters = new LinkedHashMap<>();
-    public final Map<String, InstanceType> variables = new LinkedHashMap<>();
+    private final InstanceType returnType;
+    public final Map<String, InstanceType> parameters = new LinkedHashMap<>(),
+                                           variables = new LinkedHashMap<>();
 
     public Method(InstanceType returnType) {
         this.returnType = returnType;
@@ -23,7 +23,6 @@ public class Method implements MethodType {
     @Override
     public InstanceType getVariable(String s) {
         if (variables.get(s) == null) return Bottom.get();
-        addVariable(s, Bottom.get());
         return variables.get(s);
     }
 
