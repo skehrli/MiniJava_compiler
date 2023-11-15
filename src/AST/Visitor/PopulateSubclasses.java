@@ -33,7 +33,16 @@ public class PopulateSubclasses implements Visitor {
         DeclaredClass sup = cl.superclass;
         int superClIdx = getIndexOfClass(sup);
         pre[superClIdx] = curr;
+        System.out.format("dfs on %d\n", curr);
         if (it[superClIdx] == iteration) {
+            System.err.format("Cycle in the Inheritance Graph:\n");
+            System.err.format("%s -> %s", table[superClIdx], table[curr]);
+            int next = pre[curr];
+            while (next != superClIdx) {
+                System.err.format(" -> %s", table[next]);
+                next = pre[next];
+            }
+            System.err.println();
             return true;
         }
         return dfs(table, pre, it, iteration, superClIdx);
@@ -49,7 +58,6 @@ public class PopulateSubclasses implements Visitor {
             if (iteration[i] > 0)
                 continue;
             if (dfs(table, predecessor, iteration, i, i)) {
-                System.err.format("Cycle in the Inheritance Graph.\n");
                 cycleFound = true;
             }
         }
@@ -62,7 +70,7 @@ public class PopulateSubclasses implements Visitor {
             n.cl.get(i).accept(this);
         }
         if (findInheritanceCycles()) {
-
+            System.exit(1);
         }
     }
 
@@ -79,7 +87,7 @@ public class PopulateSubclasses implements Visitor {
         ClassType superClass = symTable.get(n.j.toString());
         if (superClass == MainClassType.get()) {
             System.err.format("Line %d: Cannot extend the Main class.\n", n.line_number);
-            // throw new Exception("Main Class extended.");
+            System.exit(1);
         }
         if (superClass == null) {
             System.err.format("Line %d: Class %s extends %s; superclass cannot be resolved.\n",
