@@ -349,7 +349,7 @@ public class ExpressionTypeVisitor implements Visitor {
             n.expType = Bottom.get();
         } else if (cl == MainClassType.get()) {
             symTable.err("Cannot instantiate main class.", n);
-            System.exit(1);
+            throw new RuntimeException("Illegal instantiation of main class");
         } else {
             n.expType = new Ref(n.i.toString());
         }
