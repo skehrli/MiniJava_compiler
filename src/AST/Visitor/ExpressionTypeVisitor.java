@@ -22,10 +22,6 @@ public class ExpressionTypeVisitor implements Visitor {
         return var;
     }
 
-    public InstanceType findInScope(Identifier id) {
-        return findInScope(id.s);
-    }
-
     @Override
     public void visit(Program n) {
         n.m.accept(this);
@@ -64,7 +60,8 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(MethodDecl n) {
         DeclaredClass cl = (DeclaredClass) currentClass;
         MethodType m = cl.getMethod(n.i.toString());
-        if (m == Bottom.get()) return;
+        if (m == Bottom.get())
+            return;
         currentMethod = (Method) m;
         for (int i = 0; i < n.sl.size(); i++) {
             n.sl.get(i).accept(this);
