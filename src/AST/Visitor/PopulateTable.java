@@ -55,35 +55,6 @@ public class PopulateTable implements Visitor {
             String methodName = n.ml.get(i).i.toString();
             if (!cl.addMethod(methodName, method)) {
                 System.err.format("Line %d: Methods must have unique names. Overloading not allowed\n", n.line_number);
-            } else {
-                DeclaredClass superclass = cl.superclass;
-                while (superclass != null) {
-                    if (superclass.methods.containsKey(methodName)) {
-                        // check if equal signature
-                        Method superClassMethod = (Method) superclass.methods.get(methodName);
-                        if (superClassMethod.parameterTypes.size() != method.parameterTypes.size()) {
-                            System.err.format(
-                                    "Line %d: Method overrides a superclass method, but with wrong signature\n",
-                                    n.line_number);
-
-                        }
-                        InstanceType[] params1 = (InstanceType[]) method.parameterTypes.values().toArray();
-                        InstanceType[] params2 = (InstanceType[]) superClassMethod.parameterTypes.values().toArray();
-                        for (int j = 0; j < superClassMethod.parameterTypes.size(); j++) {
-                            if (params1[i] != params2[i]) {
-                                if (params1[i] instanceof Ref && params2[i] instanceof Ref
-                                        && ((Ref) params1[i]).c == ((Ref) params2[i]).c) {
-                                    continue;
-                                }
-                                System.err.format(
-                                        "Line %d: Method overrides a superclass method, but with wrong signature\n",
-                                        n.line_number);
-                            }
-                        }
-                    }
-                }
-                currentMethod = method;
-                n.ml.get(i).accept(this);
             }
         }
     }
@@ -107,6 +78,40 @@ public class PopulateTable implements Visitor {
             if (!cl.addMethod(n.ml.get(i).i.toString(), method))
                 System.err.format("Line %d: Methods must have unique names. Overloading not allowed\n",
                         n.ml.get(i).line_number);
+
+
+            String methodName = n.ml.get(i).i.toString();
+            if (cl.superclass == Bottom.get()) return;
+            DeclaredClass superclass = (DeclaredClass) cl.superclass;
+            while (superclass != null) {
+                if (superclass.methods.containsKey(methodName)) {
+                    // check if equal signature
+                    Method superClassMethod = (Method) superclass.methods.get(methodName);
+                    if (superClassMethod.parameterTypes.size() != method.parameterTypes.size()) {
+                        System.err.format(
+                                "Line %d: Method overrides a superclass method, but with wrong signature\n",
+                                n.line_number);
+
+                    }
+                    InstanceType[] params1 = method.parameterTypes.values().toArray(new InstanceType[0]);
+                    InstanceType[] params2 = superClassMethod.parameterTypes.values().toArray(new InstanceType[0]);
+                    for (int j = 0; j < superClassMethod.parameterTypes.size(); j++) {
+                        if (params1[i] != params2[i]) {
+                            if (params1[i] instanceof Ref && params2[i] instanceof Ref
+                                    && ((Ref) params1[i]).c == ((Ref) params2[i]).c) {
+                                continue;
+                            }
+                            System.err.format(
+                                    "Line %d: Method overrides a superclass method, but with wrong signature\n",
+                                    n.line_number);
+                        }
+                    }
+                    if (cl.superclass == Bottom.get()) return;
+                    superclass = (DeclaredClass) superclass.superclass;
+                }
+                currentMethod = method;
+                n.ml.get(i).accept(this);
+            }
         }
     }
 
