@@ -16,6 +16,7 @@ public class MiniJava {
     private static boolean error = false;
     private static final Set<Character> flags = Set.of('S', 'A', 'P', 'T');
     private static final LinkedHashMap<String, ClassType> symTable = new LinkedHashMap<>();
+    static Program program = null;
 
     public static void main(String[] args) {
         filename = args[args.length - 1];
@@ -132,9 +133,11 @@ public class MiniJava {
     }
 
     private static void visitAST(Visitor v) throws Exception {
-        parser p = new parser(getScanner(), sf);
-        Symbol root = p.parse();
-        Program program = (Program) root.value;
+        if (program == null) {
+            parser p = new parser(getScanner(), sf);
+            Symbol root = p.parse();
+            program = (Program) root.value;
+        }
         program.accept(v);
     }
 }
