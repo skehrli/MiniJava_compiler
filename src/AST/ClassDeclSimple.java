@@ -4,7 +4,6 @@ import AST.Visitor.Visitor;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
 public class ClassDeclSimple extends ClassDecl {
-  public Identifier i;
   public VarDeclList vl;  
   public MethodDeclList ml;
  

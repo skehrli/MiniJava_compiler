@@ -22,8 +22,8 @@ public class ResolveClasses {
     }
 
     private int getIndexOfClass(ClassType s) {
-        int n = symTable.classes.size();
-        ClassType[] table = symTable.classes.values().toArray(new ClassType[n]);
+        int n = symTable.size();
+        ClassType[] table = symTable.classes().values().toArray(new ClassType[n]);
         for (int i = 0; i < n; i++) {
             ClassType cl = table[i];
             if (s == cl)
@@ -50,25 +50,25 @@ public class ResolveClasses {
             symTable.err();
             StringBuilder err = new StringBuilder("Cycle found in inheritance graph.\n")
                     .append(table[superClIdx])
-                    .append(" :> ")
+                    .append(" :⪈ ")
                     .append(table[curr]);
 
             int next = pre[curr];
             while (next != superClIdx) {
-                err.append(" :> ").append(table[next]);
+                err.append(" :⪈ ").append(table[next]);
                 next = pre[next];
             }
-            err.append(" :> ").append(table[superClIdx]);
+            err.append(" :⪈ ").append(table[superClIdx]);
             throw new RuntimeException(err.toString());
         }
         dfs(table, pre, it, iteration, superClIdx);
     }
 
     private void findInheritanceCycles() {
-        int n = symTable.classes.size();
-        String[] table = symTable.classes.keySet().toArray(new String[n]);
-        int[] predecessor = new int[n];
-        int[] iteration = new int[n];
+        int n = symTable.size();
+        String[] table = symTable.classes().keySet().toArray(new String[n]);
+        int[] predecessor = new int[n],
+                iteration = new int[n];
 
         for (int i = 1; i < n; i++) {
             if (iteration[i] > 0) continue;
@@ -77,11 +77,9 @@ public class ResolveClasses {
     }
 
     private void hoistClass(ClassDecl n) {
-        Identifier i = n instanceof ClassDeclSimple ? ((ClassDeclSimple) n).i : ((ClassDeclExtends) n).i;
-        DeclaredClass cl = new DeclaredClass(i);
-        if (!symTable.add(i.toString(), cl)) {
+        if (!symTable.add(n.i, new DeclaredClass(n.i))) {
             symTable.err("Classes must have unique names.", n);
-            throw new RuntimeException("Duplicate class declaration");
+            throw new RuntimeException("Duplicate class declaration.");
         }
     }
 

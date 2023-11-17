@@ -39,44 +39,6 @@ public class MiniJava {
         System.exit(error ? 1 : 0);
     }
 
-    private static void printTable() {
-        for (String s : symTable.classes.keySet()) {
-            ClassType cl = symTable.get(s);
-            if (cl == MainClassType.get()) {
-                System.out.format("main class %s\n", cl);
-                continue;
-            }
-            if (cl == Bottom.get()) {
-                System.out.format("class %s :: %s\n", s, cl);
-                continue;
-            }
-            DeclaredClass cls = (DeclaredClass) cl;
-            System.out.format("class %s%s\n", s, cls.superclass() != Top.get() ? " <: " + cls.superclass : "");
-
-            for (String decl : cls.instances.keySet()) {
-                System.out.format("\tfield %s :: %s\n", decl, cls.getField(decl));
-            }
-            for (String decl : cls.methods.keySet()) {
-                StringBuilder b = new StringBuilder("\tmethod ");
-                b.append(decl).append(" :: ");
-                if (cls.getMethod(decl) == Bottom.get())
-                    b.append(Bottom.get());
-                else {
-                    b.append('(');
-                    ((Method) cls.getMethod(decl)).parameters.forEach((key, value) -> b.append(key).append(": ").append(value).append(", "));
-                    if (!((Method) cls.getMethod(decl)).parameters.isEmpty()) b.delete(b.length() - 2, b.length());
-                    b.append(") -> ").append(cls.getMethod(decl).getReturn());
-                }
-
-                System.out.println(b);
-                for (String var : ((Method) cls.methods.get(decl)).variables.keySet()) {
-                    System.out.format("\t\tvariable %s :: %s\n", var,
-                            ((Method) cls.methods.get(decl)).variables.get(var).toString());
-                }
-            }
-        }
-    }
-
     private static void compilerOption(char ch) {
         try {
             switch (ch) {
@@ -95,9 +57,12 @@ public class MiniJava {
                         visitAST(new PopulateTable(symTable));
                         visitAST(new ExpressionTypeVisitor(symTable));
                     } catch (RuntimeException e){
-                        System.err.println("Fatal error: " + e.getMessage() + "\n");
+                        error = true;
+                        System.err.println("Fatal error: " + e.getMessage());
                     } finally {
-                        printTable();
+                        error = symTable.error();
+                        if (symTable.error()) System.out.println();
+                        System.out.print(symTable);
                     }
                     break;
                 default:

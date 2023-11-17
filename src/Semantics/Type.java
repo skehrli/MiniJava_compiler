@@ -12,7 +12,7 @@ public interface Type {
         }
         ClassType c1 = Top.symTable.get(ar.s),
                   c2 = Top.symTable.get(br.s);
-        while (c1 != c2 && c2.superclass() != Bottom.get() && c2.superclass() != Top.get()) {
+        while (c1 != c2 && c2.superclass() != Top.get()) {
             c2 = c2.superclass();
         }
         return c1 == c2;

@@ -18,8 +18,8 @@ public class PopulateTable implements Visitor {
             return Semantics.Boolean.get();
         } else if (astType instanceof IntArrayType) {
             return Array.get();
-        } else if (astType instanceof IdentifierType) {
-            return new Ref(((IdentifierType) astType).s);
+        } else if (astType instanceof IdentifierType id) {
+            return new Ref(id.s);
         } else {
             return Bottom.get();
         }

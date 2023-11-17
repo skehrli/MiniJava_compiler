@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 public class DeclaredClass implements ClassType {
     public final Map<String, InstanceType> instances = new LinkedHashMap<>();
     public final Map<String, MethodType> methods = new LinkedHashMap<>();
-    private String superclass = null;
+    public String superclass = null;
     public String name;
 
     public DeclaredClass(String name) {

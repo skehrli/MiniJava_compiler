@@ -59,7 +59,7 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(MethodDecl n) {
         DeclaredClass cl = (DeclaredClass) currentClass;
-        MethodType m = cl.getMethod(n.i.toString());
+        MethodType m = cl.getMethod(n.i);
         if (m == Bottom.get())
             return;
         currentMethod = (Method) m;
@@ -127,7 +127,7 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(Print n) {
         n.e.accept(this);
         if (n.e.expType != Semantics.Int.get()) {
-            symTable.err("Argument of System.out.println not of integer type.", n.e);
+            symTable.err("Argument of System.out.println not of integer type, instead of type " + n.e.expType + ".", n.e);
         }
     }
 
@@ -270,6 +270,7 @@ public class ExpressionTypeVisitor implements Visitor {
             }
             i++;
         }
+        n.expType = m.getReturn();
     }
 
     @Override
