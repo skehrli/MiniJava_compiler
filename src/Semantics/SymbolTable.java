@@ -86,7 +86,7 @@ public class SymbolTable {
                 }
                 if (!method.parameters.isEmpty())
                     b.delete(b.length() - 2, b.length());
-                b.append(") ⟼ ").append(method.getReturn()).append('\n');
+                b.append(") ↦ ").append(method.getReturn()).append('\n');
                 for (String var : method.variables.keySet()) {
                     b.append(String.format("\t\tvariable %s ∷ %s\n", var, method.getVariable(var)));
                 }
