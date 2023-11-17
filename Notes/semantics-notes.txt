@@ -1,10 +1,13 @@
 Lab 3, Semantics.
-Organization
+Notes on structure and organization
 - Two Visitors, a PopulateTable visitor and an ExpressionTypeVisitor, traversing the AST
   one after the other while modifying a shared SymbolTable.
 - Types being effectively represented as inductive types with basic leaf constructors
   (including one for the bottom error type and one for the top type supertyping all other
   types) and inductive constructors for methods and classes.
+- When the MiniJava program is queried to generate the table, it will assume the file
+  passed in can be tokenized and parsed.
+
 Timeline and division of work
 - Mark and Sascha met together to complete the majority of the lab, with work split about
   evenly between both people.
@@ -15,6 +18,7 @@ Timeline and division of work
   redesigned and refactored into two visitors.
 - A long process of debugging then ensued to make sure that the two visitors adequately
   passed all test cases, done by both Mark and Sascha.
+
 Changes to previous labs
 - No substantive changes to previous labs were made.
 - One minor change was necessary, though; the addition of a type field to Expressions
@@ -22,6 +26,7 @@ Changes to previous labs
 - Small changes to the grammar and semantic actions were necessary to account for feedback
   received on the parser (adding the first declaration in a list of formals; returning the
   FALSE nonterminal).
+
 Testing
 - Tests were run largely by manual inspection of the MiniJava results on the programs in
   SamplePrograms and in test/junit/resources.
