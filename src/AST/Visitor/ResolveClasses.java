@@ -7,6 +7,7 @@ public class ResolveClasses {
     SymbolTable symTable;
 
     public ResolveClasses(SymbolTable s) {
+        // Not a Visitor, so don't set Top.symTable
         symTable = s;
     }
 
@@ -34,15 +35,10 @@ public class ResolveClasses {
 
     /* Errors if a cycle was found. */
     private void dfs(String[] table, int[] pre, int[] it, int iteration, int curr) {
-        if (symTable.get(table[curr]) == Bottom.get()) return;
-        if (symTable.get(table[curr]) == Top.get()) return;
+        if (!(symTable.get(table[curr]) instanceof DeclaredClass cl)) return;
 
-        DeclaredClass cl = (DeclaredClass) symTable.get(table[curr]);
         it[curr] = iteration;
-        if (cl.superclass() == Bottom.get()) return;
-        if (cl.superclass() == Top.get()) return;
-
-        DeclaredClass sup = (DeclaredClass) cl.superclass();
+        if (!(cl.superclass() instanceof DeclaredClass sup)) return;
         int superClIdx = getIndexOfClass(sup);
 
         pre[superClIdx] = curr;
@@ -89,8 +85,7 @@ public class ResolveClasses {
     }
 
     private void resolveSuperclass(ClassDecl c) {
-        if (c instanceof ClassDeclSimple) return;
-        ClassDeclExtends n = (ClassDeclExtends) c;
+        if (!(c instanceof ClassDeclExtends n)) return;
 
         ClassType cls = symTable.get(n.i);
         cls.setSuperclass(n.j);

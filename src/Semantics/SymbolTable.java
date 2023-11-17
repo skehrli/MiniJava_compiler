@@ -63,7 +63,7 @@ public class SymbolTable {
                 b.append(String.format("class %s ∷ %s\n", s, cl));
                 continue;
             }
-            DeclaredClass cls = (DeclaredClass) cl;
+            if (!(cl instanceof DeclaredClass cls)) continue;
             b.append("class ")
                     .append(cls)
                     .append(cls.superclass() == Top.get() ? "" : " <: " + cls.superclass)
@@ -78,9 +78,9 @@ public class SymbolTable {
                     b.append(Bottom.get()).append('\n');
                     continue;
                 }
+                if (!(cls.getMethod(decl) instanceof Method method)) continue;
                 b.append('(');
 
-                Method method = (Method) cls.getMethod(decl);
                 for (Map.Entry<String, InstanceType> entry : method.parameters.entrySet()) {
                     b.append(entry.getKey()).append(": ").append(entry.getValue()).append(", ");
                 }

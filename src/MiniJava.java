@@ -15,7 +15,7 @@ public class MiniJava {
     private static boolean error = false;
     private static final Set<Character> flags = Set.of('S', 'A', 'P', 'T');
     private static final SymbolTable symTable = new SymbolTable();
-    static Program program = null;
+    private static Program program = null;
 
     public static void main(String[] args) {
         filename = args[args.length - 1];
@@ -52,7 +52,6 @@ public class MiniJava {
                     visitAST(new PrettyPrintVisitor());
                     break;
                 case 'T':
-                    Top.symTable = symTable;
                     try {
                         visitAST(new PopulateTable(symTable));
                         visitAST(new ExpressionTypeVisitor(symTable));

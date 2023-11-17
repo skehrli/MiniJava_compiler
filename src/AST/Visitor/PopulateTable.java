@@ -26,7 +26,7 @@ public class PopulateTable implements Visitor {
     }
 
     public PopulateTable(SymbolTable s) {
-        symTable = s;
+        symTable = Top.symTable = s;
     }
 
     @Override
@@ -94,13 +94,18 @@ public class PopulateTable implements Visitor {
     }
 
     private boolean overrideCorrect(Identifier methodName, ClassType superclass) {
-        Method method = (Method) currentClass.getMethod(methodName);
-        while (superclass != Top.get() && superclass != Bottom.get()) {
+        if (!(currentClass.getMethod(methodName) instanceof Method method)) {
+            return true;
+        }
+        while (superclass != Top.get()) {
             MethodType superMethodOpt = superclass.getMethod(methodName);
-            if (superMethodOpt.params() != method.params())
+            if (superMethodOpt.params() != method.params()) {
                 return false;
-
-            Method superMethod = (Method) superMethodOpt;
+            }
+            if (!(superMethodOpt instanceof Method superMethod)) {
+                superclass = superclass.superclass();
+                continue;
+            }
             Iterator<InstanceType> sit = superMethod.parameters.values().iterator(),
                     it = method.parameters.values().iterator();
             for (int j = 0; j < superMethod.params(); j++) {

@@ -10,7 +10,7 @@ public class ExpressionTypeVisitor implements Visitor {
     Method currentMethod;
 
     public ExpressionTypeVisitor(SymbolTable s) {
-        symTable = s;
+        symTable = Top.symTable = s;
     }
 
     public InstanceType findInScope(String id) {
@@ -246,13 +246,12 @@ public class ExpressionTypeVisitor implements Visitor {
             return;
         }
         MethodType method = symTable.get(caller.s).getMethod(n.i.toString());
-        if (method == Bottom.get()) {
+        if (!(method instanceof Method m)) {
             symTable.err(String.format("%s not a valid method for Type %s.", n.i, n.e.expType), n);
             n.expType = Semantics.Bottom.get();
             return;
         }
         // verify whether all parameters have the same type
-        Method m = (Method) method;
         for (int i = 0; i < n.el.size(); i++) {
             n.el.get(i).accept(this);
         }
