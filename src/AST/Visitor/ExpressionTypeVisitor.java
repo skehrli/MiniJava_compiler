@@ -6,20 +6,63 @@ import Semantics.Type;
 
 public class ExpressionTypeVisitor implements Visitor {
     SymbolTable symTable;
-    ClassType currentClass;
-    Method currentMethod;
+    ClassType currentClass = Bottom.get();
+    MethodType currentMethod = Bottom.get();
 
     public ExpressionTypeVisitor(SymbolTable s) {
         symTable = Top.symTable = s;
     }
 
-    public InstanceType findInScope(String id) {
+    // Tries to find the String in scope, complains if it can't be found and it hasn't
+    // yet been seen in this scope.
+    private InstanceType findInScope(String id, ASTNode n) {
         InstanceType var = currentMethod.getVariable(id);
         if (var != Bottom.get()) return var;
         var = currentMethod.getParam(id);
         if (var != Bottom.get()) return var;
         var = currentClass.getField(id);
+        if (var != Bottom.get()) return var;
+        // var is  a _|_, so we now have to implement some logic.
+        // If the current class isn't a DeclaredClass, then return.
+        if (!(currentClass instanceof ScopedType c)) return var;
+
+        // If we've seen the unrecognized identifier already in the class,
+        // return.
+        if (c.seenUnrecognized(id)) {
+            symTable.err();
+            return var;
+        }
+        // id is a new unrecognized identifier for the class c.
+        String err = "Unrecognized identifier '" + id + "' in " + c.name();
+        // Bottom isn't a ScopedType, so we're testing if it's a MainMethod or Method
+        if (currentMethod instanceof ScopedType m && !m.seenUnrecognized(id)) {
+            // id is a new unrecognized identifier for method m.
+            symTable.err(err + "::" + m.name(), n);
+            // So we add the unrecognized identifier for method m.
+            m.addUnrecognized(id);
+        } else if (currentMethod instanceof ScopedType) {
+            // We're inside a method & we've seen the unrecognized identifier id for
+            // that method.
+            symTable.err();
+        } else {
+            // We're not inside a method -- we're just in the class, so add the id
+            // to the class's set of unrecognized identifiers.
+            symTable.err(err, n);
+            c.addUnrecognized(id);
+        }
         return var;
+    }
+
+    public InstanceType findInScope(Identifier id) {
+        return findInScope(id.s, id);
+    }
+
+    public InstanceType findInScope(IdentifierType id) {
+        return findInScope(id.s, id);
+    }
+
+    public InstanceType findInScope(IdentifierExp id) {
+        return findInScope(id.s, id);
     }
 
     @Override
@@ -32,13 +75,14 @@ public class ExpressionTypeVisitor implements Visitor {
 
     @Override
     public void visit(MainClass n) {
-        currentClass = symTable.get(n.i1.toString());
+        currentClass = symTable.get(n.i1);
+        currentMethod = currentClass.getMethod("main");
         n.s.accept(this);
     }
 
     @Override
     public void visit(ClassDeclSimple n) {
-        currentClass = symTable.get(n.i.toString());
+        currentClass = symTable.get(n.i);
         for (int i = 0; i < n.ml.size(); i++) {
             n.ml.get(i).accept(this);
         }
@@ -46,7 +90,7 @@ public class ExpressionTypeVisitor implements Visitor {
 
     @Override
     public void visit(ClassDeclExtends n) {
-        currentClass = symTable.get(n.i.toString());
+        currentClass = symTable.get(n.i);
         for (int i = 0; i < n.ml.size(); i++) {
             n.ml.get(i).accept(this);
         }
@@ -58,11 +102,11 @@ public class ExpressionTypeVisitor implements Visitor {
 
     @Override
     public void visit(MethodDecl n) {
-        DeclaredClass cl = (DeclaredClass) currentClass;
+        if (!(currentClass instanceof DeclaredClass cl)) return;
         MethodType m = cl.getMethod(n.i);
         if (m == Bottom.get())
             return;
-        currentMethod = (Method) m;
+        currentMethod = m;
         for (int i = 0; i < n.sl.size(); i++) {
             n.sl.get(i).accept(this);
         }
@@ -134,7 +178,7 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(Assign n) {
         n.e.accept(this);
-        InstanceType lhs = findInScope(n.i.toString());
+        InstanceType lhs = findInScope(n.i);
         if (!Type.assignmentCompatible(lhs, n.e.expType)) {
             symTable.err(String.format("Cannot assign expression of type %s to variable of type %s.",
                     n.e.expType, lhs), n);
@@ -145,7 +189,7 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(ArrayAssign n) {
         n.e1.accept(this);
         n.e2.accept(this);
-        InstanceType t = findInScope(n.i.toString());
+        InstanceType t = findInScope(n.i);
         if (t != Semantics.Array.get()) {
             symTable.err(n.i + " not of type array, cannot be indexed.", n);
         }
@@ -289,7 +333,7 @@ public class ExpressionTypeVisitor implements Visitor {
 
     @Override
     public void visit(IdentifierExp n) {
-        n.expType = findInScope(n.s);
+        n.expType = findInScope(n);
     }
 
     @Override

@@ -15,5 +15,4 @@ public class Top implements ClassType, InstanceType, MethodType {
     public String toString() {
         return "⊤";
     }
-
 }

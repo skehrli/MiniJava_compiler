@@ -7,7 +7,7 @@ public interface Type {
         if (b == Bottom.get() || a == Top.get()) {
             return true;
         }
-        if (!(a instanceof Ref ar) || !(b instanceof Ref br)) {
+        if (!(a instanceof Ref ar && b instanceof Ref br)) {
             return a == b;
         }
         ClassType c1 = Top.symTable.get(ar.s),
@@ -21,14 +21,18 @@ public interface Type {
     static boolean sameType(Semantics.Type a, Semantics.Type b) {
         // either they are the same singleton type or they are a ref
         // of the same class
-        if (a == b)
+        if (a == b) {
             return true;
-        if (!(a instanceof Ref && b instanceof Ref))
+        }
+        if (!(a instanceof Ref ar && b instanceof Ref br)) {
             return false;
-        return Top.symTable.get(((Ref) a).s) == Top.symTable.get(((Ref) b).s);
+        }
+        return Top.symTable.get(ar.s) == Top.symTable.get(br.s);
     }
 
+    // Returns whether an instance of t can be constructed (no objects of the Top
+    // or Bottom type exist in Java).
     static boolean valid(Type t) {
-        return t != Bottom.get() && t != null;
+        return t != Bottom.get() && t != null && t != Top.get();
     }
 }

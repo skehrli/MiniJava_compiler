@@ -2,7 +2,7 @@ package Semantics;
 
 import AST.Identifier;
 
-public class MainClassType implements ClassType {
+public class MainClassType implements ClassType, ScopedType {
     MainMethod main = MainMethod.get();
     public static String name;
 
@@ -18,12 +18,13 @@ public class MainClassType implements ClassType {
 
     @Override
     public MethodType getMethod(String s) {
-        if (s.equals("main"))
-            return main;
+        if (s.equals(getMethod().name())) {
+            return getMethod();
+        }
         return Bottom.get();
     }
 
-    public MethodType getMethod() {
+    public MainMethod getMethod() {
         return main;
     }
 
@@ -42,4 +43,6 @@ public class MainClassType implements ClassType {
     public static void setName(Identifier i) {
         setName(i.toString());
     }
+
+    public String name() { return name; }
 }

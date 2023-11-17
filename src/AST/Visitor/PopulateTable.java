@@ -39,8 +39,7 @@ public class PopulateTable implements Visitor {
     }
 
     @Override
-    public void visit(MainClass n) {
-    }
+    public void visit(MainClass n) { }
 
     @Override
     public void visit(ClassDeclSimple n) {
@@ -54,7 +53,7 @@ public class PopulateTable implements Visitor {
         }
         for (int i = 0; i < n.ml.size(); i++) {
             MethodDecl m = n.ml.get(i);
-            Method method = new Method(convertType(m.t));
+            Method method = new Method(m.i, convertType(m.t));
             if (!cl.addMethod(m.i, method)) {
                 symTable.err("Methods must have unique names. Overloading not allowed.", n);
                 continue;
@@ -77,7 +76,7 @@ public class PopulateTable implements Visitor {
 
         for (int i = 0; i < n.ml.size(); i++) {
             MethodDecl m = n.ml.get(i);
-            Method method = new Method(convertType(m.t));
+            Method method = new Method(m.i, convertType(m.t));
             if (!cl.addMethod(m.i, method)) {
                 symTable.err("Methods must have unique names. Overloading not allowed.", n);
                 continue;

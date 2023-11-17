@@ -15,4 +15,5 @@ public class Bottom implements InstanceType, MethodType, ClassType {
     public String toString() {
         return "⊥";
     }
+    public String name() { return "⊥"; }
 }
