@@ -1,0 +1,7 @@
+CSE 401/m501 23au Project III - Semantics
+
+Missing error report: a method cannot take an undeclared type as an argument. For example, if class Bar is not defined, then ‘public int foo(Bar b)’ should fail type checking. (-2)
+
+Missing error report: Array elements (e.g., arr[0]) should only be assignable int types. (-2)
+
+Total: 56/60
