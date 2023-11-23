@@ -13,18 +13,23 @@ public class ExpressionTypeVisitor implements Visitor {
         symTable = Top.symTable = s;
     }
 
-    // Tries to find the String in scope, complains if it can't be found and it hasn't
+    // Tries to find the String in scope, complains if it can't be found and it
+    // hasn't
     // yet been seen in this scope.
     private InstanceType findInScope(String id, ASTNode n) {
         InstanceType var = currentMethod.getVariable(id);
-        if (var != Bottom.get()) return var;
+        if (var != Bottom.get())
+            return var;
         var = currentMethod.getParam(id);
-        if (var != Bottom.get()) return var;
+        if (var != Bottom.get())
+            return var;
         var = currentClass.getField(id);
-        if (var != Bottom.get()) return var;
-        // var is  a _|_, so we now have to implement some logic.
+        if (var != Bottom.get())
+            return var;
+        // var is a _|_, so we now have to implement some logic.
         // If the current class isn't a DeclaredClass, then return.
-        if (!(currentClass instanceof ScopedType c)) return var;
+        if (!(currentClass instanceof ScopedType c))
+            return var;
 
         // If we've seen the unrecognized identifier already in the class,
         // return.
@@ -102,7 +107,8 @@ public class ExpressionTypeVisitor implements Visitor {
 
     @Override
     public void visit(MethodDecl n) {
-        if (!(currentClass instanceof DeclaredClass cl)) return;
+        if (!(currentClass instanceof DeclaredClass cl))
+            return;
         MethodType m = cl.getMethod(n.i);
         if (m == Bottom.get())
             return;
@@ -171,7 +177,8 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(Print n) {
         n.e.accept(this);
         if (n.e.expType != Semantics.Int.get()) {
-            symTable.err("Argument of System.out.println not of integer type, instead of type " + n.e.expType + ".", n.e);
+            symTable.err("Argument of System.out.println not of integer type, instead of type " + n.e.expType + ".",
+                    n.e);
         }
     }
 
@@ -196,7 +203,7 @@ public class ExpressionTypeVisitor implements Visitor {
         if (n.e1.expType != Semantics.Int.get() && n.e1.expType != Bottom.get()) {
             symTable.err("Array indexed must be of integer type.", n.e1);
         }
-        if (!Type.assignmentCompatible(n.e1.expType, Semantics.Int.get())) {
+        if (!Type.assignmentCompatible(n.e2.expType, Semantics.Int.get())) {
             symTable.err("Right-hand side of assignment must be int but is of type" +
                     n.e2.expType + ".", n.e2);
         }
@@ -274,7 +281,7 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(ArrayLength n) {
         n.e.accept(this);
         if (n.e.expType != Array.get() && n.e.expType != Bottom.get()) {
-            symTable.err(String.format("Expression must be of type int[], but found %s.",n.e.expType), n.e);
+            symTable.err(String.format("Expression must be of type int[], but found %s.", n.e.expType), n.e);
         }
         n.expType = Semantics.Int.get();
     }
