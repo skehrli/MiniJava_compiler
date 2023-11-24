@@ -19,7 +19,8 @@ public class PopulateTable implements Visitor {
         } else if (astType instanceof IntArrayType) {
             return Array.get();
         } else if (astType instanceof IdentifierType id) {
-            return new Ref(id.s);
+            // return Ref if Class exists and Bottom else
+            return symTable.get(id.s) == Bottom.get() ? Bottom.get() : new Ref(id.s);
         } else {
             return Bottom.get();
         }
@@ -39,7 +40,8 @@ public class PopulateTable implements Visitor {
     }
 
     @Override
-    public void visit(MainClass n) { }
+    public void visit(MainClass n) {
+    }
 
     @Override
     public void visit(ClassDeclSimple n) {
@@ -126,6 +128,10 @@ public class PopulateTable implements Visitor {
     public void visit(MethodDecl n) {
         for (int i = 0; i < n.fl.size(); i++) {
             Formal formal = n.fl.get(i);
+            InstanceType argumentType = convertType(formal.t);
+            if (argumentType == Bottom.get()) {
+                symTable.err("Invalid argument type for: " + formal.i.toString(), formal);
+            }
             if (!currentMethod.addParam(formal.i, convertType(formal.t))) {
                 symTable.err("Parameters must have unique names.", formal);
             }

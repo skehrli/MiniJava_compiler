@@ -176,7 +176,7 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(Print n) {
         n.e.accept(this);
-        if (n.e.expType != Semantics.Int.get()) {
+        if (n.e.expType != Semantics.Int.get() && n.e.expType != Semantics.Bottom.get()) {
             symTable.err("Argument of System.out.println not of integer type, instead of type " + n.e.expType + ".",
                     n.e);
         }
@@ -312,7 +312,7 @@ public class ExpressionTypeVisitor implements Visitor {
         int i = 0;
         for (InstanceType t : m.parameters.values()) {
             Exp param = n.el.get(i);
-            if (!Type.assignmentCompatible(t, param.expType)) {
+            if (!Type.assignmentCompatible(t, param.expType) && t != Bottom.get()) {
                 symTable.err(String.format("Wrong argument type of %s: Type %s instead of %s.",
                         param, param.expType, t), param);
                 n.expType = Bottom.get();
