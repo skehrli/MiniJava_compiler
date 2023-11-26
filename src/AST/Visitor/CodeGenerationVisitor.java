@@ -32,8 +32,13 @@ public class CodeGenerationVisitor implements Visitor {
         currentClass = symTable.get(n.i1);
         currentMethod = currentClass.getMethod("main");
         
-        out.print("asm_main:\t\t# entry point of program\n");
+        out.println("asm_main:\t\t# entry point of program");
+        out.println("\tpushq %rbp\t\t# prologue - save frame ptr");
+        out.println("\tmovq %rsp, %rbp\t\t# no local vars - no additional stack");
         n.s.accept(this);
+        out.println("\tmovq %rbp,%rsp\t\t# epilogue - return");
+        out.println("\tpopq %rbp\t\t");
+        out.println("\tret");
     }
 
     @Override
