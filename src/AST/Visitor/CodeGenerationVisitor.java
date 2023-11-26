@@ -201,7 +201,7 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(IntegerLiteral n) {
-        out.format("\tmovq %d, %%rax\n", n.i);
+        out.format("\tmovq $%d, %%rax\n", n.i);
     }
 
     @Override
