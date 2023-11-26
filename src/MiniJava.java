@@ -35,7 +35,12 @@ public class MiniJava {
                 options.add(ch);
             }
         }
-        options.forEach(MiniJava::compilerOption);
+        if (options.isEmpty()) {
+            parse();
+            visitAST(new PopulateTable(symTable));
+            visitAST(new ExpressionTypeVisitor(symTable));
+            visitAST(new CodeGenerationVisitor(symTable));
+        } else { options.forEach(MiniJava::compilerOption); }
         System.exit(error ? 1 : 0);
     }
 
@@ -101,11 +106,13 @@ public class MiniJava {
     }
 
     private static void visitAST(Visitor v) throws Exception {
-        if (program == null) {
-            parser p = new parser(getScanner(), sf);
-            Symbol root = p.parse();
-            program = (Program) root.value;
-        }
+        if (program == null) parse();
         program.accept(v);
+    }
+
+    private static void parse() throws Exception {
+        parser p = new parser(getScanner(), sf);
+        Symbol root = p.parse();
+        program = (Program) root.value;
     }
 }

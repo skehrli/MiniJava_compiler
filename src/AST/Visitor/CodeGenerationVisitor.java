@@ -3,19 +3,26 @@ package AST.Visitor;
 import AST.*;
 import Semantics.*;
 import Semantics.Type;
+import java.io.PrintStream;
 
-public class ExpressionTypeVisitor implements Visitor {
+import org.w3c.dom.Text;
+
+public class CodeGenerationVisitor implements Visitor {
     SymbolTable symTable;
     ClassType currentClass = Bottom.get();
     MethodType currentMethod = Bottom.get();
+    PrintStream out = System.out;
 
-    public ExpressionTypeVisitor(SymbolTable s) {
+    public CodeGenerationVisitor(SymbolTable s) {
         symTable = Top.symTable = s;
     }
 
     @Override
     public void visit(Program n) {
+        out.format("\t.text\n");
+        out.format("\t.globl asm_main\n");
         n.m.accept(this);
+        // declare vtables somehow...
         for (int i = 0; i < n.cl.size(); i++) {
             n.cl.get(i).accept(this);
         }
@@ -25,6 +32,8 @@ public class ExpressionTypeVisitor implements Visitor {
     public void visit(MainClass n) {
         currentClass = symTable.get(n.i1);
         currentMethod = currentClass.getMethod("main");
+        
+        out.format("asm_main:\t\t# entry point of program\n");
         n.s.accept(this);
     }
 
@@ -119,10 +128,8 @@ public class ExpressionTypeVisitor implements Visitor {
     @Override
     public void visit(Print n) {
         n.e.accept(this);
-        if (n.e.expType != Semantics.Int.get() && n.e.expType != Semantics.Bottom.get()) {
-            symTable.err("Argument of System.out.println not of integer type, instead of type " + n.e.expType + ".",
-                    n.e);
-        }
+        out.format("\tmovq %rax, %rdi\n\t\t# Move expression to first argument register");
+        out.format("\tcall put\t\t# Method in C file");
     }
 
     @Override
