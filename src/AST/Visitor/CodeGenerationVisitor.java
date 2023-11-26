@@ -17,13 +17,14 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(Program n) {
-        out.format("\t.text\n");
-        out.format("\t.globl asm_main\n");
+        out.print("\t.text\n");
+        out.print("\t.globl asm_main\n");
         n.m.accept(this);
         // declare vtables somehow...
         for (int i = 0; i < n.cl.size(); i++) {
             n.cl.get(i).accept(this);
         }
+        out.println();
     }
 
     @Override
@@ -31,7 +32,7 @@ public class CodeGenerationVisitor implements Visitor {
         currentClass = symTable.get(n.i1);
         currentMethod = currentClass.getMethod("main");
         
-        out.format("asm_main:\t\t# entry point of program\n");
+        out.print("asm_main:\t\t# entry point of program\n");
         n.s.accept(this);
     }
 
@@ -114,8 +115,8 @@ public class CodeGenerationVisitor implements Visitor {
     @Override
     public void visit(Print n) {
         n.e.accept(this);
-        out.format("\tmovq %rax, %rdi\n\t\t# Move expression to first argument register");
-        out.format("\tcall put\t\t# Method in C file");
+        out.print("\tmovq %rax, %rdi\t\t# Move expression to first argument register\n");
+        out.print("\tcall put\t\t# Method in C file");
     }
 
     @Override
@@ -200,7 +201,7 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(IntegerLiteral n) {
-        out.format("\tmovq %d, %rax\n", n.i);
+        out.format("\tmovq %d, %%rax\n", n.i);
     }
 
     @Override
