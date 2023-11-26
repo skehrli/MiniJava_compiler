@@ -105,14 +105,20 @@ public class MiniJava {
         }
     }
 
-    private static void visitAST(Visitor v) throws Exception {
+    private static void visitAST(Visitor v) {
         if (program == null) parse();
         program.accept(v);
     }
 
-    private static void parse() throws Exception {
+    private static void parse() {
         parser p = new parser(getScanner(), sf);
-        Symbol root = p.parse();
+        Symbol root = null;
+        try {
+            root = p.parse();
+        } catch (Exception e) {
+            System.err.println("Failure to parse program; indicated below.");
+            e.printStackTrace();
+        }
         program = (Program) root.value;
     }
 }

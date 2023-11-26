@@ -4,7 +4,7 @@ import AST.*;
 import AST.Visitor.*;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.ComplexSymbolFactory;
-import java.util.*;
+import java.util.List;
 import java.io.*;
 
 public class DemoParser {
@@ -23,7 +23,7 @@ public class DemoParser {
             // declarations in the CUP input file giving the type of the
             // root node, so we suppress warnings for the next assignment.
             @SuppressWarnings("unchecked")
-            List<Statement> program = (List<Statement>)root.value;
+            List<Statement> program = (List<Statement>) root.value;
             for (Statement statement: program) {
                 statement.accept(new PrettyPrintVisitor());
                 System.out.print("\n");
