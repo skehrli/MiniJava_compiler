@@ -275,7 +275,7 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(IntegerLiteral n) {
-        n.expType = Semantics.Int.get();
+        out.format("\tmovq %d, %rax\n", n.i);
     }
 
     @Override
