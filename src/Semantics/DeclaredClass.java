@@ -6,10 +6,11 @@ import java.util.HashSet;
 
 public class DeclaredClass implements ClassType, ScopedType {
     public final IndexedMap<InstanceType> instances = new IndexedMap<>();
+    private final IndexedMap<DeclaredClass> vtable = new IndexedMap<>();
     public final IndexedMap<MethodType> methods = new IndexedMap<>();
-    public String superclass = null;
-    public String name;
     public final HashSet<String> unrecognized = new HashSet<>();
+    public String superclass = null, name;
+    private boolean modified = true;
 
     public DeclaredClass(String name) {
         this.name = name;
@@ -23,6 +24,7 @@ public class DeclaredClass implements ClassType, ScopedType {
         if (Type.valid(methods.get(s)))
             return false;
         methods.put(s, m);
+        modified = true;
         return true;
     }
 
@@ -38,6 +40,7 @@ public class DeclaredClass implements ClassType, ScopedType {
         if (Type.valid(instances.get(s)))
             return false;
         instances.put(s, i);
+        modified = true;
         return true;
     }
 
@@ -78,9 +81,11 @@ public class DeclaredClass implements ClassType, ScopedType {
     public String name() { return name; }
 
     public IndexedMap<DeclaredClass> vtable() {
-        IndexedMap<DeclaredClass> supertable = this.superclass().vtable(), result = new IndexedMap<>();
-        result.putAll(supertable);
-        methods.keySet().stream().forEach(key->result.put(key, this));
-        return result;
+        if (!modified) return vtable;
+        vtable.clear();
+        vtable.putAll(this.superclass().vtable());
+        methods.keySet().stream().forEach(key->vtable.put(key, this));
+        modified = false;
+        return vtable;
     }
 }
