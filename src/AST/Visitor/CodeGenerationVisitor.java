@@ -299,7 +299,7 @@ public class CodeGenerationVisitor implements Visitor {
         out.format("\tpushq %%rax\n");
         n.e2.accept(this);
         out.format("\tpopq %%r11\n");
-        out.format("\tmulq %%r11, %%rax\n");
+        out.format("\timulq %%r11, %%rax\n");
     }
 
     @Override
@@ -309,7 +309,7 @@ public class CodeGenerationVisitor implements Visitor {
         n.e2.accept(this); // %rax now contains the array index we are looking for
         out.println("\taddq $1, %rax"); // Account for length
         out.println("\tpopq r11"); // %r11 now contains the array itself
-        out.println("\tmovq (%r11,%rax,$8), %rax");
+        out.println("\tmovq (%r11,%rax,8), %rax");
     }
 
     @Override
@@ -375,8 +375,8 @@ public class CodeGenerationVisitor implements Visitor {
         out.println("\taddq $1, %rax\t\t# For storing the length");
         heapalloc("%rax"); // Pointer is now in %rax
         out.println("\tpopq %r11"); // Pop number of bytes into r11, temporary
-        out.println("\tshrq %r11, $3"); // Divide by 8
-        out.println("\tmovq %r11 (%rax)"); // Load length into r11
+        out.println("\tshrq $3, %r11"); // Divide by 8
+        out.println("\tmovq %r11, (%rax)"); // Load length into r11
         // "return" the pointer in %rax
     }
 
