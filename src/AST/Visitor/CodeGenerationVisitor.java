@@ -267,8 +267,8 @@ public class CodeGenerationVisitor implements Visitor {
         out.format("\tmovq %%rax, %%r11\n");
         out.format("\tmovq $1, %%r10\n");
         out.format("\tmovq $0, %%rax\n");
-        out.format("\tpopq %%rdx\n");
-        out.format("\tcmpq %%rdx, %%r11\n");
+        out.format("\tpopq %%r12\n");
+        out.format("\tcmpq %%r12, %%r11\n");
         out.format("\tcmovl %%r10, %%rax\n");
     }
 
@@ -277,8 +277,8 @@ public class CodeGenerationVisitor implements Visitor {
         n.e1.accept(this);
         out.format("\tpushq %%rax\n");
         n.e2.accept(this);
-        out.format("\tpopq %%rdx\n");
-        out.format("\taddq %%rdx, %%rax\n");
+        out.format("\tpopq %%r11\n");
+        out.format("\taddq %%r11, %%rax\n");
     }
 
     @Override
@@ -286,8 +286,8 @@ public class CodeGenerationVisitor implements Visitor {
         n.e1.accept(this);
         out.format("\tpushq %%rax\n");
         n.e2.accept(this);
-        out.format("\tpopq %%rdx\n");
-        out.format("\tsubq %%rdx, %%rax\n");
+        out.format("\tpopq %%r11\n");
+        out.format("\tsubq %%r11, %%rax\n");
     }
 
     @Override
@@ -295,8 +295,8 @@ public class CodeGenerationVisitor implements Visitor {
         n.e1.accept(this);
         out.format("\tpushq %%rax\n");
         n.e2.accept(this);
-        out.format("\tpopq %%rdx\n");
-        out.format("\tmulq %%rdx, %%rax\n");
+        out.format("\tpopq %%r11\n");
+        out.format("\tmulq %%r11, %%rax\n");
     }
 
     @Override
