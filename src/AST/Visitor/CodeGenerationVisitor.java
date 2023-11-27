@@ -221,7 +221,7 @@ public class CodeGenerationVisitor implements Visitor {
         n.s.accept(this);
         out.format("%s:\n", testlabel);
         n.e.accept(this);
-        //out.format("\taddq $0, %%rax\n");
+        // out.format("\taddq $0, %%rax\n");
         out.println("\tcmpq $0, %rax");
         out.format("\tjz %s\n", bodylabel);
     }
@@ -339,7 +339,7 @@ public class CodeGenerationVisitor implements Visitor {
         if (c.methods.position(n.i.s) == -1) {
             throw new RuntimeException(n.i.s);
         }
-        out.format("\tcall *%d(%%rax)", 8 * (c.methods.position(n.i.s) + 1));
+        out.format("\tcall *%d(%%rax)\n", 8 * (c.methods.position(n.i.s) + 1));
         popregs();
     }
 
@@ -373,6 +373,7 @@ public class CodeGenerationVisitor implements Visitor {
         n.e.accept(this);
         out.println("\tpushq %rax"); // Number of bytes
         out.println("\taddq $1, %rax\t\t# For storing the length");
+        out.println("\tshl $2, %rax\t\t# convert length to required nr of bytes");
         heapalloc("%rax"); // Pointer is now in %rax
         out.println("\tpopq %r11"); // Pop number of bytes into r11, temporary
         out.println("\tshrq $3, %r11"); // Divide by 8
@@ -389,6 +390,8 @@ public class CodeGenerationVisitor implements Visitor {
             throw new RuntimeException("Unrecognized reference type.");
         }
         heapalloc("$" + (8 * (1 + c.fields().size())));
+        out.format("\tleaq %s$$(%%rip), %%r8\n", c.name);
+        out.format("\tmovq %%r8, (%%rax)\n");
     }
 
     @Override
