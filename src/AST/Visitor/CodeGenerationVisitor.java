@@ -405,9 +405,9 @@ public class CodeGenerationVisitor implements Visitor {
     private String getLocation(String id) {
         if (!(currentMethod instanceof Method m))
             throw new RuntimeException("Identifier in main method");
-        if (m.getParam(id) instanceof InstanceType p) {
+        if (m.getParam(id) != Bottom.get()) {
             return argument_registers[m.parameters.position(id) + 1];
-        } else if (m.getVariable(id) instanceof InstanceType i) {
+        } else if (m.getVariable(id) != Bottom.get()) {
             return String.format("$-%d(%%rbp)", 8 * m.variables.position(id));
         } else {
             if (!(currentClass instanceof DeclaredClass c))
