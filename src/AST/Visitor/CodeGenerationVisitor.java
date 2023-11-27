@@ -235,37 +235,55 @@ public class CodeGenerationVisitor implements Visitor {
     public void visit(ArrayAssign n) {
         n.e1.accept(this);
         n.e2.accept(this);
-
     }
 
     @Override
     public void visit(And n) {
         n.e1.accept(this);
+        out.format("\tpushq %%rax\n");
         n.e2.accept(this);
+        out.format("\tpopq %%rdx\n");
+        out.format("\tand %%rdx, %%rax\n");
     }
 
     @Override
     public void visit(LessThan n) {
         n.e1.accept(this);
+        out.format("\tpushq %rax\n");
         n.e2.accept(this);
+        out.format("\tmovq %%rax, %%r11\n");
+        out.format("\tmovq $0, %%rax\n");
+        out.format("\tmovq $1, %%rax\n");
+        out.format("\tpopq %%rdx\n");
+        out.format("\tcmpq %%rdx, %%r11\n");
+        out.format("\tcmovl %%r10, %%rax\n");
     }
 
     @Override
     public void visit(Plus n) {
         n.e1.accept(this);
+        out.format("\tpushq %%rax\n");
         n.e2.accept(this);
+        out.format("\tpopq %%rdx\n");
+        out.format("\taddq %%rdx, %%rax\n");
     }
 
     @Override
     public void visit(Minus n) {
         n.e1.accept(this);
+        out.format("\tpushq %%rax\n");
         n.e2.accept(this);
+        out.format("\tpopq %%rdx\n");
+        out.format("\tsubq %%rdx, %%rax\n");
     }
 
     @Override
     public void visit(Times n) {
         n.e1.accept(this);
+        out.format("\tpushq %%rax\n");
         n.e2.accept(this);
+        out.format("\tpopq %%rdx\n");
+        out.format("\tmulq %%rdx, %%rax\n");
     }
 
     @Override
