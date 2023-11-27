@@ -252,7 +252,7 @@ public class CodeGenerationVisitor implements Visitor {
         out.format("\tpushq %rax\n");
         n.e2.accept(this);
         out.format("\tmovq %%rax, %%r11\n");
-        out.format("\tmovq $0, %%rax\n");
+        out.format("\tmovq $0, %%r10\n");
         out.format("\tmovq $1, %%rax\n");
         out.format("\tpopq %%rdx\n");
         out.format("\tcmpq %%rdx, %%r11\n");
