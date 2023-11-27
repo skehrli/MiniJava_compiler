@@ -3,13 +3,10 @@ package Semantics;
 import AST.Identifier;
 
 import java.util.HashSet;
-import java.util.Map;
-import java.util.LinkedHashMap;
 
 public class DeclaredClass implements ClassType, ScopedType {
-    // [String -> InstanceType * Integer]
-    public final Map<String, InstanceType> instances = new IndexedMap<>();
-    public final Map<String, MethodType> methods = new IndexedMap<>();
+    public final IndexedMap<InstanceType> instances = new IndexedMap<>();
+    public final IndexedMap<MethodType> methods = new IndexedMap<>();
     public String superclass = null;
     public String name;
     public final HashSet<String> unrecognized = new HashSet<>();
