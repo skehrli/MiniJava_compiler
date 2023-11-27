@@ -249,7 +249,7 @@ public class CodeGenerationVisitor implements Visitor {
         out.println("\tpopq rbx"); // %rbx now contains the index
         out.println("\taddq $1, %rbx"); // Account for index
         out.format("\tmovq %s, %%rax\n", getLocation(n.i.s)); // Move the array into %rax
-        out.println("\tmovq %r11, (%rax,%rbx,$8)");
+        out.println("\tmovq %r11, (%rax,%rbx,8)");
         out.println("\tpopq rbx");
     }
 
