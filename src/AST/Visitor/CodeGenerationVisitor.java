@@ -17,8 +17,18 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(Program n) {
-        out.print("\t.text\n");
-        out.print("\t.globl asm_main\n");
+        out.println(".data");
+        for (String key : symTable.classes().keySet()) {
+            if (!(symTable.get(key) instanceof DeclaredClass c)) continue;
+            out.format("%s$$:\n", key);
+            out.println(!(c.superclass() instanceof DeclaredClass s) ? "\t.quad 0" :String.format("\t.quad %s$$:", s.name()));
+            for (String method : c.vtable().keySet()) {
+                out.format("\t.quad %s$%s\n", c.vtable().get(key), method);
+            }
+        }
+        out.println();
+        out.println(".text");
+        out.println("\t.globl asm_main");
         n.m.accept(this);
         // declare vtables somehow...
         for (int i = 0; i < n.cl.size(); i++) {

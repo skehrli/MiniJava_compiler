@@ -8,8 +8,8 @@ import java.util.LinkedHashMap;
 
 public class Method implements MethodType, ScopedType {
     private final InstanceType returnType;
-    public final Map<String, InstanceType> parameters = new LinkedHashMap<>(),
-                                           variables = new LinkedHashMap<>();
+    public final Map<String, InstanceType> parameters = new IndexedMap<>(),
+                                           variables = new IndexedMap<>();
     public final HashSet<String> unrecognized = new HashSet<>();
     public String name;
 

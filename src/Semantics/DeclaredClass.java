@@ -7,8 +7,9 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 
 public class DeclaredClass implements ClassType, ScopedType {
-    public final Map<String, InstanceType> instances = new LinkedHashMap<>();
-    public final Map<String, MethodType> methods = new LinkedHashMap<>();
+    // [String -> InstanceType * Integer]
+    public final Map<String, InstanceType> instances = new IndexedMap<>();
+    public final Map<String, MethodType> methods = new IndexedMap<>();
     public String superclass = null;
     public String name;
     public final HashSet<String> unrecognized = new HashSet<>();
@@ -78,4 +79,11 @@ public class DeclaredClass implements ClassType, ScopedType {
         unrecognized.add(s);
     }
     public String name() { return name; }
+
+    public IndexedMap<DeclaredClass> vtable() {
+        IndexedMap<DeclaredClass> supertable = this.superclass().vtable(), result = new IndexedMap<>();
+        result.putAll(supertable);
+        methods.keySet().stream().forEach(key->result.put(key, this));
+        return result;
+    }
 }

@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class SymbolTable {
-    private final Map<String, ClassType> classes = new LinkedHashMap<>();
+    private final Map<String, ClassType> classes = new IndexedMap<>();
     private boolean error = false;
 
     public boolean error() { return error; }

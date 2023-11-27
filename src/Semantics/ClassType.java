@@ -41,4 +41,7 @@ public interface ClassType extends Type {
         return Top.get();
     }
 
+    default IndexedMap<DeclaredClass> vtable() {
+        return new IndexedMap<>();
+    }
 }
