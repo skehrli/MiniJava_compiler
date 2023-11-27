@@ -72,7 +72,23 @@ asm_main:		# entry point of program
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
-	call put		# Method in C file	movq %rbp,%rsp		# epilogue - return
+
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
+	pushq %rcx
+	pushq %r8
+	pushq %r9
+
+	call put		# Method in C file
+	popq %r9
+	popq %r8
+	popq %rcx
+	popq %rdx
+	popq %rsi
+	popq %rdi
+
+	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
 	ret
 BT$Start:
@@ -154,7 +170,23 @@ BT$Start:
 	movq %rax, -8(%rbp)
 	movq $100000000, %rax
 	movq %rax, %rdi		# Move expression to first argument register
+
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
+	pushq %rcx
+	pushq %r8
+	pushq %r9
+
 	call put		# Method in C file
+	popq %r9
+	popq %r8
+	popq %rcx
+	popq %rdx
+	popq %rsi
+	popq %rdi
+
+
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
@@ -398,7 +430,23 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
+
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
+	pushq %rcx
+	pushq %r8
+	pushq %r9
+
 	call put		# Method in C file
+	popq %r9
+	popq %r8
+	popq %rcx
+	popq %rdx
+	popq %rsi
+	popq %rdi
+
+
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
@@ -423,7 +471,23 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
+
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
+	pushq %rcx
+	pushq %r8
+	pushq %r9
+
 	call put		# Method in C file
+	popq %r9
+	popq %r8
+	popq %rcx
+	popq %rdx
+	popq %rsi
+	popq %rdi
+
+
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
@@ -448,7 +512,23 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
+
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
+	pushq %rcx
+	pushq %r8
+	pushq %r9
+
 	call put		# Method in C file
+	popq %r9
+	popq %r8
+	popq %rcx
+	popq %rdx
+	popq %rsi
+	popq %rdi
+
+
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
@@ -473,7 +553,23 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
+
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
+	pushq %rcx
+	pushq %r8
+	pushq %r9
+
 	call put		# Method in C file
+	popq %r9
+	popq %r8
+	popq %rcx
+	popq %rdx
+	popq %rsi
+	popq %rdi
+
+
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
@@ -498,7 +594,23 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
+
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
+	pushq %rcx
+	pushq %r8
+	pushq %r9
+
 	call put		# Method in C file
+	popq %r9
+	popq %r8
+	popq %rcx
+	popq %rdx
+	popq %rsi
+	popq %rdi
+
+
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
@@ -570,7 +682,23 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
-	call put		# Method in C file	movq $0, %rax
+
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
+	pushq %rcx
+	pushq %r8
+	pushq %r9
+
+	call put		# Method in C file
+	popq %r9
+	popq %r8
+	popq %rcx
+	popq %rdx
+	popq %rsi
+	popq %rdi
+
+	movq $0, %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
 	ret
@@ -2359,7 +2487,23 @@ afterIf19:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
+
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
+	pushq %rcx
+	pushq %r8
+	pushq %r9
+
 	call put		# Method in C file
+	popq %r9
+	popq %r8
+	popq %rcx
+	popq %rdx
+	popq %rsi
+	popq %rdi
+
+
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx

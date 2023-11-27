@@ -230,7 +230,10 @@ public class CodeGenerationVisitor implements Visitor {
     public void visit(Print n) {
         n.e.accept(this);
         out.print("\tmovq %rax, %rdi\t\t# Move expression to first argument register\n");
+
+        pushregs();
         out.print("\tcall put\t\t# Method in C file");
+        popregs();
     }
 
     @Override
