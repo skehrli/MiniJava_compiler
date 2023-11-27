@@ -1,11 +1,26 @@
-Exception in thread "main" java.lang.NullPointerException: Cannot invoke "java.util.Map$Entry.getValue()" because the return value of "java.util.Map.put(Object, Object)" is null
-	at Semantics.IndexedMap.put(IndexedMap.java:22)
-	at Semantics.IndexedMap.put(IndexedMap.java:11)
-	at Semantics.SymbolTable.add(SymbolTable.java:18)
-	at Semantics.SymbolTable.add(SymbolTable.java:27)
-	at AST.Visitor.ResolveClasses.hoistClass(ResolveClasses.java:84)
-	at AST.Visitor.ResolveClasses.resolve(ResolveClasses.java:15)
-	at AST.Visitor.PopulateTable.visit(PopulateTable.java:35)
-	at AST.Program.accept(Program.java:16)
-	at MiniJava.visitAST(MiniJava.java:110)
-	at MiniJava.main(MiniJava.java:40)
+.data
+A$$:
+	.quad 0
+	.quad A$one
+	.quad A$two
+B$$:
+	.quad A$$
+	.quad A$one
+	.quad B$two
+	.quad B$three
+
+.text
+	.globl asm_main
+asm_main:		# entry point of program
+	pushq %rbp		# prologue - save frame ptr
+	movq %rsp, %rbp		# no local vars - no additional stack
+	movq $42, %rax
+	movq %rax, %rdi		# Move expression to first argument register
+	call put		# Method in C file	movq %rbp,%rsp		# epilogue - return
+	popq %rbp		
+	ret
+	movq $1, %rax
+	movq $2, %rax
+	movq $3, %rax
+	movq $3, %rax
+

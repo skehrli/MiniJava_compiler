@@ -21,9 +21,9 @@ public class CodeGenerationVisitor implements Visitor {
         for (String key : symTable.classes().keySet()) {
             if (!(symTable.get(key) instanceof DeclaredClass c)) continue;
             out.format("%s$$:\n", key);
-            out.println(!(c.superclass() instanceof DeclaredClass s) ? "\t.quad 0" :String.format("\t.quad %s$$:", s.name()));
+            out.println(!(c.superclass() instanceof DeclaredClass s) ? "\t.quad 0" :String.format("\t.quad %s$$", s.name()));
             for (String method : c.vtable().keySet()) {
-                out.format("\t.quad %s$%s\n", c.vtable().get(key), method);
+                out.format("\t.quad %s$%s\n", c.vtable().get(method), method);
             }
         }
         out.println();

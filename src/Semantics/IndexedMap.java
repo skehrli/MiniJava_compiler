@@ -13,22 +13,28 @@ public class IndexedMap<V> implements Map<String, V> {
 
     @Override
     public V put(String key, V value) {
-        return wrapped.put(key,
+        Entry<Integer, V> entry = wrapped.put(key,
             new SimpleEntry<Integer, V>(
                 wrapped.containsKey(key) ? wrapped.get(key).getKey()
                     : wrapped.size()
                 , value
             )
-        ).getValue();
+        );
+        if (entry == null) return null;
+        return entry.getValue();
     }    
 
     @Override
     public V get(Object key) {
-        return wrapped.get(key).getValue();
+        Entry<Integer, V> entry = wrapped.get(key);
+        if (entry == null) return null;
+        return entry.getValue();
     }
 
     public int position(Object key) {
-        return wrapped.get(key).getKey();
+        Entry<Integer, V> entry = wrapped.get(key);
+        if (entry == null) return -1;
+        return entry.getKey();
     }
 
     @Override
@@ -53,7 +59,9 @@ public class IndexedMap<V> implements Map<String, V> {
 
     @Override
     public V remove(Object key) {
-        return wrapped.remove(key).getValue();
+        Entry<Integer, V> entry = wrapped.remove(key);
+        if (entry == null) return null;
+        return entry.getValue();
     }
 
     @Override
