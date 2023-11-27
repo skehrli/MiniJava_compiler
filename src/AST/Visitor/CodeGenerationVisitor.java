@@ -142,7 +142,7 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(VarDecl n) {
-        out.format("\tmovq $0, %%rsp\n");
+        out.format("\tmovq $0, (%%rsp)\n");
         out.format("\taddq $-8, %%rsp\n");
     }
 
