@@ -356,7 +356,7 @@ public class CodeGenerationVisitor implements Visitor {
         }
     }
 
-    private String[] argument_registers = {"%rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+    private String[] argument_registers = {"%rdi", "%rsi", "%rdx", "%rcx", "%r8", "%r9"};
 
     private String getLocation(String id) {
         if (!(currentMethod instanceof Method m)) throw new RuntimeException("Identifier in main method");
