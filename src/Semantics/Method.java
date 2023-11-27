@@ -6,8 +6,8 @@ import java.util.HashSet;
 
 public class Method implements MethodType, ScopedType {
     private final InstanceType returnType;
-    public final IndexedMap<InstanceType> parameters = new IndexedMap<>(),
-                                           variables = new IndexedMap<>();
+    public final IndexedMap<InstanceType> parameters = new IndexedMap<>();
+    public final IndexedMap<InstanceType> variables = new IndexedMap<>();
     public final HashSet<String> unrecognized = new HashSet<>();
     public String name;
 

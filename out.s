@@ -1,3 +1,4 @@
+# Vtables for the program
 .data
 A$$:
 	.quad 0
