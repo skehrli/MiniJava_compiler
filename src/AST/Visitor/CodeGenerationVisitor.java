@@ -153,6 +153,8 @@ public class CodeGenerationVisitor implements Visitor {
         MethodType m = cl.getMethod(n.i);
         currentMethod = m;
         out.format("%s$%s\n", ((DeclaredClass) currentClass).name, ((Method) m).name);
+        out.println("\tpushq %rbp");
+        out.println("\tmovq %rsp, %rbp");
         for (int i = 0; i < n.vl.size(); i++) {
             n.vl.get(i).accept(this);
         }
@@ -160,6 +162,9 @@ public class CodeGenerationVisitor implements Visitor {
             n.sl.get(i).accept(this);
         }
         n.e.accept(this);
+        out.println("\tmovq %rbp,%rsp\t\t# epilogue - return");
+        out.println("\tpopq %rbp\t\t");
+        out.println("\tret");
     }
 
     @Override
@@ -233,9 +238,16 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(ArrayAssign n) {
-        n.e1.accept(this);
-        n.e2.accept(this);
-
+        out.println("\tpushq %rbx");
+        n.e1.accept(this); // Gives us the index in %rax
+        out.println("\tpushq %rax");
+        n.e2.accept(this); // Now contains the value to be assigned
+        out.println("\tmovq %rax, %r11"); // Move the value to be assigned so we can get the array itself
+        out.println("\tpopq rbx"); // %rbx now contains the index
+        out.println("\taddq $1, %rbx"); // Account for index
+        out.format("\tmovq %s, %%rax\n", getLocation(n.i.s)); // Move the array into %rax
+        out.println("\tmovq %r11, (%rax,%rbx,$8)");
+        out.println("\tpopq rbx");
     }
 
     @Override
@@ -270,10 +282,12 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(ArrayLookup n) {
-        out.println("\tpushq %rbx");
         n.e1.accept(this);
         out.println("\tpushq %rax");
-        n.e2.accept(this);
+        n.e2.accept(this); // %rax now contains the array index we are looking for
+        out.println("\taddq $1, %rax"); // Account for length
+        out.println("\tpopq r11"); // %r11 now contains the array itself
+        out.println("\tmovq (%r11,%rax,$8), %rax");
     }
 
     @Override
@@ -332,14 +346,12 @@ public class CodeGenerationVisitor implements Visitor {
     @Override
     public void visit(NewArray n) {
         n.e.accept(this);
-        out.println("\tpushq %rbx");
         out.println("\tpushq %rax"); // Number of bytes
         out.println("\taddq $1, %rax\t\t# For storing the length");
         heapalloc("%rax"); // Pointer is now in %rax
-        out.println("\tpopq %rbx"); // Pop number of bytes into rbx
-        out.println("\tshrq %rbx, $3"); // Divide by 8
-        out.println("\tmovq %rbx (%rax)"); // Load length into rbx
-        out.println("\tpopq %rbx");
+        out.println("\tpopq %r11"); // Pop number of bytes into r11, temporary
+        out.println("\tshrq %r11, $3"); // Divide by 8
+        out.println("\tmovq %r11 (%rax)"); // Load length into r11
         // "return" the pointer in %rax
     }
 
@@ -373,15 +385,19 @@ public class CodeGenerationVisitor implements Visitor {
     }
 
     private void pushregs() {
+        out.println();
         for (int i = 0; i < argument_registers.length; i++) {
             out.println("\tpushq " + argument_registers[i]);
         }
+        out.println();
     }
 
     private void popregs() {
+        out.println();
         for (int i = argument_registers.length - 1; i >= 0; i--) {
             out.println("\tpopq " + argument_registers[i]);
         }
+        out.println();
     }
 
     private String[] argument_registers = { "%rdi", "%rsi", "%rdx", "%rcx", "%r8", "%r9" };
