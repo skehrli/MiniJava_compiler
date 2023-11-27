@@ -114,7 +114,7 @@ public class CodeGenerationVisitor implements Visitor {
         out.println("\tpushq %rbp\t\t# prologue - save frame ptr");
         out.println("\tmovq %rsp, %rbp\t\t# no local vars - no additional stack");
         n.s.accept(this);
-        out.println("\tmovq %rbp,%rsp\t\t# epilogue - return");
+        out.println("\tmovq %rbp, %rsp\t\t# epilogue - return");
         out.println("\tpopq %rbp\t\t");
         out.println("\tret");
     }
@@ -143,8 +143,8 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(VarDecl n) {
+        out.format("\tsubq $8, %%rsp\n");
         out.format("\tmovq $0, (%%rsp)\n");
-        out.format("\taddq $-8, %%rsp\n");
     }
 
     @Override
@@ -417,7 +417,7 @@ public class CodeGenerationVisitor implements Visitor {
 
     private void pushregs() {
         out.println();
-        for (int i = 0; i < argument_registers.length; i++) {
+        for (int i = 0; i <= currentMethod.params(); i++) {
             out.println("\tpushq " + argument_registers[i]);
         }
         out.println();
@@ -425,7 +425,7 @@ public class CodeGenerationVisitor implements Visitor {
 
     private void popregs() {
         out.println();
-        for (int i = argument_registers.length - 1; i >= 0; i--) {
+        for (int i = currentMethod.params(); i >= 0; i--) {
             out.println("\tpopq " + argument_registers[i]);
         }
         out.println();
@@ -439,7 +439,9 @@ public class CodeGenerationVisitor implements Visitor {
         if (m.getParam(id) != Bottom.get()) {
             return argument_registers[m.parameters.position(id) + 1];
         } else if (m.getVariable(id) != Bottom.get()) {
-            return String.format("-%d(%%rbp)", 8 * m.variables.position(id));
+            // The plus one here is rather dubious -- it seems like %%(rbp) is actually the old rsp,
+            // so we need to add one for all further positions down.
+            return String.format("-%d(%%rbp)", 8 * (m.variables.position(id) + 1));
         } else {
             if (!(currentClass instanceof DeclaredClass c))
                 throw new RuntimeException("Identifier in main method");

@@ -33,28 +33,13 @@ asm_main:		# entry point of program
 	movq %rsp, %rbp		# no local vars - no additional stack
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq $8, %rdi
 	call mjcalloc		# Moves pointer into %rax
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 	leaq BT$$(%rip), %r8
@@ -64,72 +49,42 @@ asm_main:		# entry point of program
 	movq (%rdi), %rax
 	call *8(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	call put		# Method in C file
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rbp,%rsp		# epilogue - return
+	movq %rbp, %rsp		# epilogue - return
 	popq %rbp		
 	ret
 BT$Start:
 	pushq %rbp
 	movq %rsp, %rbp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq $56, %rdi
 	call mjcalloc		# Moves pointer into %rax
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 	leaq Tree$$(%rip), %r8
 	movq %r8, (%rax)
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $16, %rax
 	pushq %rax
@@ -138,63 +93,33 @@ BT$Start:
 	movq (%rdi), %rax
 	call *8(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *152(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 	movq $100000000, %rax
 	movq %rax, %rdi		# Move expression to first argument register
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	call put		# Method in C file
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $8, %rax
 	pushq %rax
@@ -203,45 +128,25 @@ BT$Start:
 	movq (%rdi), %rax
 	call *104(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *152(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $24, %rax
 	pushq %rax
@@ -250,23 +155,13 @@ BT$Start:
 	movq (%rdi), %rax
 	call *104(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $4, %rax
 	pushq %rax
@@ -275,23 +170,13 @@ BT$Start:
 	movq (%rdi), %rax
 	call *104(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $12, %rax
 	pushq %rax
@@ -300,23 +185,13 @@ BT$Start:
 	movq (%rdi), %rax
 	call *104(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $20, %rax
 	pushq %rax
@@ -325,23 +200,13 @@ BT$Start:
 	movq (%rdi), %rax
 	call *104(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $28, %rax
 	pushq %rax
@@ -350,23 +215,13 @@ BT$Start:
 	movq (%rdi), %rax
 	call *104(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $14, %rax
 	pushq %rax
@@ -375,45 +230,25 @@ BT$Start:
 	movq (%rdi), %rax
 	call *104(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *152(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $24, %rax
 	pushq %rax
@@ -422,39 +257,19 @@ BT$Start:
 	movq (%rdi), %rax
 	call *144(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	call put		# Method in C file
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $12, %rax
 	pushq %rax
@@ -463,39 +278,19 @@ BT$Start:
 	movq (%rdi), %rax
 	call *144(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	call put		# Method in C file
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $16, %rax
 	pushq %rax
@@ -504,39 +299,19 @@ BT$Start:
 	movq (%rdi), %rax
 	call *144(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	call put		# Method in C file
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $50, %rax
 	pushq %rax
@@ -545,39 +320,19 @@ BT$Start:
 	movq (%rdi), %rax
 	call *144(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	call put		# Method in C file
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $12, %rax
 	pushq %rax
@@ -586,39 +341,19 @@ BT$Start:
 	movq (%rdi), %rax
 	call *144(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	call put		# Method in C file
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $12, %rax
 	pushq %rax
@@ -627,45 +362,25 @@ BT$Start:
 	movq (%rdi), %rax
 	call *112(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *152(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq $12, %rax
 	pushq %rax
@@ -674,28 +389,13 @@ BT$Start:
 	movq (%rdi), %rax
 	call *144(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	call put		# Method in C file
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
 	movq $0, %rax
@@ -703,18 +403,18 @@ BT$Start:
 	popq %rbp		
 	ret
 
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
 Tree$Init:
 	pushq %rbp
 	movq %rsp, %rbp
@@ -822,18 +522,18 @@ Tree$SetHas_Right:
 Tree$Compare:
 	pushq %rbp
 	movq %rsp, %rbp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
 	movq $0, %rax
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	movq %rdx, %rax
 	pushq %rax
 	movq $1, %rax
 	popq %r11
 	addq %r11, %rax
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 	movq %rsi, %rax
 	pushq %rax
 	movq %rdx, %rax
@@ -846,12 +546,12 @@ Tree$Compare:
 	cmpq $0, %rax
 	jz false1
 	movq $0, %rax
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	jmp afterIf1
 false1:
 	movq %rsi, %rax
 	pushq %rax
-	movq -8(%rbp), %rax
+	movq -16(%rbp), %rax
 	movq %rax, %r11
 	movq $1, %r10
 	movq $0, %rax
@@ -862,14 +562,14 @@ false1:
 	cmpq $0, %rax
 	jz false2
 	movq $0, %rax
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	jmp afterIf2
 false2:
 	movq $1, %rax
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 afterIf2:
 afterIf1:
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
 	ret
@@ -877,46 +577,34 @@ afterIf1:
 Tree$Insert:
 	pushq %rbp
 	movq %rsp, %rbp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq $56, %rdi
 	call mjcalloc		# Moves pointer into %rax
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
 	leaq Tree$$(%rip), %r8
 	movq %r8, (%rax)
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	movq %rsi, %rax
 	pushq %rax
@@ -925,45 +613,33 @@ Tree$Insert:
 	movq (%rdi), %rax
 	call *8(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
-	movq %rdi, %rax
-	movq %rax, -32(%rbp)
-	movq $1, %rax
 	movq %rax, -16(%rbp)
+	movq %rdi, %rax
+	movq %rax, -40(%rbp)
+	movq $1, %rax
+	movq %rax, -24(%rbp)
 	jmp whileTest1
 whileBody1:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -32(%rbp), %rax
+	movq -40(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *48(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -24(%rbp)
+	movq %rax, -32(%rbp)
 	movq %rsi, %rax
 	pushq %rax
-	movq -24(%rbp), %rax
+	movq -32(%rbp), %rax
 	movq %rax, %r11
 	movq $1, %r10
 	movq $0, %rax
@@ -975,21 +651,13 @@ whileBody1:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -32(%rbp), %rax
+	movq -40(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *72(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
@@ -998,38 +666,26 @@ whileBody1:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -32(%rbp), %rax
+	movq -40(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *40(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -32(%rbp)
+	movq %rax, -40(%rbp)
 	jmp afterIf4
 false4:
 	movq $0, %rax
-	movq %rax, -16(%rbp)
+	movq %rax, -24(%rbp)
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -32(%rbp), %rax
+	movq -40(%rbp), %rax
 	pushq %rax
 	movq $1, %rax
 	pushq %rax
@@ -1038,60 +694,40 @@ false4:
 	movq (%rdi), %rax
 	call *80(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -32(%rbp), %rax
+	movq -40(%rbp), %rax
 	pushq %rax
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rsi
 	popq %rdi
 	movq (%rdi), %rax
 	call *24(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 afterIf4:
 	jmp afterIf3
 false3:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -32(%rbp), %rax
+	movq -40(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *64(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
@@ -1100,38 +736,26 @@ false3:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -32(%rbp), %rax
+	movq -40(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *32(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -32(%rbp)
+	movq %rax, -40(%rbp)
 	jmp afterIf5
 false5:
 	movq $0, %rax
-	movq %rax, -16(%rbp)
+	movq %rax, -24(%rbp)
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -32(%rbp), %rax
+	movq -40(%rbp), %rax
 	pushq %rax
 	movq $1, %rax
 	pushq %rax
@@ -1140,43 +764,31 @@ false5:
 	movq (%rdi), %rax
 	call *88(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -32(%rbp), %rax
+	movq -40(%rbp), %rax
 	pushq %rax
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rsi
 	popq %rdi
 	movq (%rdi), %rax
 	call *16(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 afterIf5:
 afterIf3:
 whileTest1:
-	movq -16(%rbp), %rax
+	movq -24(%rbp), %rax
 	cmpq $0, %rax
 	jz whileBody1
 	movq $1, %rax
@@ -1187,57 +799,49 @@ whileTest1:
 Tree$Delete:
 	pushq %rbp
 	movq %rsp, %rbp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
-	movq %rdi, %rax
-	movq %rax, -0(%rbp)
 	movq %rdi, %rax
 	movq %rax, -8(%rbp)
-	movq $1, %rax
+	movq %rdi, %rax
 	movq %rax, -16(%rbp)
-	movq $0, %rax
-	movq %rax, -24(%rbp)
 	movq $1, %rax
+	movq %rax, -24(%rbp)
+	movq $0, %rax
 	movq %rax, -32(%rbp)
+	movq $1, %rax
+	movq %rax, -40(%rbp)
 	jmp whileTest2
 whileBody2:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *48(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -40(%rbp)
+	movq %rax, -48(%rbp)
 	movq %rsi, %rax
 	pushq %rax
-	movq -40(%rbp), %rax
+	movq -48(%rbp), %rax
 	movq %rax, %r11
 	movq $1, %r10
 	movq $0, %rax
@@ -1249,58 +853,42 @@ whileBody2:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *72(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
 	cmpq $0, %rax
 	jz false7
-	movq -0(%rbp), %rax
-	movq %rax, -8(%rbp)
+	movq -8(%rbp), %rax
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *40(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	jmp afterIf7
 false7:
 	movq $0, %rax
-	movq %rax, -16(%rbp)
+	movq %rax, -24(%rbp)
 afterIf7:
 	jmp afterIf6
 false6:
-	movq -40(%rbp), %rax
+	movq -48(%rbp), %rax
 	pushq %rax
 	movq %rsi, %rax
 	movq %rax, %r11
@@ -1314,78 +902,54 @@ false6:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *64(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
 	cmpq $0, %rax
 	jz false9
-	movq -0(%rbp), %rax
-	movq %rax, -8(%rbp)
+	movq -8(%rbp), %rax
+	movq %rax, -16(%rbp)
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *32(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	jmp afterIf9
 false9:
 	movq $0, %rax
-	movq %rax, -16(%rbp)
+	movq %rax, -24(%rbp)
 afterIf9:
 	jmp afterIf8
 false8:
-	movq -32(%rbp), %rax
+	movq -40(%rbp), %rax
 	cmpq $0, %rax
 	jz false10
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *64(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
@@ -1394,21 +958,13 @@ false8:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *72(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
@@ -1418,22 +974,18 @@ false8:
 	cmpq $0, %rax
 	jz false11
 	movq $1, %rax
-	movq %rax, -48(%rbp)
+	movq %rax, -56(%rbp)
 	jmp afterIf11
 false11:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdi, %rax
 	pushq %rax
-	movq -8(%rbp), %rax
+	movq -16(%rbp), %rax
 	pushq %rax
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdx
 	popq %rsi
@@ -1441,30 +993,22 @@ false11:
 	movq (%rdi), %rax
 	call *120(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -48(%rbp)
+	movq %rax, -56(%rbp)
 afterIf11:
 	jmp afterIf10
 false10:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdi, %rax
 	pushq %rax
-	movq -8(%rbp), %rax
+	movq -16(%rbp), %rax
 	pushq %rax
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rdx
 	popq %rsi
@@ -1472,28 +1016,24 @@ false10:
 	movq (%rdi), %rax
 	call *120(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -48(%rbp)
+	movq %rax, -56(%rbp)
 afterIf10:
 	movq $1, %rax
-	movq %rax, -24(%rbp)
+	movq %rax, -32(%rbp)
 	movq $0, %rax
-	movq %rax, -16(%rbp)
+	movq %rax, -24(%rbp)
 afterIf8:
 afterIf6:
 	movq $0, %rax
-	movq %rax, -32(%rbp)
+	movq %rax, -40(%rbp)
 whileTest2:
-	movq -16(%rbp), %rax
+	movq -24(%rbp), %rax
 	cmpq $0, %rax
 	jz whileBody2
-	movq -24(%rbp), %rax
+	movq -32(%rbp), %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
 	ret
@@ -1501,19 +1041,16 @@ whileTest2:
 Tree$Remove:
 	pushq %rbp
 	movq %rsp, %rbp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdx, %rax
 	pushq %rax
@@ -1521,9 +1058,6 @@ Tree$Remove:
 	movq (%rdi), %rax
 	call *72(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
@@ -1534,9 +1068,6 @@ Tree$Remove:
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdi, %rax
 	pushq %rax
@@ -1550,23 +1081,17 @@ Tree$Remove:
 	movq (%rdi), %rax
 	call *136(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	jmp afterIf12
 false12:
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdx, %rax
 	pushq %rax
@@ -1574,9 +1099,6 @@ false12:
 	movq (%rdi), %rax
 	call *64(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
@@ -1587,9 +1109,6 @@ false12:
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdi, %rax
 	pushq %rax
@@ -1603,23 +1122,17 @@ false12:
 	movq (%rdi), %rax
 	call *128(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	jmp afterIf13
 false13:
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdx, %rax
 	pushq %rax
@@ -1627,51 +1140,6 @@ false13:
 	movq (%rdi), %rax
 	call *48(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
-	popq %rdi
-
-	movq %rax, -8(%rbp)
-
-	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
-
-
-	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
-
-	movq %rsi, %rax
-	pushq %rax
-	popq %rdi
-	movq (%rdi), %rax
-	call *40(%rax)
-
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
-	popq %rdi
-
-	pushq %rax
-	popq %rdi
-	movq (%rdi), %rax
-	call *48(%rax)
-
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
@@ -1681,15 +1149,42 @@ false13:
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
+
+
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
+
+	movq %rsi, %rax
+	pushq %rax
+	popq %rdi
+	movq (%rdi), %rax
+	call *40(%rax)
+
+	popq %rdx
+	popq %rsi
+	popq %rdi
+
+	pushq %rax
+	popq %rdi
+	movq (%rdi), %rax
+	call *48(%rax)
+
+	popq %rdx
+	popq %rsi
+	popq %rdi
+
+	movq %rax, -24(%rbp)
+
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
 
 	movq %rdi, %rax
 	pushq %rax
-	movq -8(%rbp), %rax
-	pushq %rax
 	movq -16(%rbp), %rax
+	pushq %rax
+	movq -24(%rbp), %rax
 	pushq %rax
 	popq %rdx
 	popq %rsi
@@ -1697,9 +1192,6 @@ false13:
 	movq (%rdi), %rax
 	call *96(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
@@ -1710,9 +1202,6 @@ false13:
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -1723,21 +1212,15 @@ false13:
 	movq (%rdi), %rax
 	call *24(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -1748,23 +1231,17 @@ false13:
 	movq (%rdi), %rax
 	call *80(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	jmp afterIf14
 false14:
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -1775,21 +1252,15 @@ false14:
 	movq (%rdi), %rax
 	call *16(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -1800,14 +1271,11 @@ false14:
 	movq (%rdi), %rax
 	call *88(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 afterIf14:
 afterIf13:
 afterIf12:
@@ -1819,17 +1287,14 @@ afterIf12:
 Tree$RemoveRight:
 	pushq %rbp
 	movq %rsp, %rbp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
 	jmp whileTest3
 whileBody3:
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdx, %rax
 	pushq %rax
@@ -1837,17 +1302,11 @@ whileBody3:
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdx, %rax
 	pushq %rax
@@ -1855,9 +1314,6 @@ whileBody3:
 	movq (%rdi), %rax
 	call *32(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
@@ -1867,9 +1323,6 @@ whileBody3:
 	movq (%rdi), %rax
 	call *48(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
@@ -1880,23 +1333,17 @@ whileBody3:
 	movq (%rdi), %rax
 	call *56(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	movq %rdx, %rax
 	movq %rax, %rsi
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdx, %rax
 	pushq %rax
@@ -1904,9 +1351,6 @@ whileBody3:
 	movq (%rdi), %rax
 	call *32(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
@@ -1917,9 +1361,6 @@ whileTest3:
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdx, %rax
 	pushq %rax
@@ -1927,9 +1368,6 @@ whileTest3:
 	movq (%rdi), %rax
 	call *64(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
@@ -1940,9 +1378,6 @@ whileTest3:
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -1953,21 +1388,15 @@ whileTest3:
 	movq (%rdi), %rax
 	call *16(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -1978,14 +1407,11 @@ whileTest3:
 	movq (%rdi), %rax
 	call *88(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	movq $1, %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
@@ -1994,17 +1420,14 @@ whileTest3:
 Tree$RemoveLeft:
 	pushq %rbp
 	movq %rsp, %rbp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
 	jmp whileTest4
 whileBody4:
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdx, %rax
 	pushq %rax
@@ -2012,17 +1435,11 @@ whileBody4:
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdx, %rax
 	pushq %rax
@@ -2030,9 +1447,6 @@ whileBody4:
 	movq (%rdi), %rax
 	call *40(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
@@ -2042,9 +1456,6 @@ whileBody4:
 	movq (%rdi), %rax
 	call *48(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
@@ -2055,23 +1466,17 @@ whileBody4:
 	movq (%rdi), %rax
 	call *56(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	movq %rdx, %rax
 	movq %rax, %rsi
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdx, %rax
 	pushq %rax
@@ -2079,9 +1484,6 @@ whileBody4:
 	movq (%rdi), %rax
 	call *40(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
@@ -2092,9 +1494,6 @@ whileTest4:
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdx, %rax
 	pushq %rax
@@ -2102,9 +1501,6 @@ whileTest4:
 	movq (%rdi), %rax
 	call *72(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
@@ -2115,9 +1511,6 @@ whileTest4:
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -2128,21 +1521,15 @@ whileTest4:
 	movq (%rdi), %rax
 	call *24(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 
 	pushq %rdi
 	pushq %rsi
 	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -2153,14 +1540,11 @@ whileTest4:
 	movq (%rdi), %rax
 	call *80(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
 	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	movq $1, %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
@@ -2169,47 +1553,39 @@ whileTest4:
 Tree$Search:
 	pushq %rbp
 	movq %rsp, %rbp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
 	movq %rdi, %rax
-	movq %rax, -16(%rbp)
+	movq %rax, -24(%rbp)
 	movq $1, %rax
-	movq %rax, -0(%rbp)
-	movq $0, %rax
 	movq %rax, -8(%rbp)
+	movq $0, %rax
+	movq %rax, -16(%rbp)
 	jmp whileTest5
 whileBody5:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -16(%rbp), %rax
+	movq -24(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *48(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -24(%rbp)
+	movq %rax, -32(%rbp)
 	movq %rsi, %rax
 	pushq %rax
-	movq -24(%rbp), %rax
+	movq -32(%rbp), %rax
 	movq %rax, %r11
 	movq $1, %r10
 	movq $0, %rax
@@ -2221,21 +1597,13 @@ whileBody5:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -16(%rbp), %rax
+	movq -24(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *72(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
@@ -2244,33 +1612,25 @@ whileBody5:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -16(%rbp), %rax
+	movq -24(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *40(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -16(%rbp)
+	movq %rax, -24(%rbp)
 	jmp afterIf16
 false16:
 	movq $0, %rax
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 afterIf16:
 	jmp afterIf15
 false15:
-	movq -24(%rbp), %rax
+	movq -32(%rbp), %rax
 	pushq %rax
 	movq %rsi, %rax
 	movq %rax, %r11
@@ -2284,21 +1644,13 @@ false15:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -16(%rbp), %rax
+	movq -24(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *64(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
@@ -2307,43 +1659,35 @@ false15:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
-	movq -16(%rbp), %rax
+	movq -24(%rbp), %rax
 	pushq %rax
 	popq %rdi
 	movq (%rdi), %rax
 	call *32(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -16(%rbp)
+	movq %rax, -24(%rbp)
 	jmp afterIf18
 false18:
 	movq $0, %rax
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 afterIf18:
 	jmp afterIf17
 false17:
 	movq $1, %rax
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 	movq $0, %rax
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 afterIf17:
 afterIf15:
 whileTest5:
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	cmpq $0, %rax
 	jz whileBody5
-	movq -8(%rbp), %rax
+	movq -16(%rbp), %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
 	ret
@@ -2351,37 +1695,27 @@ whileTest5:
 Tree$Print:
 	pushq %rbp
 	movq %rsp, %rbp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
 	movq %rdi, %rax
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 
 	pushq %rdi
-	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdi, %rax
 	pushq %rax
-	movq -0(%rbp), %rax
+	movq -8(%rbp), %rax
 	pushq %rax
 	popq %rsi
 	popq %rdi
 	movq (%rdi), %rax
 	call *160(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
-	popq %rsi
 	popq %rdi
 
-	movq %rax, -8(%rbp)
+	movq %rax, -16(%rbp)
 	movq $1, %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
@@ -2390,15 +1724,11 @@ Tree$Print:
 Tree$RecPrint:
 	pushq %rbp
 	movq %rsp, %rbp
+	subq $8, %rsp
 	movq $0, (%rsp)
-	addq $-8, %rsp
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -2406,10 +1736,6 @@ Tree$RecPrint:
 	movq (%rdi), %rax
 	call *72(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
@@ -2418,20 +1744,12 @@ Tree$RecPrint:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdi, %rax
 	pushq %rax
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -2439,10 +1757,6 @@ Tree$RecPrint:
 	movq (%rdi), %rax
 	call *40(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
@@ -2452,26 +1766,18 @@ Tree$RecPrint:
 	movq (%rdi), %rax
 	call *160(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	jmp afterIf19
 false19:
 	movq $1, %rax
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 afterIf19:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -2479,10 +1785,6 @@ afterIf19:
 	movq (%rdi), %rax
 	call *48(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
@@ -2490,26 +1792,14 @@ afterIf19:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	call put		# Method in C file
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -2517,10 +1807,6 @@ afterIf19:
 	movq (%rdi), %rax
 	call *64(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
@@ -2529,20 +1815,12 @@ afterIf19:
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rdi, %rax
 	pushq %rax
 
 	pushq %rdi
 	pushq %rsi
-	pushq %rdx
-	pushq %rcx
-	pushq %r8
-	pushq %r9
 
 	movq %rsi, %rax
 	pushq %rax
@@ -2550,10 +1828,6 @@ afterIf19:
 	movq (%rdi), %rax
 	call *32(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
@@ -2563,18 +1837,14 @@ afterIf19:
 	movq (%rdi), %rax
 	call *160(%rax)
 
-	popq %r9
-	popq %r8
-	popq %rcx
-	popq %rdx
 	popq %rsi
 	popq %rdi
 
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 	jmp afterIf20
 false20:
 	movq $1, %rax
-	movq %rax, -0(%rbp)
+	movq %rax, -8(%rbp)
 afterIf20:
 	movq $1, %rax
 	movq %rbp,%rsp		# epilogue - return
