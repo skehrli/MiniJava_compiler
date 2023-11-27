@@ -14,14 +14,73 @@ public class CodeGenerationVisitor implements Visitor {
         symTable = Top.symTable = s;
     }
 
+    // Tries to find the String in scope, complains if it can't be found and it
+    // hasn't
+    // yet been seen in this scope.
+    private InstanceType findInScope(String id, ASTNode n) {
+        InstanceType var = currentMethod.getVariable(id);
+        if (var != Bottom.get())
+            return var;
+        var = currentMethod.getParam(id);
+        if (var != Bottom.get())
+            return var;
+        var = currentClass.getField(id);
+        if (var != Bottom.get())
+            return var;
+        // var is a _|_, so we now have to implement some logic.
+        // If the current class isn't a DeclaredClass, then return.
+        if (!(currentClass instanceof ScopedType c))
+            return var;
+
+        // If we've seen the unrecognized identifier already in the class,
+        // return.
+        if (c.seenUnrecognized(id)) {
+            symTable.err();
+            return var;
+        }
+        // id is a new unrecognized identifier for the class c.
+        String err = "Unrecognized identifier '" + id + "' in " + c.name();
+        // Bottom isn't a ScopedType, so we're testing if it's a MainMethod or Method
+        if (currentMethod instanceof ScopedType m && !m.seenUnrecognized(id)) {
+            // id is a new unrecognized identifier for method m.
+            symTable.err(err + "::" + m.name(), n);
+            // So we add the unrecognized identifier for method m.
+            m.addUnrecognized(id);
+        } else if (currentMethod instanceof ScopedType) {
+            // We're inside a method & we've seen the unrecognized identifier id for
+            // that method.
+            symTable.err();
+        } else {
+            // We're not inside a method -- we're just in the class, so add the id
+            // to the class's set of unrecognized identifiers.
+            symTable.err(err, n);
+            c.addUnrecognized(id);
+        }
+        return var;
+    }
+
+    public InstanceType findInScope(Identifier id) {
+        return findInScope(id.s, id);
+    }
+
+    public InstanceType findInScope(IdentifierType id) {
+        return findInScope(id.s, id);
+    }
+
+    public InstanceType findInScope(IdentifierExp id) {
+        return findInScope(id.s, id);
+    }
+
     @Override
     public void visit(Program n) {
         out.println("# Vtables for the program");
         out.println(".data");
         for (String key : symTable.classes().keySet()) {
-            if (!(symTable.get(key) instanceof DeclaredClass c)) continue;
+            if (!(symTable.get(key) instanceof DeclaredClass c))
+                continue;
             out.format("%s$$:\n", key);
-            out.println(!(c.superclass() instanceof DeclaredClass s) ? "\t.quad 0" :String.format("\t.quad %s$$", s.name()));
+            out.println(!(c.superclass() instanceof DeclaredClass s) ? "\t.quad 0"
+                    : String.format("\t.quad %s$$", s.name()));
             for (String method : c.vtable().keySet()) {
                 out.format("\t.quad %s$%s\n", c.vtable().get(method), method);
             }
@@ -40,7 +99,7 @@ public class CodeGenerationVisitor implements Visitor {
     public void visit(MainClass n) {
         currentClass = symTable.get(n.i1);
         currentMethod = currentClass.getMethod("main");
-        
+
         out.println("asm_main:\t\t# entry point of program");
         out.println("\tpushq %rbp\t\t# prologue - save frame ptr");
         out.println("\tmovq %rsp, %rbp\t\t# no local vars - no additional stack");
@@ -53,6 +112,9 @@ public class CodeGenerationVisitor implements Visitor {
     @Override
     public void visit(ClassDeclSimple n) {
         currentClass = symTable.get(n.i);
+        for (int i = 0; i < n.vl.size(); i++) {
+            n.vl.get(i).accept(this);
+        }
         for (int i = 0; i < n.ml.size(); i++) {
             n.ml.get(i).accept(this);
         }
@@ -61,6 +123,9 @@ public class CodeGenerationVisitor implements Visitor {
     @Override
     public void visit(ClassDeclExtends n) {
         currentClass = symTable.get(n.i);
+        for (int i = 0; i < n.vl.size(); i++) {
+            n.vl.get(i).accept(this);
+        }
         for (int i = 0; i < n.ml.size(); i++) {
             n.ml.get(i).accept(this);
         }
@@ -68,6 +133,8 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(VarDecl n) {
+
+        if()
     }
 
     @Override
@@ -136,14 +203,14 @@ public class CodeGenerationVisitor implements Visitor {
     @Override
     public void visit(Assign n) {
         n.e.accept(this);
-        
+
     }
 
     @Override
     public void visit(ArrayAssign n) {
         n.e1.accept(this);
         n.e2.accept(this);
-        
+
     }
 
     @Override
@@ -251,5 +318,6 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(Identifier n) {
+
     }
 }
