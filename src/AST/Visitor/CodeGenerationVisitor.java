@@ -133,8 +133,6 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(VarDecl n) {
-
-        if()
     }
 
     @Override
@@ -245,39 +243,36 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(ArrayLookup n) {
+        out.println("\tpushq %rbx");
         n.e1.accept(this);
+        out.println("\tpushq %rax");
         n.e2.accept(this);
     }
 
     @Override
     public void visit(ArrayLength n) {
         n.e.accept(this);
-
+        out.println("\tmovq (%rax), %rax");
     }
 
     @Override
     public void visit(Call n) {
         // check whether identifier is in the symbol table
+        pushregs();
         n.e.accept(this);
-        InstanceType callerType = n.e.expType;
-        if (!(callerType instanceof Ref caller)) {
-            symTable.err(String.format("LHS of call is not a reference type; has type %s.", n.e.expType), n);
-            n.expType = Semantics.Bottom.get();
-            return;
-        }
-        MethodType method = symTable.get(caller.s).getMethod(n.i.toString());
-        if (!(method instanceof Method m)) {
-            symTable.err(String.format("%s not a valid method for Type %s.", n.i, n.e.expType), n);
-            n.expType = Semantics.Bottom.get();
-            return;
-        }
-        // verify whether all parameters have the same type
+        out.println("\tpushq %rax"); // Push the object to call on
         for (int i = 0; i < n.el.size(); i++) {
             n.el.get(i).accept(this);
+            out.println("\tpushq %rax");
         }
-        if (n.el.size() != m.parameters.size()) {
-            symTable.err("Wrong number of arguments.", n.el);
+        for (int i = n.el.size(); i >= 0; i--) {
+            out.format("\tpopq %s\n", argument_registers[i]);
         }
+        out.println("\tmovq (%rdi), %rax"); // Moves the object itself into %rax
+        if (!(n.e.expType instanceof Ref r)) throw new RuntimeException("Calling method on non-reference type");
+        if (!(symTable.get(r.s) instanceof DeclaredClass c)) throw new RuntimeException("Calling method on non-reference type");
+        out.format("\tcall %d(%%rax)", 8 * (c.methods.position(n.i) + 1));
+        popregs();
     }
 
     @Override
@@ -287,37 +282,92 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(True n) {
+        out.println("\tmovq $1, %rax");
     }
 
     @Override
     public void visit(False n) {
+        out.println("\tmovq $0, %rax");
     }
 
     @Override
     public void visit(IdentifierExp n) {
+        if (!(currentMethod instanceof Method m)) throw new RuntimeException("Identifier in main method");
+        out.format("\tmovq %s, %%rax\n", getLocation(n.s));
     }
 
     @Override
     public void visit(This n) {
+        out.println("\tmovq %rdi, %rax");
     }
 
     @Override
     public void visit(NewArray n) {
         n.e.accept(this);
+        out.println("\tpushq %rbx");
+        out.println("\tpushq %rax"); // Number of bytes
+        out.println("\taddq $1, %rax\t\t# For storing the length");
+        heapalloc("%rax"); // Pointer is now in %rax
+        out.println("\tpopq %rbx"); // Pop number of bytes into rbx
+        out.println("\tshrq %rbx, $3"); // Divide by 8
+        out.println("\tmovq %rbx (%rax)"); // Load length into rbx
+        out.println("\tpopq %rbx");
+        // "return" the pointer in %rax
     }
 
     @Override
     public void visit(NewObject n) {
-
+        if (!(n.expType instanceof Ref r)) {
+            throw new RuntimeException("Cannot instantiate primitive type.");
+        }
+        if (!(symTable.get(r.s) instanceof DeclaredClass c)) {
+            throw new RuntimeException("Unrecognized reference type.");
+        }
+        heapalloc("$" + (8 * (1 + c.fields().size())));
     }
 
     @Override
     public void visit(Not n) {
         n.e.accept(this);
+        out.println("\txorq $1, %rax");
     }
 
     @Override
     public void visit(Identifier n) {
+    }
 
+    // Allocates i bytes, moving the result into %rax.
+    private void heapalloc(String i) {
+        pushregs();
+        out.format("\tmovq %s, %%rdi\n", i);
+        out.println("\tcall mjcalloc\t\t# Moves pointer into %rax");
+        popregs();
+    }
+
+    private void pushregs() {
+        for (int i = 0; i < argument_registers.length; i++) {
+            out.println("\tpushq " + argument_registers[i]);
+        }
+    }
+
+    private void popregs() {
+        for (int i = argument_registers.length - 1; i >= 0; i--) {
+            out.println("\tpopq " + argument_registers[i]);
+        }
+    }
+
+    private String[] argument_registers = {"%rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+
+    private String getLocation(String id) {
+        if (!(currentMethod instanceof Method m)) throw new RuntimeException("Identifier in main method");
+        if (m.getParam(id) instanceof InstanceType p) {
+            return argument_registers[m.parameters.position(id) + 1];
+        } else if (m.getVariable(id) instanceof InstanceType i) {
+            return String.format("$-%d(%%rbp)", 8 * m.variables.position(id));
+        } else {
+            if (!(currentClass instanceof DeclaredClass c)) throw new RuntimeException("Identifier in main method");
+            int pos = c.fields().get(id);
+            return String.format("%d(%%rdi)", 8 * (pos + 1)); // Account for vtable in the first position
+        }
     }
 }
