@@ -2,7 +2,6 @@ package AST.Visitor;
 
 import AST.*;
 import Semantics.*;
-import Semantics.Type;
 import java.io.PrintStream;
 
 public class CodeGenerationVisitor implements Visitor {
@@ -17,6 +16,7 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(Program n) {
+        out.println("# Vtables for the program");
         out.println(".data");
         for (String key : symTable.classes().keySet()) {
             if (!(symTable.get(key) instanceof DeclaredClass c)) continue;
@@ -30,7 +30,6 @@ public class CodeGenerationVisitor implements Visitor {
         out.println(".text");
         out.println("\t.globl asm_main");
         n.m.accept(this);
-        // declare vtables somehow...
         for (int i = 0; i < n.cl.size(); i++) {
             n.cl.get(i).accept(this);
         }
