@@ -228,8 +228,7 @@ public class CodeGenerationVisitor implements Visitor {
     @Override
     public void visit(Assign n) {
         n.e.accept(this);
-        InstanceType t = findInScope(n.i.toString(), n);
-        // out.format("movq %%rax, -8*(%%rbp)", currentMethod.variables.position());
+        out.format("\tmovq %%rax, %s\n", getLocation(n.i.s));
     }
 
     @Override
@@ -322,8 +321,6 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(IdentifierExp n) {
-        if (!(currentMethod instanceof Method m))
-            throw new RuntimeException("Identifier in main method");
         out.format("\tmovq %s, %%rax\n", getLocation(n.s));
     }
 
