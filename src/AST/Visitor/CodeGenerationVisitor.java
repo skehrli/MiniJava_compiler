@@ -3,15 +3,24 @@ package AST.Visitor;
 import AST.*;
 import Semantics.*;
 import java.io.PrintStream;
+import java.util.Map;
+import java.util.HashMap;
 
 public class CodeGenerationVisitor implements Visitor {
     SymbolTable symTable;
     ClassType currentClass = Bottom.get();
     MethodType currentMethod = Bottom.get();
     PrintStream out = System.out;
+    Map<String, Integer> labels = new HashMap<String, Integer>();
 
     public CodeGenerationVisitor(SymbolTable s) {
         symTable = Top.symTable = s;
+    }
+
+    public String labelgenerator(String s) {
+        int count = labels.getOrDefault(s, 0);
+        labels.put(s, ++count);
+        return s + count;
     }
 
     // Tries to find the String in scope, complains if it can't be found and it
@@ -133,6 +142,8 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(VarDecl n) {
+        out.format("\tmovq $0, %%rsp\n");
+        out.format("\taddq $-8, %%rsp\n");
     }
 
     @Override
@@ -140,9 +151,11 @@ public class CodeGenerationVisitor implements Visitor {
         if (!(currentClass instanceof DeclaredClass cl))
             return;
         MethodType m = cl.getMethod(n.i);
-        if (m == Bottom.get())
-            return;
         currentMethod = m;
+        out.format("%s$%s\n", ((DeclaredClass) currentClass).name, ((Method) m).name);
+        for (int i = 0; i < n.vl.size(); i++) {
+            n.vl.get(i).accept(this);
+        }
         for (int i = 0; i < n.sl.size(); i++) {
             n.sl.get(i).accept(this);
         }
@@ -181,14 +194,28 @@ public class CodeGenerationVisitor implements Visitor {
     @Override
     public void visit(If n) {
         n.e.accept(this);
+        String jmplabel = labelgenerator("false");
+        String afterlabel = labelgenerator("afterIf");
+        out.format("\taddq $0, %%rax\n");
+        out.format("\tjz %%rax, %s\n", jmplabel);
         n.s1.accept(this);
+        out.format("\tjmp %s\n", afterlabel);
+        out.format("%s:\n", jmplabel);
         n.s2.accept(this);
+        out.format("%s:\n", afterlabel);
     }
 
     @Override
     public void visit(While n) {
-        n.e.accept(this);
+        String bodylabel = labelgenerator("whileBody");
+        String testlabel = labelgenerator("whileTest");
+        out.format("\tjmp %s\n", testlabel);
+        out.format("%s:\n", bodylabel);
         n.s.accept(this);
+        out.format("%s:\n", testlabel);
+        n.e.accept(this);
+        out.format("\taddq $0, %%rax\n");
+        out.format("\tjz %%rax, %s\n", bodylabel);
     }
 
     @Override
@@ -201,7 +228,8 @@ public class CodeGenerationVisitor implements Visitor {
     @Override
     public void visit(Assign n) {
         n.e.accept(this);
-
+        InstanceType t = findInScope(n.i.toString(), n);
+        // out.format("movq %%rax, -8*(%%rbp)", currentMethod.variables.position());
     }
 
     @Override
@@ -269,8 +297,10 @@ public class CodeGenerationVisitor implements Visitor {
             out.format("\tpopq %s\n", argument_registers[i]);
         }
         out.println("\tmovq (%rdi), %rax"); // Moves the object itself into %rax
-        if (!(n.e.expType instanceof Ref r)) throw new RuntimeException("Calling method on non-reference type");
-        if (!(symTable.get(r.s) instanceof DeclaredClass c)) throw new RuntimeException("Calling method on non-reference type");
+        if (!(n.e.expType instanceof Ref r))
+            throw new RuntimeException("Calling method on non-reference type");
+        if (!(symTable.get(r.s) instanceof DeclaredClass c))
+            throw new RuntimeException("Calling method on non-reference type");
         out.format("\tcall %d(%%rax)", 8 * (c.methods.position(n.i) + 1));
         popregs();
     }
@@ -292,7 +322,8 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(IdentifierExp n) {
-        if (!(currentMethod instanceof Method m)) throw new RuntimeException("Identifier in main method");
+        if (!(currentMethod instanceof Method m))
+            throw new RuntimeException("Identifier in main method");
         out.format("\tmovq %s, %%rax\n", getLocation(n.s));
     }
 
@@ -356,16 +387,18 @@ public class CodeGenerationVisitor implements Visitor {
         }
     }
 
-    private String[] argument_registers = {"%rdi", "%rsi", "%rdx", "%rcx", "%r8", "%r9"};
+    private String[] argument_registers = { "%rdi", "%rsi", "%rdx", "%rcx", "%r8", "%r9" };
 
     private String getLocation(String id) {
-        if (!(currentMethod instanceof Method m)) throw new RuntimeException("Identifier in main method");
+        if (!(currentMethod instanceof Method m))
+            throw new RuntimeException("Identifier in main method");
         if (m.getParam(id) instanceof InstanceType p) {
             return argument_registers[m.parameters.position(id) + 1];
         } else if (m.getVariable(id) instanceof InstanceType i) {
             return String.format("$-%d(%%rbp)", 8 * m.variables.position(id));
         } else {
-            if (!(currentClass instanceof DeclaredClass c)) throw new RuntimeException("Identifier in main method");
+            if (!(currentClass instanceof DeclaredClass c))
+                throw new RuntimeException("Identifier in main method");
             int pos = c.fields().get(id);
             return String.format("%d(%%rdi)", 8 * (pos + 1)); // Account for vtable in the first position
         }
