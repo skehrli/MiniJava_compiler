@@ -4,6 +4,7 @@ import AST.*;
 import Semantics.*;
 import java.io.PrintStream;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.HashMap;
 
 public class CodeGenerationVisitor implements Visitor {
@@ -152,7 +153,7 @@ public class CodeGenerationVisitor implements Visitor {
             return;
         MethodType m = cl.getMethod(n.i);
         currentMethod = m;
-        out.format("%s$%s\n", ((DeclaredClass) currentClass).name, ((Method) m).name);
+        out.format("%s$%s:\n", ((DeclaredClass) currentClass).name, ((Method) m).name);
         out.println("\tpushq %rbp");
         out.println("\tmovq %rsp, %rbp");
         for (int i = 0; i < n.vl.size(); i++) {
@@ -164,7 +165,7 @@ public class CodeGenerationVisitor implements Visitor {
         n.e.accept(this);
         out.println("\tmovq %rbp,%rsp\t\t# epilogue - return");
         out.println("\tpopq %rbp\t\t");
-        out.println("\tret");
+        out.println("\tret\n");
     }
 
     @Override
@@ -201,8 +202,9 @@ public class CodeGenerationVisitor implements Visitor {
         n.e.accept(this);
         String jmplabel = labelgenerator("false");
         String afterlabel = labelgenerator("afterIf");
-        out.format("\taddq $0, %%rax\n");
-        out.format("\tjz %%rax, %s\n", jmplabel);
+        // out.format("\taddq $0, %%rax\n");
+        out.println("\tcmpq $0, %rax");
+        out.format("\tjz %s\n", jmplabel);
         n.s1.accept(this);
         out.format("\tjmp %s\n", afterlabel);
         out.format("%s:\n", jmplabel);
@@ -219,8 +221,9 @@ public class CodeGenerationVisitor implements Visitor {
         n.s.accept(this);
         out.format("%s:\n", testlabel);
         n.e.accept(this);
-        out.format("\taddq $0, %%rax\n");
-        out.format("\tjz %%rax, %s\n", bodylabel);
+        //out.format("\taddq $0, %%rax\n");
+        out.println("\tcmpq $0, %rax");
+        out.format("\tjz %s\n", bodylabel);
     }
 
     @Override
@@ -262,7 +265,7 @@ public class CodeGenerationVisitor implements Visitor {
     @Override
     public void visit(LessThan n) {
         n.e1.accept(this);
-        out.format("\tpushq %rax\n");
+        out.format("\tpushq %%rax\n");
         n.e2.accept(this);
         out.format("\tmovq %%rax, %%r11\n");
         out.format("\tmovq $1, %%r10\n");
@@ -333,7 +336,10 @@ public class CodeGenerationVisitor implements Visitor {
             throw new RuntimeException("Calling method on non-reference type");
         if (!(symTable.get(r.s) instanceof DeclaredClass c))
             throw new RuntimeException("Calling method on non-reference type");
-        out.format("\tcall %d(%%rax)", 8 * (c.methods.position(n.i) + 1));
+        if (c.methods.position(n.i.s) == -1) {
+            throw new RuntimeException(n.i.s);
+        }
+        out.format("\tcall *%d(%%rax)", 8 * (c.methods.position(n.i.s) + 1));
         popregs();
     }
 
@@ -427,7 +433,7 @@ public class CodeGenerationVisitor implements Visitor {
         if (m.getParam(id) != Bottom.get()) {
             return argument_registers[m.parameters.position(id) + 1];
         } else if (m.getVariable(id) != Bottom.get()) {
-            return String.format("$-%d(%%rbp)", 8 * m.variables.position(id));
+            return String.format("-%d(%%rbp)", 8 * m.variables.position(id));
         } else {
             if (!(currentClass instanceof DeclaredClass c))
                 throw new RuntimeException("Identifier in main method");

@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public class IndexedMap<V> implements Map<String, V> {
-    private Map<String, Entry<Integer, V>> wrapped = new LinkedHashMap<>();
+    public Map<String, Entry<Integer, V>> wrapped = new LinkedHashMap<>();
 
     @Override
     public V put(String key, V value) {
