@@ -1,5 +1,8 @@
 package Semantics;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import AST.Identifier;
 
 public interface ClassType extends Type {
@@ -43,5 +46,9 @@ public interface ClassType extends Type {
 
     default IndexedMap<DeclaredClass> vtable() {
         return new IndexedMap<>();
+    }
+
+    default Map<String, Integer> fields() {
+        return new HashMap<>();
     }
 }

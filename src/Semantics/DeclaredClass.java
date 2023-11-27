@@ -2,15 +2,18 @@ package Semantics;
 
 import AST.Identifier;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class DeclaredClass implements ClassType, ScopedType {
-    public final IndexedMap<InstanceType> instances = new IndexedMap<>();
+    public final IndexedMap<InstanceType> instances = new IndexedMap<>(); // Just the fields a class directly declared.
     private final IndexedMap<DeclaredClass> vtable = new IndexedMap<>();
     public final IndexedMap<MethodType> methods = new IndexedMap<>();
     public final HashSet<String> unrecognized = new HashSet<>();
+    private final Map<String, Integer> fields = new HashMap<>(); // All the fields a class has access to.
+    private boolean modifiedm = true, modifiedf = true;
     public String superclass = null, name;
-    private boolean modified = true;
 
     public DeclaredClass(String name) {
         this.name = name;
@@ -24,7 +27,7 @@ public class DeclaredClass implements ClassType, ScopedType {
         if (Type.valid(methods.get(s)))
             return false;
         methods.put(s, m);
-        modified = true;
+        modifiedm = true;
         return true;
     }
 
@@ -40,7 +43,7 @@ public class DeclaredClass implements ClassType, ScopedType {
         if (Type.valid(instances.get(s)))
             return false;
         instances.put(s, i);
-        modified = true;
+        modifiedf = true;
         return true;
     }
 
@@ -81,11 +84,23 @@ public class DeclaredClass implements ClassType, ScopedType {
     public String name() { return name; }
 
     public IndexedMap<DeclaredClass> vtable() {
-        if (!modified) return vtable;
+        if (!modifiedm) return vtable;
         vtable.clear();
         vtable.putAll(this.superclass().vtable());
         methods.keySet().stream().forEach(key->vtable.put(key, this));
-        modified = false;
+        modifiedm = false;
         return vtable;
+    }
+
+    public Map<String, Integer> fields() {
+        if (!modifiedf) return fields;
+        fields.clear();
+        fields.putAll(this.superclass().fields());
+        int index = fields.size();
+        for (String declaredfield : instances.keySet()) {
+            fields.put(declaredfield, index++);
+        }
+        modifiedf = false;
+        return fields;
     }
 }
