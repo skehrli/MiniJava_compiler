@@ -37,12 +37,15 @@ asm_main:		# entry point of program
 
 	pushq %rdi
 
+
+	pushq %rdi
+
 	movq $8, %rdi
 	call mjcalloc		# Moves pointer into %rax
 
 	popq %rdi
 
-	leaq BT$$(%rip), %r8
+	leaq BT$$, %r8
 	movq %r8, (%rax)
 	pushq %rax
 	popq %rdi
@@ -52,15 +55,14 @@ asm_main:		# entry point of program
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
-
-	pushq %rdi
-
 	call put		# Method in C file
+
 	popq %rdi
 
 	movq %rbp, %rsp		# epilogue - return
 	popq %rbp		
 	ret
+
 BT$Start:
 	pushq %rbp
 	movq %rsp, %rbp
@@ -78,7 +80,7 @@ BT$Start:
 
 	popq %rdi
 
-	leaq Tree$$(%rip), %r8
+	leaq Tree$$, %r8
 	movq %r8, (%rax)
 	movq %rax, -8(%rbp)
 
@@ -108,12 +110,13 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, -16(%rbp)
-	movq $100000000, %rax
-	movq %rax, %rdi		# Move expression to first argument register
 
 	pushq %rdi
 
+	movq $100000000, %rax
+	movq %rax, %rdi		# Move expression to first argument register
 	call put		# Method in C file
+
 	popq %rdi
 
 
@@ -248,6 +251,9 @@ BT$Start:
 
 	pushq %rdi
 
+
+	pushq %rdi
+
 	movq -8(%rbp), %rax
 	pushq %rax
 	movq $24, %rax
@@ -260,11 +266,12 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
+	call put		# Method in C file
+
+	popq %rdi
+
 
 	pushq %rdi
-
-	call put		# Method in C file
-	popq %rdi
 
 
 	pushq %rdi
@@ -281,11 +288,12 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
+	call put		# Method in C file
+
+	popq %rdi
+
 
 	pushq %rdi
-
-	call put		# Method in C file
-	popq %rdi
 
 
 	pushq %rdi
@@ -302,11 +310,12 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
+	call put		# Method in C file
+
+	popq %rdi
+
 
 	pushq %rdi
-
-	call put		# Method in C file
-	popq %rdi
 
 
 	pushq %rdi
@@ -323,11 +332,12 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
+	call put		# Method in C file
+
+	popq %rdi
+
 
 	pushq %rdi
-
-	call put		# Method in C file
-	popq %rdi
 
 
 	pushq %rdi
@@ -344,10 +354,8 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
-
-	pushq %rdi
-
 	call put		# Method in C file
+
 	popq %rdi
 
 
@@ -380,6 +388,9 @@ BT$Start:
 
 	pushq %rdi
 
+
+	pushq %rdi
+
 	movq -8(%rbp), %rax
 	pushq %rax
 	movq $12, %rax
@@ -392,10 +403,8 @@ BT$Start:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
-
-	pushq %rdi
-
 	call put		# Method in C file
+
 	popq %rdi
 
 	movq $0, %rax
@@ -534,41 +543,41 @@ Tree$Compare:
 	popq %r11
 	addq %r11, %rax
 	movq %rax, -16(%rbp)
+Tree$Compare_if1:
 	movq %rsi, %rax
-	pushq %rax
+	movq %rax, %r12
 	movq %rdx, %rax
-	movq %rax, %r11
-	movq $1, %r10
+	cmpq %rax, %r12
 	movq $0, %rax
-	popq %r12
-	cmpq %r12, %r11
-	cmovl %r10, %rax
-	cmpq $0, %rax
-	jz false1
+	movq $1, %r12
+	cmovlq %r12, %rax
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Compare_else1
 	movq $0, %rax
 	movq %rax, -8(%rbp)
-	jmp afterIf1
-false1:
+	jmp Tree$Compare_endif1
+Tree$Compare_else1:
+Tree$Compare_if2:
 	movq %rsi, %rax
-	pushq %rax
+	movq %rax, %r12
 	movq -16(%rbp), %rax
-	movq %rax, %r11
-	movq $1, %r10
+	cmpq %rax, %r12
 	movq $0, %rax
-	popq %r12
-	cmpq %r12, %r11
-	cmovl %r10, %rax
+	movq $1, %r12
+	cmovlq %r12, %rax
 	xorq $1, %rax
-	cmpq $0, %rax
-	jz false2
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Compare_else2
 	movq $0, %rax
 	movq %rax, -8(%rbp)
-	jmp afterIf2
-false2:
+	jmp Tree$Compare_endif2
+Tree$Compare_else2:
 	movq $1, %rax
 	movq %rax, -8(%rbp)
-afterIf2:
-afterIf1:
+Tree$Compare_endif2:
+Tree$Compare_endif1:
 	movq -8(%rbp), %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
@@ -597,7 +606,7 @@ Tree$Insert:
 	popq %rsi
 	popq %rdi
 
-	leaq Tree$$(%rip), %r8
+	leaq Tree$$, %r8
 	movq %r8, (%rax)
 	movq %rax, -8(%rbp)
 
@@ -621,8 +630,9 @@ Tree$Insert:
 	movq %rax, -40(%rbp)
 	movq $1, %rax
 	movq %rax, -24(%rbp)
-	jmp whileTest1
-whileBody1:
+Tree$Insert_while1:
+	jmp Tree$Insert_while_test1
+Tree$Insert_while_body1:
 
 	pushq %rdi
 	pushq %rsi
@@ -637,17 +647,18 @@ whileBody1:
 	popq %rdi
 
 	movq %rax, -32(%rbp)
+Tree$Insert_if1:
 	movq %rsi, %rax
-	pushq %rax
+	movq %rax, %r12
 	movq -32(%rbp), %rax
-	movq %rax, %r11
-	movq $1, %r10
+	cmpq %rax, %r12
 	movq $0, %rax
-	popq %r12
-	cmpq %r12, %r11
-	cmovl %r10, %rax
-	cmpq $0, %rax
-	jz false3
+	movq $1, %r12
+	cmovlq %r12, %rax
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Insert_else1
+Tree$Insert_if2:
 
 	pushq %rdi
 	pushq %rsi
@@ -661,8 +672,9 @@ whileBody1:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz false4
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Insert_else2
 
 	pushq %rdi
 	pushq %rsi
@@ -677,8 +689,8 @@ whileBody1:
 	popq %rdi
 
 	movq %rax, -40(%rbp)
-	jmp afterIf4
-false4:
+	jmp Tree$Insert_endif2
+Tree$Insert_else2:
 	movq $0, %rax
 	movq %rax, -24(%rbp)
 
@@ -715,9 +727,10 @@ false4:
 	popq %rdi
 
 	movq %rax, -16(%rbp)
-afterIf4:
-	jmp afterIf3
-false3:
+Tree$Insert_endif2:
+	jmp Tree$Insert_endif1
+Tree$Insert_else1:
+Tree$Insert_if3:
 
 	pushq %rdi
 	pushq %rsi
@@ -731,8 +744,9 @@ false3:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz false5
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Insert_else3
 
 	pushq %rdi
 	pushq %rsi
@@ -747,8 +761,8 @@ false3:
 	popq %rdi
 
 	movq %rax, -40(%rbp)
-	jmp afterIf5
-false5:
+	jmp Tree$Insert_endif3
+Tree$Insert_else3:
 	movq $0, %rax
 	movq %rax, -24(%rbp)
 
@@ -785,12 +799,12 @@ false5:
 	popq %rdi
 
 	movq %rax, -16(%rbp)
-afterIf5:
-afterIf3:
-whileTest1:
+Tree$Insert_endif3:
+Tree$Insert_endif1:
+Tree$Insert_while_test1:
 	movq -24(%rbp), %rax
-	cmpq $0, %rax
-	jz whileBody1
+	cmpq $1, %rax
+	jz Tree$Insert_while_body1
 	movq $1, %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
@@ -823,8 +837,9 @@ Tree$Delete:
 	movq %rax, -32(%rbp)
 	movq $1, %rax
 	movq %rax, -40(%rbp)
-	jmp whileTest2
-whileBody2:
+Tree$Delete_while1:
+	jmp Tree$Delete_while_test1
+Tree$Delete_while_body1:
 
 	pushq %rdi
 	pushq %rsi
@@ -839,17 +854,18 @@ whileBody2:
 	popq %rdi
 
 	movq %rax, -48(%rbp)
+Tree$Delete_if1:
 	movq %rsi, %rax
-	pushq %rax
+	movq %rax, %r12
 	movq -48(%rbp), %rax
-	movq %rax, %r11
-	movq $1, %r10
+	cmpq %rax, %r12
 	movq $0, %rax
-	popq %r12
-	cmpq %r12, %r11
-	cmovl %r10, %rax
-	cmpq $0, %rax
-	jz false6
+	movq $1, %r12
+	cmovlq %r12, %rax
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Delete_else1
+Tree$Delete_if2:
 
 	pushq %rdi
 	pushq %rsi
@@ -863,8 +879,9 @@ whileBody2:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz false7
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Delete_else2
 	movq -8(%rbp), %rax
 	movq %rax, -16(%rbp)
 
@@ -881,24 +898,25 @@ whileBody2:
 	popq %rdi
 
 	movq %rax, -8(%rbp)
-	jmp afterIf7
-false7:
+	jmp Tree$Delete_endif2
+Tree$Delete_else2:
 	movq $0, %rax
 	movq %rax, -24(%rbp)
-afterIf7:
-	jmp afterIf6
-false6:
+Tree$Delete_endif2:
+	jmp Tree$Delete_endif1
+Tree$Delete_else1:
+Tree$Delete_if3:
 	movq -48(%rbp), %rax
-	pushq %rax
+	movq %rax, %r12
 	movq %rsi, %rax
-	movq %rax, %r11
-	movq $1, %r10
+	cmpq %rax, %r12
 	movq $0, %rax
-	popq %r12
-	cmpq %r12, %r11
-	cmovl %r10, %rax
-	cmpq $0, %rax
-	jz false8
+	movq $1, %r12
+	cmovlq %r12, %rax
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Delete_else3
+Tree$Delete_if4:
 
 	pushq %rdi
 	pushq %rsi
@@ -912,8 +930,9 @@ false6:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz false9
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Delete_else4
 	movq -8(%rbp), %rax
 	movq %rax, -16(%rbp)
 
@@ -930,16 +949,19 @@ false6:
 	popq %rdi
 
 	movq %rax, -8(%rbp)
-	jmp afterIf9
-false9:
+	jmp Tree$Delete_endif4
+Tree$Delete_else4:
 	movq $0, %rax
 	movq %rax, -24(%rbp)
-afterIf9:
-	jmp afterIf8
-false8:
+Tree$Delete_endif4:
+	jmp Tree$Delete_endif3
+Tree$Delete_else3:
+Tree$Delete_if5:
 	movq -40(%rbp), %rax
-	cmpq $0, %rax
-	jz false10
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Delete_else5
+Tree$Delete_if6:
 
 	pushq %rdi
 	pushq %rsi
@@ -969,14 +991,15 @@ false8:
 	popq %rdi
 
 	xorq $1, %rax
-	popq %rdx
-	and %rdx, %rax
-	cmpq $0, %rax
-	jz false11
+	popq %r11
+	andq %r11, %rax
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Delete_else6
 	movq $1, %rax
 	movq %rax, -56(%rbp)
-	jmp afterIf11
-false11:
+	jmp Tree$Delete_endif6
+Tree$Delete_else6:
 
 	pushq %rdi
 	pushq %rsi
@@ -997,9 +1020,9 @@ false11:
 	popq %rdi
 
 	movq %rax, -56(%rbp)
-afterIf11:
-	jmp afterIf10
-false10:
+Tree$Delete_endif6:
+	jmp Tree$Delete_endif5
+Tree$Delete_else5:
 
 	pushq %rdi
 	pushq %rsi
@@ -1020,19 +1043,19 @@ false10:
 	popq %rdi
 
 	movq %rax, -56(%rbp)
-afterIf10:
+Tree$Delete_endif5:
 	movq $1, %rax
 	movq %rax, -32(%rbp)
 	movq $0, %rax
 	movq %rax, -24(%rbp)
-afterIf8:
-afterIf6:
+Tree$Delete_endif3:
+Tree$Delete_endif1:
 	movq $0, %rax
 	movq %rax, -40(%rbp)
-whileTest2:
+Tree$Delete_while_test1:
 	movq -24(%rbp), %rax
-	cmpq $0, %rax
-	jz whileBody2
+	cmpq $1, %rax
+	jz Tree$Delete_while_body1
 	movq -32(%rbp), %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
@@ -1047,6 +1070,7 @@ Tree$Remove:
 	movq $0, (%rsp)
 	subq $8, %rsp
 	movq $0, (%rsp)
+Tree$Remove_if1:
 
 	pushq %rdi
 	pushq %rsi
@@ -1062,8 +1086,9 @@ Tree$Remove:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz false12
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Remove_else1
 
 	pushq %rdi
 	pushq %rsi
@@ -1086,8 +1111,9 @@ Tree$Remove:
 	popq %rdi
 
 	movq %rax, -8(%rbp)
-	jmp afterIf12
-false12:
+	jmp Tree$Remove_endif1
+Tree$Remove_else1:
+Tree$Remove_if2:
 
 	pushq %rdi
 	pushq %rsi
@@ -1103,8 +1129,9 @@ false12:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz false13
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Remove_else2
 
 	pushq %rdi
 	pushq %rsi
@@ -1127,8 +1154,8 @@ false12:
 	popq %rdi
 
 	movq %rax, -8(%rbp)
-	jmp afterIf13
-false13:
+	jmp Tree$Remove_endif2
+Tree$Remove_else2:
 
 	pushq %rdi
 	pushq %rsi
@@ -1175,6 +1202,7 @@ false13:
 	popq %rdi
 
 	movq %rax, -24(%rbp)
+Tree$Remove_if3:
 
 	pushq %rdi
 	pushq %rsi
@@ -1196,8 +1224,9 @@ false13:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz false14
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Remove_else3
 
 	pushq %rdi
 	pushq %rsi
@@ -1236,8 +1265,8 @@ false13:
 	popq %rdi
 
 	movq %rax, -8(%rbp)
-	jmp afterIf14
-false14:
+	jmp Tree$Remove_endif3
+Tree$Remove_else3:
 
 	pushq %rdi
 	pushq %rsi
@@ -1276,9 +1305,9 @@ false14:
 	popq %rdi
 
 	movq %rax, -8(%rbp)
-afterIf14:
-afterIf13:
-afterIf12:
+Tree$Remove_endif3:
+Tree$Remove_endif2:
+Tree$Remove_endif1:
 	movq $1, %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
@@ -1289,8 +1318,9 @@ Tree$RemoveRight:
 	movq %rsp, %rbp
 	subq $8, %rsp
 	movq $0, (%rsp)
-	jmp whileTest3
-whileBody3:
+Tree$RemoveRight_while1:
+	jmp Tree$RemoveRight_while_test1
+Tree$RemoveRight_while_body1:
 
 	pushq %rdi
 	pushq %rsi
@@ -1356,7 +1386,7 @@ whileBody3:
 	popq %rdi
 
 	movq %rax, %rdx
-whileTest3:
+Tree$RemoveRight_while_test1:
 
 	pushq %rdi
 	pushq %rsi
@@ -1372,8 +1402,8 @@ whileTest3:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz whileBody3
+	cmpq $1, %rax
+	jz Tree$RemoveRight_while_body1
 
 	pushq %rdi
 	pushq %rsi
@@ -1422,8 +1452,9 @@ Tree$RemoveLeft:
 	movq %rsp, %rbp
 	subq $8, %rsp
 	movq $0, (%rsp)
-	jmp whileTest4
-whileBody4:
+Tree$RemoveLeft_while1:
+	jmp Tree$RemoveLeft_while_test1
+Tree$RemoveLeft_while_body1:
 
 	pushq %rdi
 	pushq %rsi
@@ -1489,7 +1520,7 @@ whileBody4:
 	popq %rdi
 
 	movq %rax, %rdx
-whileTest4:
+Tree$RemoveLeft_while_test1:
 
 	pushq %rdi
 	pushq %rsi
@@ -1505,8 +1536,8 @@ whileTest4:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz whileBody4
+	cmpq $1, %rax
+	jz Tree$RemoveLeft_while_body1
 
 	pushq %rdi
 	pushq %rsi
@@ -1567,8 +1598,9 @@ Tree$Search:
 	movq %rax, -8(%rbp)
 	movq $0, %rax
 	movq %rax, -16(%rbp)
-	jmp whileTest5
-whileBody5:
+Tree$Search_while1:
+	jmp Tree$Search_while_test1
+Tree$Search_while_body1:
 
 	pushq %rdi
 	pushq %rsi
@@ -1583,17 +1615,18 @@ whileBody5:
 	popq %rdi
 
 	movq %rax, -32(%rbp)
+Tree$Search_if1:
 	movq %rsi, %rax
-	pushq %rax
+	movq %rax, %r12
 	movq -32(%rbp), %rax
-	movq %rax, %r11
-	movq $1, %r10
+	cmpq %rax, %r12
 	movq $0, %rax
-	popq %r12
-	cmpq %r12, %r11
-	cmovl %r10, %rax
-	cmpq $0, %rax
-	jz false15
+	movq $1, %r12
+	cmovlq %r12, %rax
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Search_else1
+Tree$Search_if2:
 
 	pushq %rdi
 	pushq %rsi
@@ -1607,8 +1640,9 @@ whileBody5:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz false16
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Search_else2
 
 	pushq %rdi
 	pushq %rsi
@@ -1623,24 +1657,25 @@ whileBody5:
 	popq %rdi
 
 	movq %rax, -24(%rbp)
-	jmp afterIf16
-false16:
+	jmp Tree$Search_endif2
+Tree$Search_else2:
 	movq $0, %rax
 	movq %rax, -8(%rbp)
-afterIf16:
-	jmp afterIf15
-false15:
+Tree$Search_endif2:
+	jmp Tree$Search_endif1
+Tree$Search_else1:
+Tree$Search_if3:
 	movq -32(%rbp), %rax
-	pushq %rax
+	movq %rax, %r12
 	movq %rsi, %rax
-	movq %rax, %r11
-	movq $1, %r10
+	cmpq %rax, %r12
 	movq $0, %rax
-	popq %r12
-	cmpq %r12, %r11
-	cmovl %r10, %rax
-	cmpq $0, %rax
-	jz false17
+	movq $1, %r12
+	cmovlq %r12, %rax
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Search_else3
+Tree$Search_if4:
 
 	pushq %rdi
 	pushq %rsi
@@ -1654,8 +1689,9 @@ false15:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz false18
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$Search_else4
 
 	pushq %rdi
 	pushq %rsi
@@ -1670,23 +1706,23 @@ false15:
 	popq %rdi
 
 	movq %rax, -24(%rbp)
-	jmp afterIf18
-false18:
+	jmp Tree$Search_endif4
+Tree$Search_else4:
 	movq $0, %rax
 	movq %rax, -8(%rbp)
-afterIf18:
-	jmp afterIf17
-false17:
+Tree$Search_endif4:
+	jmp Tree$Search_endif3
+Tree$Search_else3:
 	movq $1, %rax
 	movq %rax, -16(%rbp)
 	movq $0, %rax
 	movq %rax, -8(%rbp)
-afterIf17:
-afterIf15:
-whileTest5:
+Tree$Search_endif3:
+Tree$Search_endif1:
+Tree$Search_while_test1:
 	movq -8(%rbp), %rax
-	cmpq $0, %rax
-	jz whileBody5
+	cmpq $1, %rax
+	jz Tree$Search_while_body1
 	movq -16(%rbp), %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		
@@ -1726,6 +1762,7 @@ Tree$RecPrint:
 	movq %rsp, %rbp
 	subq $8, %rsp
 	movq $0, (%rsp)
+Tree$RecPrint_if1:
 
 	pushq %rdi
 	pushq %rsi
@@ -1739,8 +1776,9 @@ Tree$RecPrint:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz false19
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$RecPrint_else1
 
 	pushq %rdi
 	pushq %rsi
@@ -1770,11 +1808,15 @@ Tree$RecPrint:
 	popq %rdi
 
 	movq %rax, -8(%rbp)
-	jmp afterIf19
-false19:
+	jmp Tree$RecPrint_endif1
+Tree$RecPrint_else1:
 	movq $1, %rax
 	movq %rax, -8(%rbp)
-afterIf19:
+Tree$RecPrint_endif1:
+
+	pushq %rdi
+	pushq %rsi
+
 
 	pushq %rdi
 	pushq %rsi
@@ -1789,14 +1831,12 @@ afterIf19:
 	popq %rdi
 
 	movq %rax, %rdi		# Move expression to first argument register
-
-	pushq %rdi
-	pushq %rsi
-
 	call put		# Method in C file
+
 	popq %rsi
 	popq %rdi
 
+Tree$RecPrint_if2:
 
 	pushq %rdi
 	pushq %rsi
@@ -1810,8 +1850,9 @@ afterIf19:
 	popq %rsi
 	popq %rdi
 
-	cmpq $0, %rax
-	jz false20
+
+	cmpq $0, %rax		# Condition test
+	jz Tree$RecPrint_else2
 
 	pushq %rdi
 	pushq %rsi
@@ -1841,11 +1882,11 @@ afterIf19:
 	popq %rdi
 
 	movq %rax, -8(%rbp)
-	jmp afterIf20
-false20:
+	jmp Tree$RecPrint_endif2
+Tree$RecPrint_else2:
 	movq $1, %rax
 	movq %rax, -8(%rbp)
-afterIf20:
+Tree$RecPrint_endif2:
 	movq $1, %rax
 	movq %rbp,%rsp		# epilogue - return
 	popq %rbp		

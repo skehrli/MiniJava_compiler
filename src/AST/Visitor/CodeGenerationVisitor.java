@@ -19,6 +19,7 @@ public class CodeGenerationVisitor implements Visitor {
     }
 
     public String labelgenerator(String s) {
+        s = (currentClass instanceof ScopedType t ? t.name() + "$" : "") + (currentMethod instanceof ScopedType t ? t.name() + "_" : "") + s;
         int count = labels.getOrDefault(s, 0);
         labels.put(s, ++count);
         return s + count;
@@ -116,7 +117,7 @@ public class CodeGenerationVisitor implements Visitor {
         n.s.accept(this);
         out.println("\tmovq %rbp, %rsp\t\t# epilogue - return");
         out.println("\tpopq %rbp\t\t");
-        out.println("\tret");
+        out.println("\tret\n");
     }
 
     @Override
@@ -143,8 +144,8 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(VarDecl n) {
-        out.format("\tsubq $8, %%rsp\n");
-        out.format("\tmovq $0, (%%rsp)\n");
+        out.println("\tsubq $8, %rsp");
+        out.println("\tmovq $0, (%rsp)");
     }
 
     @Override
@@ -199,11 +200,12 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(If n) {
+        out.println(labelgenerator("if") + ":");
         n.e.accept(this);
-        String jmplabel = labelgenerator("false");
-        String afterlabel = labelgenerator("afterIf");
+        String jmplabel = labelgenerator("else");
+        String afterlabel = labelgenerator("endif");
         // out.format("\taddq $0, %%rax\n");
-        out.println("\tcmpq $0, %rax");
+        out.println("\n\tcmpq $0, %rax\t\t# Condition test");
         out.format("\tjz %s\n", jmplabel);
         n.s1.accept(this);
         out.format("\tjmp %s\n", afterlabel);
@@ -214,25 +216,26 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(While n) {
-        String bodylabel = labelgenerator("whileBody");
-        String testlabel = labelgenerator("whileTest");
+        String bodylabel = labelgenerator("while_body"),
+            testlabel = labelgenerator("while_test");
+        out.println(labelgenerator("while") + ":");
         out.format("\tjmp %s\n", testlabel);
         out.format("%s:\n", bodylabel);
         n.s.accept(this);
         out.format("%s:\n", testlabel);
         n.e.accept(this);
         // out.format("\taddq $0, %%rax\n");
-        out.println("\tcmpq $0, %rax");
+        out.println("\tcmpq $1, %rax"); // If rax == 1, then jump
         out.format("\tjz %s\n", bodylabel);
     }
 
     @Override
     public void visit(Print n) {
+        pushregs();
         n.e.accept(this);
         out.print("\tmovq %rax, %rdi\t\t# Move expression to first argument register\n");
 
-        pushregs();
-        out.print("\tcall put\t\t# Method in C file");
+        out.println("\tcall put\t\t# Method in C file");
         popregs();
     }
 
@@ -244,16 +247,14 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(ArrayAssign n) {
-        out.println("\tpushq %rbx");
         n.e1.accept(this); // Gives us the index in %rax
         out.println("\tpushq %rax");
         n.e2.accept(this); // Now contains the value to be assigned
         out.println("\tmovq %rax, %r11"); // Move the value to be assigned so we can get the array itself
-        out.println("\tpopq rbx"); // %rbx now contains the index
-        out.println("\taddq $1, %rbx"); // Account for index
+        out.println("\tpopq r10"); // %r10 now contains the index
+        out.println("\taddq $1, %r10"); // Account for length at beginning
         out.format("\tmovq %s, %%rax\n", getLocation(n.i.s)); // Move the array into %rax
-        out.println("\tmovq %r11, (%rax,%rbx,8)");
-        out.println("\tpopq rbx");
+        out.println("\tmovq %r11, (%rax,%r10,8)");
     }
 
     @Override
@@ -261,21 +262,24 @@ public class CodeGenerationVisitor implements Visitor {
         n.e1.accept(this);
         out.format("\tpushq %%rax\n");
         n.e2.accept(this);
-        out.format("\tpopq %%rdx\n");
-        out.format("\tand %%rdx, %%rax\n");
+        out.format("\tpopq %%r11\n");
+        out.format("\tandq %%r11, %%rax\n");
     }
 
     @Override
     public void visit(LessThan n) {
         n.e1.accept(this);
-        out.format("\tpushq %%rax\n");
+        out.println("\tmovq %rax, %r12");
+        // a in r12
         n.e2.accept(this);
-        out.format("\tmovq %%rax, %%r11\n");
-        out.format("\tmovq $1, %%r10\n");
-        out.format("\tmovq $0, %%rax\n");
-        out.format("\tpopq %%r12\n");
-        out.format("\tcmpq %%r12, %%r11\n");
-        out.format("\tcmovl %%r10, %%rax\n");
+        // b in %rax
+        // test if a - b < 0 === a < b
+        out.println("\tcmpq %rax, %r12");
+        // mov does not affect flags
+        out.println("\tmovq $0, %rax");
+        out.println("\tmovq $1, %r12");
+        // cmovl moves src to dst if result of previous comparison was less than 0
+        out.println("\tcmovlq %r12, %rax");
     }
 
     @Override
@@ -305,6 +309,7 @@ public class CodeGenerationVisitor implements Visitor {
         out.format("\timulq %%r11, %%rax\n");
     }
 
+    // TODO: Account for improper index access
     @Override
     public void visit(ArrayLookup n) {
         n.e1.accept(this);
@@ -374,12 +379,15 @@ public class CodeGenerationVisitor implements Visitor {
     @Override
     public void visit(NewArray n) {
         n.e.accept(this);
-        out.println("\tpushq %rax"); // Number of bytes
+        out.println("\tpushq %rax"); // Number of elements
         out.println("\taddq $1, %rax\t\t# For storing the length");
-        out.println("\tshl $2, %rax\t\t# convert length to required nr of bytes");
-        heapalloc("%rax"); // Pointer is now in %rax
-        out.println("\tpopq %r11"); // Pop number of bytes into r11, temporary
-        out.println("\tshrq $3, %r11"); // Divide by 8
+        // TODO: N.B. Changed this from 2 to 3
+        out.println("\tshlq $3, %rax\t\t# convert length to required nr of bytes");
+        // Length in bytes in %rax
+        heapalloc("%rax");
+        // Pointer is now in %rax
+        out.println("\tpopq %r11"); // Pop number of elements into r11, temporary
+        // out.println("\tshrq $3, %r11"); // Divide by 8: Don't need to do this, number of elts
         out.println("\tmovq %r11, (%rax)"); // Load length into r11
         // "return" the pointer in %rax
     }
@@ -393,7 +401,8 @@ public class CodeGenerationVisitor implements Visitor {
             throw new RuntimeException("Unrecognized reference type.");
         }
         heapalloc("$" + (8 * (1 + c.fields().size())));
-        out.format("\tleaq %s$$(%%rip), %%r8\n", c.name);
+        //out.format("\tleaq %s$$(%%rip), %%r8\n", c.name);
+        out.format("\tleaq %s$$, %%r8\n", c.name);
         out.format("\tmovq %%r8, (%%rax)\n");
     }
 
