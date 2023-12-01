@@ -251,12 +251,13 @@ public class CodeGenerationVisitor implements Visitor {
         out.println("\tpushq %rax");
         n.e2.accept(this); // Now contains the value to be assigned
         out.println("\tmovq %rax, %r11"); // Move the value to be assigned so we can get the array itself
-        out.println("\tpopq r10"); // %r10 now contains the index
+        out.println("\tpopq %r10"); // %r10 now contains the index
         out.println("\taddq $1, %r10"); // Account for length at beginning
         out.format("\tmovq %s, %%rax\n", getLocation(n.i.s)); // Move the array into %rax
         out.println("\tmovq %r11, (%rax,%r10,8)");
     }
 
+    // TODO: Short circuit AND
     @Override
     public void visit(And n) {
         n.e1.accept(this);
@@ -294,10 +295,11 @@ public class CodeGenerationVisitor implements Visitor {
     @Override
     public void visit(Minus n) {
         n.e1.accept(this);
-        out.format("\tpushq %%rax\n");
+        out.println("\tpushq %rax");
         n.e2.accept(this);
-        out.format("\tpopq %%r11\n");
-        out.format("\tsubq %%r11, %%rax\n");
+        out.println("\tpopq %r11");
+        out.println("\tsubq %rax, %r11");
+        out.println("\tmovq %r11, %rax");
     }
 
     @Override
@@ -316,7 +318,7 @@ public class CodeGenerationVisitor implements Visitor {
         out.println("\tpushq %rax");
         n.e2.accept(this); // %rax now contains the array index we are looking for
         out.println("\taddq $1, %rax"); // Account for length
-        out.println("\tpopq r11"); // %r11 now contains the array itself
+        out.println("\tpopq %r11"); // %r11 now contains the array itself
         out.println("\tmovq (%r11,%rax,8), %rax");
     }
 
@@ -381,13 +383,11 @@ public class CodeGenerationVisitor implements Visitor {
         n.e.accept(this);
         out.println("\tpushq %rax"); // Number of elements
         out.println("\taddq $1, %rax\t\t# For storing the length");
-        // TODO: N.B. Changed this from 2 to 3
         out.println("\tshlq $3, %rax\t\t# convert length to required nr of bytes");
         // Length in bytes in %rax
         heapalloc("%rax");
         // Pointer is now in %rax
         out.println("\tpopq %r11"); // Pop number of elements into r11, temporary
-        // out.println("\tshrq $3, %r11"); // Divide by 8: Don't need to do this, number of elts
         out.println("\tmovq %r11, (%rax)"); // Load length into r11
         // "return" the pointer in %rax
     }
@@ -403,7 +403,7 @@ public class CodeGenerationVisitor implements Visitor {
         heapalloc("$" + (8 * (1 + c.fields().size())));
         //out.format("\tleaq %s$$(%%rip), %%r8\n", c.name);
         out.format("\tleaq %s$$, %%r8\n", c.name);
-        out.format("\tmovq %%r8, (%%rax)\n");
+        out.println("\tmovq %r8, (%rax)");
     }
 
     @Override
