@@ -1,10 +1,10 @@
 class LessThan {
     public static void main(String[] args) {
-        System.out.println(new Geh().start());
+        System.out.println(new Test().start());
     }
 }
 
-class Geh {
+class Test {
     public int start() {
         System.out.println(this.correct());
         System.out.println(this.incorrect());

@@ -4,7 +4,6 @@ import AST.*;
 import Semantics.*;
 import java.io.PrintStream;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.HashMap;
 
 public class CodeGenerationVisitor implements Visitor {
@@ -84,7 +83,7 @@ public class CodeGenerationVisitor implements Visitor {
 
     @Override
     public void visit(Program n) {
-        out.println("# Vtables for the program");
+        out.println("# Vtables");
         out.println(".data");
         for (String key : symTable.classes().keySet()) {
             if (!(symTable.get(key) instanceof DeclaredClass c))
@@ -204,8 +203,7 @@ public class CodeGenerationVisitor implements Visitor {
         n.e.accept(this);
         String jmplabel = labelgenerator("else");
         String afterlabel = labelgenerator("endif");
-        // out.format("\taddq $0, %%rax\n");
-        out.println("\n\tcmpq $0, %rax\t\t# Condition test");
+        out.println("\n\tcmpq $0, %rax");
         out.format("\tjz %s\n", jmplabel);
         n.s1.accept(this);
         out.format("\tjmp %s\n", afterlabel);
@@ -224,7 +222,6 @@ public class CodeGenerationVisitor implements Visitor {
         n.s.accept(this);
         out.format("%s:\n", testlabel);
         n.e.accept(this);
-        // out.format("\taddq $0, %%rax\n");
         out.println("\tcmpq $1, %rax"); // If rax == 1, then jump
         out.format("\tjz %s\n", bodylabel);
     }
@@ -254,17 +251,29 @@ public class CodeGenerationVisitor implements Visitor {
         out.println("\tpopq %r10"); // %r10 now contains the index
         out.println("\taddq $1, %r10"); // Account for length at beginning
         out.format("\tmovq %s, %%rax\n", getLocation(n.i.s)); // Move the array into %rax
-        out.println("\tmovq %r11, (%rax,%r10,8)");
+
+        out.println("\tcmpq (%rax), %r10");
+        out.println("\tleaq (%rax, %r10, 8), %rax"); // lea doesn't alter flags, now offset in %rax
+        out.format("\tmovq $%d, %%r10\n", n.line_number); // Now %r10 is free, so can move there for cmovg
+        out.println("\tcmovgq %r10, %rdi");
+        out.println("\tjg arrayboundserror"); // This is a jump because we're not ever coming back here
+
+        out.println("\tmovq %r11, (%rax)");
     }
 
-    // TODO: Short circuit AND
     @Override
     public void visit(And n) {
+        String label = labelgenerator("end_and");
         n.e1.accept(this);
-        out.format("\tpushq %%rax\n");
+        out.println("\ttestq %rax, %rax");
+        out.println("\tmovq $0, %r11");
+        out.println("\tcmovzq %r11, %rax");
+        out.println("\tjz " + label);
+        out.println("\tpushq %rax");
         n.e2.accept(this);
         out.format("\tpopq %%r11\n");
         out.format("\tandq %%r11, %%rax\n");
+        out.println(label + ":");
     }
 
     @Override
@@ -311,7 +320,6 @@ public class CodeGenerationVisitor implements Visitor {
         out.format("\timulq %%r11, %%rax\n");
     }
 
-    // TODO: Account for improper index access
     @Override
     public void visit(ArrayLookup n) {
         n.e1.accept(this);
@@ -319,6 +327,12 @@ public class CodeGenerationVisitor implements Visitor {
         n.e2.accept(this); // %rax now contains the array index we are looking for
         out.println("\taddq $1, %rax"); // Account for length
         out.println("\tpopq %r11"); // %r11 now contains the array itself
+        // rax - (r11) > 0 -> rax = index + 1 > (r11) = length
+        out.println("\tcmpq (%r11), %rax");
+        out.format("\tmovq $%d, %%r10\n", n.line_number);
+        out.println("\tcmovgq %r10, %rdi");
+        out.println("\tjg arrayboundserror"); // This is a jump because we're not ever coming back here
+
         out.println("\tmovq (%r11,%rax,8), %rax");
     }
 

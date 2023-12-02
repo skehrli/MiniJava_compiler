@@ -1,3 +1,4 @@
+// In MiniJava, null gets treated as an identifier rather than a value, which is what's supposed to happen
 class Main {
     public static void main(String[] args) {
         System.out.println(1);

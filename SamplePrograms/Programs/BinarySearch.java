@@ -7,7 +7,7 @@ class BinarySearch {
 // methods to initialize, print and search the array
 // using Binary Search
 
-class BS extends Object {
+class BS {
 	int[] number;
 	int size;
 

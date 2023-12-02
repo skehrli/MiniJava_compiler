@@ -26,6 +26,12 @@ void put(int64_t x) {
   printf("%" PRId64 "\n", x);
 }
 
+/* Terminate the program on array-out-of-bounds access. */
+void arrayboundserror(uint64_t line_number) {
+  printf("Runtime error: out-of-bounds array access on line %d. Terminating program...\n", line_number);
+  exit(1);
+}
+
 /*
  *  mjcalloc returns a pointer to a chunk of memory with at least
  *  num_bytes available.  Returned storage has been zeroed out.

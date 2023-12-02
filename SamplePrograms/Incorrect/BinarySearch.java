@@ -1,3 +1,5 @@
+// extends Object not allowed
+
 class BinarySearch {
 	public static void main(String[] a) {
 		System.out.println(new BS().Start(20));
@@ -7,7 +9,7 @@ class BinarySearch {
 // methods to initialize, print and search the array
 // using Binary Search
 
-class BS {
+class BS extends Object {
 	int[] number;
 	int size;
 
