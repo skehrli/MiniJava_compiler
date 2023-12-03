@@ -204,7 +204,7 @@ public class ExpressionTypeVisitor implements Visitor {
             symTable.err("Array indexed must be of integer type.", n.e1);
         }
         if (!Type.assignmentCompatible(n.e2.expType, Semantics.Int.get())) {
-            symTable.err("Right-hand side of assignment must be int but is of type" +
+            symTable.err("Right-hand side of assignment must be int but is of type " +
                     n.e2.expType + ".", n.e2);
         }
     }

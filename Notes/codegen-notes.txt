@@ -1,0 +1,53 @@
+Lab 4, Code Generation
+Notes on structure and organization
+- One CodeGenerationVisitor with code generated at most AST nodes for Linux x86-64 (no flags for
+  other OS here).
+- As recommended, a file bootstrapped via boot.c, which has the two provided functions and a function
+  to handle array-out-of-bounds errors.
+
+Timeline and division of work
+- The majority of this lab was completed virtually in a mix of calls and asynchronous work.
+- Mark and Sascha initially met virtually to get started on the lab around the end of Thanksgiving,
+  producing a rough draft of the code generation visitor with all features implemented (but most
+  implemented with bugs).
+- They then spent the next week debugging mostly asynchronously.
+- Sascha did most of the manual testing to get language features working; Mark did most of the
+  automated testing against javac.
+- All in all, work was split about equally between both partners.
+
+Changes to previous labs
+- As always, small changes were necessary to fix the problems reported in previous feedback,
+  this time not reporting invalid parameter types and not reporting that array assignments
+  needed to be from integers.
+- In anticipation of having to create vtables for code generation, we had been using
+  LinkedHashMaps almost everywhere, but they still proved to ultimately be inadequate to the
+  task of creating vtables since we could not easily get the position of an element without
+  traversing the map. As a solution, we created an adapter around LinkedHashMap called IndexedMap
+  that would also store the position in the value which we then rewired our existing code to use.
+  Since the interface was the same, this actually led to surprisingly few issues.
+- Once more, problems from inheritance were what forced us to modify our design. Our original
+  design had field and method lookups through recursive walks from the inheriting class, but
+  this would be insufficient for extended classes since there would be no way to get all the
+  active fields and methods declared in superclasses. To solve this, we took the rather clumsy
+  route of adding two more fields to store this information, which would be calculated lazily
+  at the first time they were required.
+- We made a few small changes to our semantics visitors and AST visitors for better formatting and
+  to print slightly better error messages.
+- Finally, we ended up changing the structure of the MiniJava file itself to better accomodate
+  the growing compiler and ensure that the ultimate output of the MiniJava program was more or less
+  cohesive.
+
+Testing
+- Our testing for this portion was split into two phases.
+- First, while our code generation was still in its infancy, we tested mostly by manual inspection,
+  since the emphasis was on debugging segfaults and getting basic structures to work as intended.
+- After we had gotten most of the code generation roughly working, we moved on to automated comparison
+  against the Java compiler with a shell script (./comparejavac.sh).
+- We used the files in test/codegen-systematic and SamplePrograms to perform most of our testing.
+
+Final results
+- To our knowledge, all prescribed language features are working -- integer expressions, print, objects,
+  methods, inheritance, arrays, etc. Our compiler functions on all the sample programs given that are
+  correct and produces the same output as the Java compiler.
+- Nothing was too surprising, thankfully - everything proceeded in a more-or-less straightforward
+  routine of write and debug.

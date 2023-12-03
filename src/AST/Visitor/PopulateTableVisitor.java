@@ -136,7 +136,7 @@ public class PopulateTableVisitor implements Visitor {
             Formal formal = n.fl.get(i);
             InstanceType argumentType = convertType(formal.t);
             if (argumentType == Bottom.get()) {
-                symTable.err("Invalid argument type for: " + formal.i.toString(), formal);
+                symTable.err("Invalid argument type for parameter " + formal.i + ".", formal);
             }
             if (!currentMethod.addParam(formal.i, convertType(formal.t))) {
                 symTable.err("Parameters must have unique names.", formal);
