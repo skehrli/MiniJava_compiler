@@ -356,14 +356,12 @@ public class CodeGenerationVisitor implements Visitor {
             out.format("\tpopq %s\n", argument_registers[i]);
         }
         out.println("\tmovq (%rdi), %rax"); // Moves the object itself into %rax
-        if (!(n.e.expType instanceof Ref r))
+        if (!(n.e.expType instanceof Ref r && symTable.get(r.s) instanceof DeclaredClass c))
             throw new RuntimeException("Calling method on non-reference type");
-        if (!(symTable.get(r.s) instanceof DeclaredClass c))
-            throw new RuntimeException("Calling method on non-reference type");
-        if (c.methods.position(n.i.s) == -1) {
+        if (c.vtable().position(n.i.s) == -1) {
             throw new RuntimeException(n.i.s);
         }
-        out.format("\tcall *%d(%%rax)\n", 8 * (c.methods.position(n.i.s) + 1));
+        out.format("\tcall *%d(%%rax)\n", 8 * (c.vtable().position(n.i.s) + 1));
         popregs();
     }
 

@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class DeclaredClass implements ClassType, ScopedType {
     public final IndexedMap<InstanceType> instances = new IndexedMap<>(); // Just the fields a class directly declared.
-    private final IndexedMap<DeclaredClass> vtable = new IndexedMap<>();
-    public final IndexedMap<MethodType> methods = new IndexedMap<>();
+    private final IndexedMap<DeclaredClass> vtable = new IndexedMap<>(); // All the methods a class has access to?
+    public final IndexedMap<MethodType> methods = new IndexedMap<>(); // Just the methods a class directly declared.
     public final HashSet<String> unrecognized = new HashSet<>();
     private final Map<String, Integer> fields = new HashMap<>(); // All the fields a class has access to.
     private boolean modifiedm = true, modifiedf = true;
