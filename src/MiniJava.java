@@ -16,6 +16,14 @@ public class MiniJava {
     private static final Set<Character> flags = Set.of('S', 'A', 'P', 'T');
     private static final SymbolTable symTable = new SymbolTable();
     private static Program program = null;
+    private static Stage stage = Stage.NONE;
+
+    private enum Stage {
+        NONE,
+        PARSE,
+        CHECK,
+        CODEGEN
+    }
 
     public static void main(String[] args) {
         filename = args[args.length - 1];
@@ -35,12 +43,8 @@ public class MiniJava {
                 options.add(ch);
             }
         }
-        if (options.isEmpty()) {
-            parse();
-            visitAST(new PopulateTable(symTable));
-            visitAST(new ExpressionTypeVisitor(symTable));
-            visitAST(new CodeGenerationVisitor(symTable));
-        } else { options.forEach(MiniJava::compilerOption); }
+        if (options.isEmpty()) stage(Stage.CODEGEN);
+        else options.forEach(MiniJava::compilerOption);
         System.exit(error ? 1 : 0);
     }
 
@@ -57,28 +61,22 @@ public class MiniJava {
                     visitAST(new PrettyPrintVisitor());
                     break;
                 case 'T':
-                    try {
-                        visitAST(new PopulateTable(symTable));
-                        visitAST(new ExpressionTypeVisitor(symTable));
-                    } catch (RuntimeException e){
-                        error = true;
-                        System.err.println("Fatal error: " + e.getMessage());
-                    } finally {
-                        error = symTable.error();
-                        if (symTable.error()) System.out.println();
-                        System.out.print(symTable);
-                    }
+                    stage(Stage.CHECK);
+                    if (symTable.error()) System.out.println();
+                    System.out.print(symTable);
                     break;
                 default:
-                    throw new RuntimeException("Passed unrecognizable flag.");
+                    System.err.println("Passed unrecognizable flag.");
+                    error = true;
             }
+            System.out.println();
         } catch (Exception e) {
             // yuck: some kind of error in the compiler implementation
             // that we're not expecting (a bug!)
             System.err.println("Unexpected internal compiler error: " + e);
             // print out a stack dump
             e.printStackTrace();
-            System.exit(1);
+            error = true;
         }
     }
 
@@ -103,22 +101,51 @@ public class MiniJava {
                 error = true;
             }
         }
+        System.out.println();
     }
 
     private static void visitAST(Visitor v) {
-        if (program == null) parse();
+        if (program == null) stage(Stage.PARSE);
         program.accept(v);
     }
 
-    private static void parse() {
-        parser p = new parser(getScanner(), sf);
-        Symbol root = null;
+    private static void stage(Stage required) {
         try {
-            root = p.parse();
+            switch (stage) {
+                default:
+                case NONE:
+                case PARSE:
+                    if (stage.compareTo(required) >= 0 || error) return;
+                    stage = Stage.PARSE;
+                    if (program == null) {
+                        program = (Program) new parser(getScanner(), sf).parse().value;
+                    }
+                case CHECK:
+                    if (stage.compareTo(required) >= 0 || error) return;
+                    stage = Stage.CHECK;
+                    visitAST(new PopulateTableVisitor(symTable));
+                    visitAST(new ExpressionTypeVisitor(symTable));
+                    error |= symTable.error();
+                case CODEGEN:
+                    if (stage.compareTo(required) >= 0 || error) return;
+                    stage = Stage.CODEGEN;
+                    visitAST(new CodeGenerationVisitor(symTable));  
+            }
         } catch (Exception e) {
-            System.err.println("Failure to parse program; indicated below.");
-            e.printStackTrace();
+            error = true;
+            switch (stage) {
+                case CHECK:
+                    System.err.println("Fatal error in performing semantic checks: " + e.getMessage());
+                    break;
+                case CODEGEN:
+                    System.err.println("Fatal error in code generation: " + e.getMessage());
+                    break;
+                case PARSE:
+                    System.err.println("Fatal error in parsing program: " + e.getMessage());
+                    break;
+                case NONE:
+                default:
+            }
         }
-        program = (Program) root.value;
     }
 }

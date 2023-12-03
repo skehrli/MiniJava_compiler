@@ -82,14 +82,11 @@ public class ASTPrintVisitor implements Visitor {
         System.out.print(" extends ");
         n.j.accept(this);
         printLine(n);
-        System.out.println();
 
         indent++;
         for (int i = 0; i < n.vl.size(); i++) {
+            System.out.println();
             n.vl.get(i).accept(this);
-            if (i + 1 < n.vl.size()) {
-                System.out.println();
-            }
         }
 
         for (int i = 0; i < n.ml.size(); i++) {

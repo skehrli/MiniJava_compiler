@@ -6,6 +6,10 @@ import AST.*;
 // HP 10/11
 
 public class PrettyPrintVisitor implements Visitor {
+  private int indent = 0;
+  private void indent() {
+    for (int i = 0; i < 2 * indent; i++) System.out.print(" ");
+  }
 
   // MainClass m;
   // ClassDeclList cl;
@@ -23,12 +27,19 @@ public class PrettyPrintVisitor implements Visitor {
     System.out.print("class ");
     n.i1.accept(this);
     System.out.println(" {");
-    System.out.print("  public static void main (String [] ");
+    indent++;
+    indent();
+    System.out.print("public static void main (String [] ");
     n.i2.accept(this);
     System.out.println(") {");
-    System.out.print("    ");
+    indent++;
+    indent();
     n.s.accept(this);
-    System.out.println("  }");
+    indent--;
+    System.out.println();
+    indent();
+    System.out.println("}");
+    indent--;
     System.out.println("}");
   }
 
@@ -38,19 +49,22 @@ public class PrettyPrintVisitor implements Visitor {
   public void visit(ClassDeclSimple n) {
     System.out.print("class ");
     n.i.accept(this);
-    System.out.println(" { ");
+    System.out.print(" { ");
+    indent++;
     for (int i = 0; i < n.vl.size(); i++) {
-      System.out.print("  ");
+      System.out.println();
       n.vl.get(i).accept(this);
-      if (i + 1 < n.vl.size()) {
-        System.out.println();
-      }
     }
+    if (n.vl.size() > 0) System.out.println();
     for (int i = 0; i < n.ml.size(); i++) {
       System.out.println();
       n.ml.get(i).accept(this);
+      if (i + 1 < n.ml.size()) {
+        System.out.println();
+      }
     }
     System.out.println();
+    indent--;
     System.out.println("}");
   }
 
@@ -61,27 +75,29 @@ public class PrettyPrintVisitor implements Visitor {
   public void visit(ClassDeclExtends n) {
     System.out.print("class ");
     n.i.accept(this);
-    System.out.println(" extends ");
+    System.out.print(" extends ");
     n.j.accept(this);
-    System.out.println(" { ");
+    System.out.print(" { ");
+    indent++;
     for (int i = 0; i < n.vl.size(); i++) {
-      System.out.print("  ");
+      System.out.println();
+      indent();
       n.vl.get(i).accept(this);
-      if (i + 1 < n.vl.size()) {
-        System.out.println();
-      }
     }
+    if (n.vl.size() > 0) System.out.println();
     for (int i = 0; i < n.ml.size(); i++) {
       System.out.println();
       n.ml.get(i).accept(this);
     }
     System.out.println();
+    indent--;
     System.out.println("}");
   }
 
   // Type t;
   // Identifier i;
   public void visit(VarDecl n) {
+    indent();
     n.t.accept(this);
     System.out.print(" ");
     n.i.accept(this);
@@ -95,7 +111,8 @@ public class PrettyPrintVisitor implements Visitor {
   // StatementList sl;
   // Exp e;
   public void visit(MethodDecl n) {
-    System.out.print("  public ");
+    indent();
+    System.out.print("public ");
     n.t.accept(this);
     System.out.print(" ");
     n.i.accept(this);
@@ -107,22 +124,25 @@ public class PrettyPrintVisitor implements Visitor {
       }
     }
     System.out.println(") { ");
+    indent++;
     for (int i = 0; i < n.vl.size(); i++) {
-      System.out.print("    ");
       n.vl.get(i).accept(this);
       System.out.println("");
     }
     for (int i = 0; i < n.sl.size(); i++) {
-      System.out.print("    ");
+      indent();
       n.sl.get(i).accept(this);
       if (i < n.sl.size()) {
-        System.out.println("");
+        System.out.println();
       }
     }
-    System.out.print("    return ");
+    indent();
+    System.out.print("return ");
     n.e.accept(this);
     System.out.println(";");
-    System.out.print("  }");
+    indent--;
+    indent();
+    System.out.print("}");
   }
 
   // Type t;
@@ -134,7 +154,7 @@ public class PrettyPrintVisitor implements Visitor {
   }
 
   public void visit(IntArrayType n) {
-    System.out.print("int []");
+    System.out.print("int[]");
   }
 
   public void visit(BooleanType n) {
@@ -153,12 +173,15 @@ public class PrettyPrintVisitor implements Visitor {
   // StatementList sl;
   public void visit(Block n) {
     System.out.println("{ ");
+    indent++;
     for (int i = 0; i < n.sl.size(); i++) {
-      System.out.print("      ");
+      indent();
       n.sl.get(i).accept(this);
       System.out.println();
     }
-    System.out.print("    } ");
+    indent--;
+    indent();
+    System.out.print("} ");
   }
 
   // Exp e;
@@ -166,11 +189,11 @@ public class PrettyPrintVisitor implements Visitor {
   public void visit(If n) {
     System.out.print("if (");
     n.e.accept(this);
-    System.out.println(") ");
-    System.out.print("    ");
+    System.out.print(") ");
     n.s1.accept(this);
     System.out.println();
-    System.out.print("    else ");
+    indent();
+    System.out.print("else ");
     n.s2.accept(this);
   }
 

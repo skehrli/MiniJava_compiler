@@ -14,7 +14,7 @@ class B {
 }
 
 class C extends B {
-  public C method(int a, D b, int c) {
+  public B method(int a, D b, int c) {
     return new C();
   }
 }

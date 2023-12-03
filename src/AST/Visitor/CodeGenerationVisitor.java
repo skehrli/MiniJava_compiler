@@ -12,6 +12,7 @@ public class CodeGenerationVisitor implements Visitor {
     MethodType currentMethod = Bottom.get();
     PrintStream out = System.out;
     Map<String, Integer> labels = new HashMap<String, Integer>();
+    private final boolean DEBUG = false; // Turn this on to clobber transients in the method epilogue
 
     public CodeGenerationVisitor(SymbolTable s) {
         symTable = Top.symTable = s;
@@ -116,6 +117,7 @@ public class CodeGenerationVisitor implements Visitor {
         n.s.accept(this);
         out.println("\tmovq %rbp, %rsp\t\t# epilogue - return");
         out.println("\tpopq %rbp\t\t");
+        if (DEBUG) clobber_transients();
         out.println("\tret\n");
     }
 
@@ -153,7 +155,7 @@ public class CodeGenerationVisitor implements Visitor {
             return;
         MethodType m = cl.getMethod(n.i);
         currentMethod = m;
-        out.format("%s$%s:\n", ((DeclaredClass) currentClass).name, ((Method) m).name);
+        out.format("%s$%s:\n", cl.name, ((Method) m).name);
         out.println("\tpushq %rbp");
         out.println("\tmovq %rsp, %rbp");
         for (int i = 0; i < n.vl.size(); i++) {
@@ -165,6 +167,7 @@ public class CodeGenerationVisitor implements Visitor {
         n.e.accept(this);
         out.println("\tmovq %rbp,%rsp\t\t# epilogue - return");
         out.println("\tpopq %rbp\t\t");
+        if (DEBUG) clobber_transients();
         out.println("\tret\n");
     }
 
@@ -469,5 +472,14 @@ public class CodeGenerationVisitor implements Visitor {
             int pos = c.fields().get(id);
             return String.format("%d(%%rdi)", 8 * (pos + 1)); // Account for vtable in the first position
         }
+    }
+
+    private void clobber_transients() {
+        String debugval = "$0xBADBAD";
+        for (String arg_reg : argument_registers) {
+            out.format("\tmovq %s, %s\n", debugval, arg_reg);
+        }
+        out.format("\tmovq %s, %%r10\n", debugval);
+        out.format("\tmovq %s, %%r11\n", debugval);
     }
 }

@@ -6,7 +6,7 @@ import Semantics.Type;
 
 import java.util.Iterator;
 
-public class PopulateTable implements Visitor {
+public class PopulateTableVisitor implements Visitor {
     SymbolTable symTable;
     DeclaredClass currentClass;
     Method currentMethod;
@@ -26,7 +26,7 @@ public class PopulateTable implements Visitor {
         }
     }
 
-    public PopulateTable(SymbolTable s) {
+    public PopulateTableVisitor(SymbolTable s) {
         symTable = Top.symTable = s;
     }
 
@@ -88,19 +88,19 @@ public class PopulateTable implements Visitor {
 
             if (cl.superclass() == Bottom.get())
                 continue;
-            if (!overrideCorrect(m.i, cl.superclass())) {
-                symTable.err("Incorrect signature for overridden method " + m.i + ".", n);
-            }
+            overrideCorrect(m.i);
         }
     }
 
-    private boolean overrideCorrect(Identifier methodName, ClassType superclass) {
+    private boolean overrideCorrect(Identifier methodName) {
         if (!(currentClass.getMethod(methodName) instanceof Method method)) {
             return true;
         }
+        ClassType superclass = currentClass.superclass();
         while (superclass != Top.get()) {
             MethodType superMethodOpt = superclass.getMethod(methodName);
             if (superMethodOpt.params() != method.params()) {
+                symTable.err("Parameters in " + currentClass.name + "::" + methodName + " do not match superclass parameters; no overloading allowed.", methodName);
                 return false;
             }
             if (!(superMethodOpt instanceof Method superMethod)) {
@@ -110,11 +110,17 @@ public class PopulateTable implements Visitor {
             Iterator<InstanceType> sit = superMethod.parameters.values().iterator(),
                     it = method.parameters.values().iterator();
             for (int j = 0; j < superMethod.params(); j++) {
-                if (!Type.sameType(sit.next(), it.next()))
+                // Contravariance is not allowed, that's just overloading
+                if (!Type.sameType(sit.next(), it.next())) {
+                    symTable.err("Parameters in " + currentClass.name + "::" + methodName + " do not match superclass parameters; no overloading allowed.", methodName);
                     return false;
+                }
             }
-            if (!Type.assignmentCompatible(superMethod.getReturn(), method.getReturn()))
+            // Require covariance in return types
+            if (!Type.assignmentCompatible(superMethod.getReturn(), method.getReturn())) {
+                symTable.err("Return type of overriding method " + currentClass.name + "::" + methodName + " is incompatible with superclass return type.", methodName);
                 return false;
+            }
             superclass = superclass.superclass();
         }
         return true;
